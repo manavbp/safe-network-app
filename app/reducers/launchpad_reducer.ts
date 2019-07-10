@@ -1,4 +1,5 @@
 import { TYPES } from '$App/actions/launchpad_actions';
+import { TYPES as NOTIFICATION_TYPES } from '$Actions/alias/notification_actions';
 import { TYPES as ALIAS_TYPES } from '$Actions/alias/launchpad_actions';
 import { LaunchpadState, UserPreferences } from '../definitions/application.d';
 import { ERRORS, defaultPreferences } from '$Constants/index';
@@ -59,6 +60,8 @@ export function launchpadReducer( state = initialState, action ): LaunchpadState
             return { ...state, standardWindowIsVisible: payload };
         }
 
+        case NOTIFICATION_TYPES.ACCEPT_NOTIFICATION:
+        case NOTIFICATION_TYPES.DENY_NOTIFICATION:
         default:
             return state;
     }
