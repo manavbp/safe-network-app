@@ -1,6 +1,4 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { ClientFunction, Selector } from 'testcafe';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { ReactSelector, waitForReact } from 'testcafe-react-selectors';
 import { getPageUrl, getPageTitle } from './helpers';
 

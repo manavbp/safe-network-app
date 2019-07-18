@@ -5,9 +5,11 @@ import { Notification } from '$Components/Notifications/Notifications';
 interface Props {
     children: React.ReactChild;
     notifications: object;
+    notificationCheckBox: boolean;
     acceptNotification: any;
     denyNotification: any;
     pushNotification: any;
+    notificationToggleCheckBox: any;
 }
 
 export class App extends React.PureComponent<Props> {
@@ -15,8 +17,10 @@ export class App extends React.PureComponent<Props> {
         const {
             notifications,
             children,
+            notificationToggleCheckBox,
             acceptNotification,
-            denyNotification
+            denyNotification,
+            notificationCheckBox
         } = this.props;
         return (
             <React.Fragment>
@@ -24,6 +28,8 @@ export class App extends React.PureComponent<Props> {
                     notifications={notifications}
                     acceptNotification={acceptNotification}
                     denyNotification={denyNotification}
+                    toggleCheckBox={notificationToggleCheckBox}
+                    notificationCheckBox={notificationCheckBox}
                 />
                 {children}
             </React.Fragment>

@@ -14,10 +14,6 @@ const initBgProcess = () => {
     const store = configureStore( undefined );
     setCurrentStore( store );
     setCurrentStoreForNotificationActions( store );
-
-    // store.subscribe( () => {
-    //     logger.info( 'chchchchchaaaanges' );
-    // } );
 };
 
 initBgProcess();

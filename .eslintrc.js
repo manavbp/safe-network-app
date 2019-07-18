@@ -101,6 +101,12 @@ module.exports = {
                 '@typescript-eslint/explicit-function-return-type': 'off',
                 '@typescript-eslint/explicit-member-accessibility': 'off'
             }
+        },
+        {
+            files: ['*.e2e.ts', 'helpers.ts'],
+            rules: {
+                'import/no-extraneous-dependencies': 'off'
+            }
         }
     ],
     plugins: [

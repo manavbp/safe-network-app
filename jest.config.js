@@ -13,7 +13,7 @@ module.exports = {
         '^.+\\.tsx?$': 'ts-jest'
     },
     moduleFileExtensions: ['js', 'jsx', 'json', 'ts', 'tsx'],
-    testPathIgnorePatterns: ['node_modules'],
+    testPathIgnorePatterns: ['node_modules', '__tests__/mock'],
     moduleDirectories: ['app', 'test', 'node_modules'],
     moduleNameMapper: {
         ...tsConfigAlias,
