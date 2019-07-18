@@ -1,11 +1,17 @@
 import { app, Menu, shell } from 'electron';
+import { pushNotification } from '$Actions/launchpad_actions';
+import { notificationTypes } from '$Constants/notifications';
+import { isRunningTestCafeProcess } from '$Constants/index';
 import { Application } from './definitions/application.d';
 
 export class MenuBuilder {
     private mainWindow: Application.Window;
 
-    public constructor( mainWindow: Application.Window ) {
+    public store;
+
+    public constructor( mainWindow: Application.Window, store ) {
         this.mainWindow = mainWindow;
+        this.store = store;
     }
 
     public buildMenu(): Menu {
@@ -47,6 +53,7 @@ export class MenuBuilder {
     }
 
     private buildDarwinTemplate(): Array<{}> {
+        const { store } = this;
         const subMenuAbout = {
             label: 'Electron',
             submenu: [
@@ -196,6 +203,95 @@ export class MenuBuilder {
                 }
             ]
         };
+        const subMenuTests = {
+            label: 'Tests',
+            submenu: [
+                {
+                    label: 'Add a No Internet Notification',
+                    click: () => {
+                        const appId: string = Math.random().toString( 36 );
+                        this.store.dispatch(
+                            pushNotification( {
+                                notification: notificationTypes.NO_INTERNET(
+                                    appId
+                                )
+                            } )
+                        );
+                    }
+                },
+                {
+                    label: 'Add a Disc Full Notification',
+                    click: () => {
+                        const appId: string = Math.random().toString( 36 );
+                        this.store.dispatch(
+                            pushNotification( {
+                                notification: notificationTypes.DISC_FULL( appId )
+                            } )
+                        );
+                    }
+                },
+                {
+                    label: 'Add a Global Failure Notification',
+                    click: () => {
+                        const appId: string = Math.random().toString( 36 );
+                        this.store.dispatch(
+                            pushNotification( {
+                                notification: notificationTypes.GLOBAL_FAILURE(
+                                    appId
+                                )
+                            } )
+                        );
+                    }
+                },
+                {
+                    label: 'Add a Update Available Notification',
+                    click: () => {
+                        const appId: string = Math.random().toString( 36 );
+                        const appName = 'SAFE Browser';
+                        const version = 'v1.0';
+                        this.store.dispatch(
+                            pushNotification( {
+                                notification: notificationTypes.UPDATE_AVAILABLE(
+                                    appId,
+                                    appName,
+                                    version
+                                )
+                            } )
+                        );
+                    }
+                },
+                {
+                    label: 'Add a Admin Pass Req Notification',
+                    click: () => {
+                        const appId: string = Math.random().toString( 36 );
+                        const appName = 'SAFE Browser';
+                        this.store.dispatch(
+                            pushNotification( {
+                                notification: notificationTypes.ADMIN_PASS_REQ(
+                                    appId,
+                                    appName
+                                )
+                            } )
+                        );
+                    }
+                },
+                {
+                    label: 'Add a Server Timed Out Notification',
+                    click: () => {
+                        const appId: string = Math.random().toString( 36 );
+                        const appName = 'SAFE Browser';
+                        this.store.dispatch(
+                            pushNotification( {
+                                notification: notificationTypes.SERVER_TIMED_OUT(
+                                    appId,
+                                    appName
+                                )
+                            } )
+                        );
+                    }
+                }
+            ]
+        };
 
         const subMenuView =
             process.env.NODE_ENV === 'development'
@@ -207,104 +303,204 @@ export class MenuBuilder {
             subMenuEdit,
             subMenuView,
             subMenuWindow,
-            subMenuHelp
+            subMenuHelp,
+            ...( isRunningTestCafeProcess ? [subMenuTests] : [] )
         ];
     }
 
     private buildDefaultTemplate(): Array<{}> {
+        const { store } = this;
+
+        const subMenuFile = {
+            label: '&File',
+            submenu: [
+                {
+                    label: '&Open',
+                    accelerator: 'Ctrl+O'
+                },
+                {
+                    label: '&Close',
+                    accelerator: 'Ctrl+W',
+                    click: () => {
+                        this.mainWindow.close();
+                    }
+                }
+            ]
+        };
+
+        const subMenuView = {
+            label: '&View',
+            submenu:
+                process.env.NODE_ENV === 'development'
+                    ? [
+                        {
+                            label: '&Reload',
+                            accelerator: 'Ctrl+R',
+                            click: () => {
+                                this.mainWindow.webContents.reload();
+                            }
+                        },
+                        {
+                            label: 'Toggle &Full Screen',
+                            accelerator: 'F11',
+                            click: () => {
+                                this.mainWindow.setFullScreen(
+                                    !this.mainWindow.isFullScreen()
+                                );
+                            }
+                        },
+                        {
+                            label: 'Toggle &Developer Tools',
+                            accelerator: 'Alt+Ctrl+I',
+                            click: () => {
+                                this.mainWindow.toggleDevTools();
+                            }
+                        }
+                    ]
+                    : [
+                        {
+                            label: 'Toggle &Full Screen',
+                            accelerator: 'F11',
+                            click: () => {
+                                this.mainWindow.setFullScreen(
+                                    !this.mainWindow.isFullScreen()
+                                );
+                            }
+                        }
+                    ]
+        };
+
+        const subMenuHelp = {
+            label: 'Help',
+            submenu: [
+                {
+                    label: 'Learn More',
+                    click() {
+                        shell.openExternal( 'http://electron.atom.io' );
+                    }
+                },
+                {
+                    label: 'Documentation',
+                    click() {
+                        shell.openExternal(
+                            'https://github.com/atom/electron/tree/master/docs#readme'
+                        );
+                    }
+                },
+                {
+                    label: 'Community Discussions',
+                    click() {
+                        shell.openExternal(
+                            'https://discuss.atom.io/c/electron'
+                        );
+                    }
+                },
+                {
+                    label: 'Search Issues',
+                    click() {
+                        shell.openExternal(
+                            'https://github.com/atom/electron/issues'
+                        );
+                    }
+                }
+            ]
+        };
+
+        const subMenuTests = {
+            label: 'Tests',
+            submenu: [
+                {
+                    label: 'Add a No Internet Notification',
+                    click: () => {
+                        const appId: string = Math.random().toString( 36 );
+                        this.store.dispatch(
+                            pushNotification( {
+                                notification: notificationTypes.NO_INTERNET(
+                                    appId
+                                )
+                            } )
+                        );
+                    }
+                },
+                {
+                    label: 'Add a Disc Full Notification',
+                    click: () => {
+                        const appId: string = Math.random().toString( 36 );
+                        this.store.dispatch(
+                            pushNotification( {
+                                notification: notificationTypes.DISC_FULL( appId )
+                            } )
+                        );
+                    }
+                },
+                {
+                    label: 'Add a Global Failure Notification',
+                    click: () => {
+                        const appId: string = Math.random().toString( 36 );
+                        this.store.dispatch(
+                            pushNotification( {
+                                notification: notificationTypes.GLOBAL_FAILURE(
+                                    appId
+                                )
+                            } )
+                        );
+                    }
+                },
+                {
+                    label: 'Add a Update Available Notification',
+                    click: () => {
+                        const appId: string = Math.random().toString( 36 );
+                        const appName = 'SAFE Browser';
+                        const version = 'v1.0';
+                        this.store.dispatch(
+                            pushNotification( {
+                                notification: notificationTypes.UPDATE_AVAILABLE(
+                                    appId,
+                                    appName,
+                                    version
+                                )
+                            } )
+                        );
+                    }
+                },
+                {
+                    label: 'Add a Admin Pass Req Notification',
+                    click: () => {
+                        const appId: string = Math.random().toString( 36 );
+                        const appName = 'SAFE Browser';
+                        this.store.dispatch(
+                            pushNotification( {
+                                notification: notificationTypes.ADMIN_PASS_REQ(
+                                    appId,
+                                    appName
+                                )
+                            } )
+                        );
+                    }
+                },
+                {
+                    label: 'Add a Server Timed Out Notification',
+                    click: () => {
+                        const appId: string = Math.random().toString( 36 );
+                        const appName = 'SAFE Browser';
+                        this.store.dispatch(
+                            pushNotification( {
+                                notification: notificationTypes.SERVER_TIMED_OUT(
+                                    appId,
+                                    appName
+                                )
+                            } )
+                        );
+                    }
+                }
+            ]
+        };
+
         const templateDefault = [
-            {
-                label: '&File',
-                submenu: [
-                    {
-                        label: '&Open',
-                        accelerator: 'Ctrl+O'
-                    },
-                    {
-                        label: '&Close',
-                        accelerator: 'Ctrl+W',
-                        click: () => {
-                            this.mainWindow.close();
-                        }
-                    }
-                ]
-            },
-            {
-                label: '&View',
-                submenu:
-                    process.env.NODE_ENV === 'development'
-                        ? [
-                            {
-                                label: '&Reload',
-                                accelerator: 'Ctrl+R',
-                                click: () => {
-                                    this.mainWindow.webContents.reload();
-                                }
-                            },
-                            {
-                                label: 'Toggle &Full Screen',
-                                accelerator: 'F11',
-                                click: () => {
-                                    this.mainWindow.setFullScreen(
-                                        !this.mainWindow.isFullScreen()
-                                    );
-                                }
-                            },
-                            {
-                                label: 'Toggle &Developer Tools',
-                                accelerator: 'Alt+Ctrl+I',
-                                click: () => {
-                                    this.mainWindow.toggleDevTools();
-                                }
-                            }
-                        ]
-                        : [
-                            {
-                                label: 'Toggle &Full Screen',
-                                accelerator: 'F11',
-                                click: () => {
-                                    this.mainWindow.setFullScreen(
-                                        !this.mainWindow.isFullScreen()
-                                    );
-                                }
-                            }
-                        ]
-            },
-            {
-                label: 'Help',
-                submenu: [
-                    {
-                        label: 'Learn More',
-                        click() {
-                            shell.openExternal( 'http://electron.atom.io' );
-                        }
-                    },
-                    {
-                        label: 'Documentation',
-                        click() {
-                            shell.openExternal(
-                                'https://github.com/atom/electron/tree/master/docs#readme'
-                            );
-                        }
-                    },
-                    {
-                        label: 'Community Discussions',
-                        click() {
-                            shell.openExternal(
-                                'https://discuss.atom.io/c/electron'
-                            );
-                        }
-                    },
-                    {
-                        label: 'Search Issues',
-                        click() {
-                            shell.openExternal(
-                                'https://github.com/atom/electron/issues'
-                            );
-                        }
-                    }
-                ]
-            }
+            subMenuFile,
+            subMenuView,
+            subMenuHelp,
+            ...( isRunningTestCafeProcess ? [subMenuTests] : [] )
         ];
 
         return templateDefault;

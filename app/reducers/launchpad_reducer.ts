@@ -8,6 +8,7 @@ export const initialState: LaunchpadState = {
     shouldOnboard: false,
     userPreferences: { ...defaultPreferences },
     notifications: {},
+    notificationCheckBox: false,
     standardWindowIsVisible: true
 };
 
@@ -58,6 +59,10 @@ export function launchpadReducer( state = initialState, action ): LaunchpadState
 
         case TYPES.SET_STANDARD_WINDOW_VISIBILITY: {
             return { ...state, standardWindowIsVisible: payload };
+        }
+
+        case NOTIFICATION_TYPES.NOTIFICATION_TOGGLE_CHECK_BOX: {
+            return { ...state, notificationCheckBox: payload };
         }
 
         case NOTIFICATION_TYPES.ACCEPT_NOTIFICATION:

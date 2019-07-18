@@ -10,12 +10,13 @@
  *
  * @flow
  */
-import { app } from 'electron';
+import { ipcMain, app } from 'electron';
 import path from 'path';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import { Store } from 'redux';
 
+import * as cp from 'child_process';
 import { addApplication } from '$Actions/application_actions';
 import { logger } from '$Logger';
 import { configureStore } from '$Store/configureStore';
@@ -29,6 +30,10 @@ import {
 import { setupBackground } from './setupBackground';
 
 import managedApplications from '$App/managedApplications.json';
+import { platform } from '$Constants';
+import { pushNotification } from '$Actions/launchpad_actions';
+import { notificationTypes } from '$Constants/notifications';
+
 
 logger.info( 'User data exists: ', app.getPath( 'userData' ) );
 
@@ -72,6 +77,74 @@ const installExtensions = async () => {
             installer.default( installer[name], forceDownload )
         )
     ).catch( console.log );
+};
+
+const addNotification = ( store ) => {
+    if (
+        process.env.NODE_ENV !== 'production' &&
+        process.env.NOTIFICATION !== undefined &&
+        process.env.NOTIFICATION !== null
+    ) {
+        const appId: string = Math.random().toString( 36 );
+        const application = {
+            appId,
+            name: 'SAFE Browser',
+            version: 'v1.0'
+        };
+
+        if (
+            process.env.NOTIFICATION === 'DISC_FULL' ||
+            process.env.NOTIFICATION === 'NO_INTERNET' ||
+            process.env.NOTIFICATION === 'GLOBAL_FAILURE' ||
+            process.env.NOTIFICATION === 'ADMIN_PASS_REQ' ||
+            process.env.NOTIFICATION === 'SERVER_TIMED_OUT' ||
+            process.env.NOTIFICATION === 'CLOSE_APP' ||
+            process.env.NOTIFICATION === 'UNINSTALL_APP_ALERT' ||
+            process.env.NOTIFICATION === 'CLOSE_APP_ALERT'
+        )
+            store.dispatch(
+                pushNotification( {
+                    notification: notificationTypes[process.env.NOTIFICATION](
+                        appId,
+                        application.name,
+                        application
+                    )
+                } )
+            );
+
+        if (
+            process.env.NOTIFICATION === 'UPDATE_AVAILABLE' ||
+            process.env.NOTIFICATION === 'UPDATE_AVAILABLE_ALERT'
+        )
+            store.dispatch(
+                pushNotification( {
+                    notification: notificationTypes[process.env.NOTIFICATION](
+                        appId,
+                        application.name,
+                        application.version
+                    )
+                } )
+            );
+
+        if (
+            process.env.NOTIFICATION === 'RESTART_SYSTEM' ||
+            process.env.NOTIFICATION === 'RESTART_SYSTEM_ALERT'
+        )
+            store.dispatch(
+                pushNotification( {
+                    notification: notificationTypes[process.env.NOTIFICATION](
+                        application.name
+                    )
+                } )
+            );
+
+        if ( process.env.NOTIFICATION === 'CLEARNET_WARNING_ALERT' )
+            store.dispatch(
+                pushNotification( {
+                    notification: notificationTypes[process.env.NOTIFICATION]()
+                } )
+            );
+    }
 };
 
 // const loadMiddlewarePackages = [];
@@ -123,8 +196,10 @@ if ( !gotTheLock ) {
         trayWindow = createSafeLaunchPadTrayWindow( store, app );
         setupBackground( store, mainWindow );
 
-        const menuBuilder = new MenuBuilder( mainWindow );
+        const menuBuilder = new MenuBuilder( mainWindow, store );
         menuBuilder.buildMenu();
+
+        addNotification( store );
 
         // Remove this if your app does not use auto updates
         // eslint-disable-next-line no-new
@@ -153,4 +228,49 @@ app.on( 'open-url', ( _, url ) => {
         );
         throw new Error( error );
     }
+} );
+
+ipcMain.on( 'restart', () => {
+    if (
+        process.platform !== 'linux' &&
+        process.platform !== 'darwin' &&
+        process.platform !== 'win32'
+    ) {
+        throw new Error( 'Unknown or unsupported OS!' );
+    }
+    let finalcmd;
+    if ( process.platform !== 'linux' && process.platform !== 'win32' ) {
+        const cmdarguments = ['shutdown'];
+
+        cmdarguments.push( '-r' );
+
+        finalcmd = cmdarguments.join( ' ' );
+    }
+
+    if ( process.platform === 'darwin' ) {
+        finalcmd = `osascript -e 'tell app "System Events" to shut down'`;
+    }
+
+    cp.exec( finalcmd, ( error, stdout, stderr ) => {
+        if ( error ) {
+            console.error( error );
+            return;
+        }
+        // console.log(stdout);
+        app.exit( 0 );
+    } );
+} );
+
+ipcMain.on( 'close-app', ( application ) => {
+    console.log( 'close-app' );
+    if (
+        process.platform !== 'linux' &&
+        process.platform !== 'darwin' &&
+        process.platform !== 'win32'
+    ) {
+        throw new Error( 'Unknown or unsupported OS!' );
+    }
+
+    const appName = application.name;
+    console.log( `Should contact ${appName} and close the app` );
 } );

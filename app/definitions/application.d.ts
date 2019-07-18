@@ -80,6 +80,7 @@ export interface LaunchpadState {
     userPreferences: UserPreferences;
     notifications: { [s: string]: Notification };
     standardWindowIsVisible: boolean;
+    notificationCheckBox: boolean;
 }
 
 export interface AppManagerState {

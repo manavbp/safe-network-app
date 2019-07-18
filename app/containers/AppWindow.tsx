@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { App } from '$Components/App/App';
 import {
     acceptNotification,
-    denyNotification
+    denyNotification,
+    notificationToggleCheckBox
 } from '$Actions/alias/notification_actions';
 import {
     pushNotification,
@@ -14,14 +15,16 @@ import { logger } from '$Logger';
 
 function mapStateToProperties( state ) {
     return {
-        notifications: state.launchpad.notifications
+        notifications: state.launchpad.notifications,
+        notificationCheckBox: state.launchpad.notificationCheckBox
     };
 }
 function mapDispatchToProperties( dispatch ) {
     const actions = {
         acceptNotification,
         denyNotification,
-        pushNotification
+        pushNotification,
+        notificationToggleCheckBox
     };
 
     return bindActionCreators( actions, dispatch );
