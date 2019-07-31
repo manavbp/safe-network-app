@@ -1,4 +1,6 @@
 .menu-item {
+    width: -webkit-fill-available !important;
+    min-height: 35px !important;
     border-bottom: 1px solid #bdbdbd !important;
 }
 
