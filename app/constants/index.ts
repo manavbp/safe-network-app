@@ -6,10 +6,12 @@ import getPort from 'get-port';
 import pkg from '$Package';
 
 export const { platform } = process;
-export const OSX = 'darwin';
+export const MAC_OS = 'darwin';
 export const LINUX = 'linux';
 export const WINDOWS = 'win32';
-// export
+export const isRunningOnMac = platform === MAC_OS;
+export const isRunningOnWindows = platform === WINDOWS;
+export const isRunningOnLinux = platform === LINUX;
 
 declare const document: Document;
 
@@ -243,7 +245,7 @@ interface AppInfo {
 //     }
 // };
 
-// OSX: Add bundle for electron in dev mode
+// MAC_OS: Add bundle for electron in dev mode
 // if (  isRunningUnpacked && process.platform === 'darwin'  ) {
 //     appInfo.info.bundle = 'com.github.electron';
 // } else if (  process.platform === 'darwin'  ) {

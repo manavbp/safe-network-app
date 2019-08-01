@@ -28,7 +28,7 @@ build/Release
 node_modules
 app/node_modules
 
-# OSX
+# MAC_OS
 .DS_Store
 
 # App packaged

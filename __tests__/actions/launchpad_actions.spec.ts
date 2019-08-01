@@ -53,11 +53,9 @@ describe( 'Launchpad actions', () => {
             isVisible: true
         };
         const expectAction = {
-            type: launchpad.TYPES.SET_STANDARD_WINDOW_VISIBILITY,
+            type: launchpad.TYPES.SET_AS_TRAY_WINDOW,
             payload
         };
-        expect( launchpad.setStandardWindowVisibility( payload ) ).toEqual(
-            expectAction
-        );
+        expect( launchpad.setAsTrayWindow( payload ) ).toEqual( expectAction );
     } );
 } );

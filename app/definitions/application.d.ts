@@ -82,7 +82,7 @@ export interface LaunchpadState {
     shouldOnboard: boolean;
     userPreferences: UserPreferences;
     notifications: { [s: string]: Notification };
-    standardWindowIsVisible: boolean;
+    isTrayWindow: boolean;
     notificationCheckBox: boolean;
 }
 

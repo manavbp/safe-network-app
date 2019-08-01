@@ -7,19 +7,19 @@ export const TYPES = {
     PUSH_NOTIFICATION: 'PUSH_NOTIFICATION',
     DISMISS_NOTIFICATION: 'DISMISS_NOTIFICATION',
     SET_USER_PREFERENCES: 'SET_USER_PREFERENCES',
-    SET_STANDARD_WINDOW_VISIBILITY: 'SET_STANDARD_WINDOW_VISIBILITY',
+    SET_AS_TRAY_WINDOW: 'SET_AS_TRAY_WINDOW'
 };
 
 export const {
     pushNotification,
     dismissNotification,
     setUserPreferences,
-    setStandardWindowVisibility
+    setAsTrayWindow
 } = createActions(
     TYPES.PUSH_NOTIFICATION,
     TYPES.DISMISS_NOTIFICATION,
     TYPES.SET_USER_PREFERENCES,
-    TYPES.SET_STANDARD_WINDOW_VISIBILITY
+    TYPES.SET_AS_TRAY_WINDOW
 );
 
 export const getUserPreferences = () => {

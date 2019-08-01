@@ -9,7 +9,7 @@ export const initialState: LaunchpadState = {
     userPreferences: { ...defaultPreferences },
     notifications: {},
     notificationCheckBox: false,
-    standardWindowIsVisible: true
+    isTrayWindow: true
 };
 
 export function launchpadReducer( state = initialState, action ): LaunchpadState {
@@ -57,8 +57,8 @@ export function launchpadReducer( state = initialState, action ): LaunchpadState
             return { ...state, shouldOnboard: payload.shouldOnboard };
         }
 
-        case TYPES.SET_STANDARD_WINDOW_VISIBILITY: {
-            return { ...state, standardWindowIsVisible: payload };
+        case TYPES.SET_AS_TRAY_WINDOW: {
+            return { ...state, isTrayWindow: payload };
         }
 
         case NOTIFICATION_TYPES.NOTIFICATION_TOGGLE_CHECK_BOX: {

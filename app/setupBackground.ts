@@ -13,10 +13,7 @@ import {
 const BACKGROUND_PROCESS = `file://${__dirname}/bg.html`;
 
 let backgroundProcessWindow = null;
-export const setupBackground = async (
-    store,
-    mainWindow
-): Promise<BrowserWindow> =>
+export const setupBackground = async ( store ): Promise<BrowserWindow> =>
     new Promise( ( resolve, reject ) => {
         logger.info( 'Setting up Background Process' );
 

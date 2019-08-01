@@ -11,14 +11,14 @@ import {
     uninstallApplication
 } from '$Actions/application_actions';
 import { fetchApps } from '$Actions/alias/app_manager_actions';
-import { triggerSetStandardWindowVisibility } from '$Actions/alias/launchpad_actions';
+import { triggerSetAsTrayWindow } from '$Actions/alias/launchpad_actions';
 import { getUserPreferences } from '$Actions/launchpad_actions';
 import { AppState } from '../definitions/application.d';
 
 function mapStateToProperties( state: AppState ) {
     return {
         appManagerState: state.appManager,
-        standardWindowIsVisible: state.launchpad.standardWindowIsVisible
+        isTrayWindow: state.launchpad.isTrayWindow
     };
 }
 function mapDispatchToProperties( dispatch ) {
@@ -34,7 +34,7 @@ function mapDispatchToProperties( dispatch ) {
 
         fetchApps,
 
-        triggerSetStandardWindowVisibility
+        triggerSetAsTrayWindow
     };
 
     return bindActionCreators( actions, dispatch );

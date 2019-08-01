@@ -19,8 +19,8 @@ interface Props {
     installApp: Function;
     appManagerState: AppManagerState;
     fetchApps: Function;
-    triggerSetStandardWindowVisibility: Function;
-    standardWindowIsVisible: boolean;
+    triggerSetAsTrayWindow: Function;
+    isTrayWindow: boolean;
 }
 
 export class Home extends Component<Props> {
