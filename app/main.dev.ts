@@ -33,7 +33,7 @@ import managedApplications from '$App/managedApplications.json';
 import { platform } from '$Constants';
 import { pushNotification } from '$Actions/launchpad_actions';
 import { notificationTypes } from '$Constants/notifications';
-
+import { addNotification } from '$App/env-handling';
 
 logger.info( 'User data exists: ', app.getPath( 'userData' ) );
 
@@ -77,74 +77,6 @@ const installExtensions = async () => {
             installer.default( installer[name], forceDownload )
         )
     ).catch( console.log );
-};
-
-const addNotification = ( store ) => {
-    if (
-        process.env.NODE_ENV !== 'production' &&
-        process.env.NOTIFICATION !== undefined &&
-        process.env.NOTIFICATION !== null
-    ) {
-        const appId: string = Math.random().toString( 36 );
-        const application = {
-            appId,
-            name: 'SAFE Browser',
-            version: 'v1.0'
-        };
-
-        if (
-            process.env.NOTIFICATION === 'DISC_FULL' ||
-            process.env.NOTIFICATION === 'NO_INTERNET' ||
-            process.env.NOTIFICATION === 'GLOBAL_FAILURE' ||
-            process.env.NOTIFICATION === 'ADMIN_PASS_REQ' ||
-            process.env.NOTIFICATION === 'SERVER_TIMED_OUT' ||
-            process.env.NOTIFICATION === 'CLOSE_APP' ||
-            process.env.NOTIFICATION === 'UNINSTALL_APP_ALERT' ||
-            process.env.NOTIFICATION === 'CLOSE_APP_ALERT'
-        )
-            store.dispatch(
-                pushNotification( {
-                    notification: notificationTypes[process.env.NOTIFICATION](
-                        appId,
-                        application.name,
-                        application
-                    )
-                } )
-            );
-
-        if (
-            process.env.NOTIFICATION === 'UPDATE_AVAILABLE' ||
-            process.env.NOTIFICATION === 'UPDATE_AVAILABLE_ALERT'
-        )
-            store.dispatch(
-                pushNotification( {
-                    notification: notificationTypes[process.env.NOTIFICATION](
-                        appId,
-                        application.name,
-                        application.version
-                    )
-                } )
-            );
-
-        if (
-            process.env.NOTIFICATION === 'RESTART_SYSTEM' ||
-            process.env.NOTIFICATION === 'RESTART_SYSTEM_ALERT'
-        )
-            store.dispatch(
-                pushNotification( {
-                    notification: notificationTypes[process.env.NOTIFICATION](
-                        application.name
-                    )
-                } )
-            );
-
-        if ( process.env.NOTIFICATION === 'CLEARNET_WARNING_ALERT' )
-            store.dispatch(
-                pushNotification( {
-                    notification: notificationTypes[process.env.NOTIFICATION]()
-                } )
-            );
-    }
 };
 
 // const loadMiddlewarePackages = [];
