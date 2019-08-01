@@ -1,15 +1,3 @@
-/* eslint global-require: off */
-
-/**
- * This module executes inside of electron's main process. You can start
- * electron renderer process from here and communicate with the other processes
- * through IPC.
- *
- * When running `yarn build` or `yarn build-main`, this file is compiled to
- * `./app/main.prod.js` using webpack. This gives us some performance wins.
- *
- * @flow
- */
 import { ipcMain, app } from 'electron';
 import path from 'path';
 import { autoUpdater } from 'electron-updater';
@@ -53,7 +41,7 @@ export default class AppUpdater {
 }
 
 if ( process.env.NODE_ENV === 'production' ) {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, global-require
     const sourceMapSupport = require( 'source-map-support' );
     sourceMapSupport.install();
 }
@@ -62,11 +50,12 @@ if (
     process.env.NODE_ENV === 'development' ||
     process.env.DEBUG_PROD === 'true'
 ) {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, global-require
     require( 'electron-debug' )();
 }
 
 const installExtensions = async () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, global-require
     const installer = require( 'electron-devtools-installer' );
     const forceDownload = true;
     // const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
@@ -162,6 +151,7 @@ app.on( 'open-url', ( _, url ) => {
     }
 } );
 
+// IPC handlers from actions.
 ipcMain.on( 'restart', () => {
     if (
         process.platform !== 'linux' &&

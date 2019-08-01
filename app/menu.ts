@@ -3,6 +3,7 @@ import { pushNotification } from '$Actions/launchpad_actions';
 import { notificationTypes } from '$Constants/notifications';
 import { isRunningTestCafeProcess } from '$Constants/index';
 import { Application } from './definitions/application.d';
+import { logger } from '$Logger';
 
 export class MenuBuilder {
     private mainWindow: Application.Window;
@@ -55,7 +56,7 @@ export class MenuBuilder {
     private buildDarwinTemplate(): Array<{}> {
         const { store } = this;
         const subMenuAbout = {
-            label: 'Electron',
+            label: 'Safe Network App',
             submenu: [
                 {
                     label: 'About ElectronReact',
@@ -80,7 +81,7 @@ export class MenuBuilder {
                     label: 'Quit',
                     accelerator: 'Command+Q',
                     click: () => {
-                        app.quit();
+                        app.exit();
                     }
                 }
             ]
