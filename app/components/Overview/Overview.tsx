@@ -11,8 +11,8 @@ interface Props {
     installApp: Function;
     appManagerState: AppManagerState;
     fetchApps: Function;
-    triggerSetStandardWindowVisibility: Function;
-    standardWindowIsVisible: boolean;
+    triggerSetAsTrayWindow: Function;
+    isTrayWindow: boolean;
 }
 
 export class Overview extends Component<Props> {
@@ -45,27 +45,18 @@ export class Overview extends Component<Props> {
     };
 
     render() {
-        const {
-            triggerSetStandardWindowVisibility,
-            standardWindowIsVisible
-        } = this.props;
+        const { triggerSetAsTrayWindow, isTrayWindow } = this.props;
         return (
             <div className={styles.container} data-tid="container">
                 <button
                     type="button"
                     className={styles['btn--upper-right']}
                     key="overview__switch-button"
-                    onClick={() =>
-                        triggerSetStandardWindowVisibility(
-                            !standardWindowIsVisible
-                        )
-                    }
+                    onClick={() => triggerSetAsTrayWindow( !isTrayWindow )}
                 >
                     Switch
                 </button>
-                {!standardWindowIsVisible && (
-                    <span data-visible={standardWindowIsVisible} />
-                )}
+                {!isTrayWindow && <span data-istraywindow={isTrayWindow} />}
                 {this.loadApps()}
             </div>
         );

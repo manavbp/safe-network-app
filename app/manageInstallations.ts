@@ -6,7 +6,7 @@ import del from 'del';
 import dmg from 'dmg';
 import path from 'path';
 import { updateInstallProgress } from '$Actions/application_actions';
-import { OSX, LINUX, WINDOWS, isDryRun, platform } from '$Constants';
+import { MAC_OS, LINUX, WINDOWS, isDryRun, platform } from '$Constants';
 
 import { logger } from '$Logger';
 
@@ -31,7 +31,7 @@ const getDowloadUrlForApplication = (
 
     logger.info( ' checking platform', platform );
     switch ( platform ) {
-        case OSX: {
+        case MAC_OS: {
             targetUrl = `${baseUrl}.dmg`;
             break;
             // https://github.com/joshuef/electron-typescript-react-boilerplate/releases/download/v0.1.0/ElectronTypescriptBoiler-0.1.0.dmg
@@ -63,7 +63,7 @@ const getApplicationExecutable = ( application: ManagedApplication ): string => 
     let applicationExecutable: string;
 
     switch ( platform ) {
-        case OSX: {
+        case MAC_OS: {
             applicationExecutable = `${application.packageName ||
                 application.name}.app`;
             break;
@@ -192,7 +192,7 @@ const silentInstall = (
 ) => {
     const applicationExecutable = getApplicationExecutable( application );
     switch ( platform ) {
-        case OSX: {
+        case MAC_OS: {
             silentInstallMacOS( applicationExecutable, downloadLocation );
             break;
         }

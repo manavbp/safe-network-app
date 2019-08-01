@@ -21,12 +21,15 @@ test(
     assertNoConsoleErrors
 );
 
-// TODO: How to test alternate BrowserWindow?
-// https://github.com/DevExpress/testcafe/issues/912
-// test( 'clicking on window-switch button switches to tray window', async ( t ) => {
-//     await t.click( Selector( 'button.Overview__btn--upper-right' ) );
-//     await t.expect( Selector( 'span' ).withAttribute( 'data-visible', 'false' ).exists ).ok();
-// } );
+// we start as a tray window right now
+test( 'clicking on window-switch button switches to normal window', async ( t ) => {
+    await t.click( Selector( 'button.Overview__btn--upper-right' ) );
+    await t
+        .expect(
+            Selector( 'span' ).withAttribute( 'data-istraywindow', 'false' ).exists
+        )
+        .ok();
+} );
 
 test( 'clicking on a vert icon in application overview shows menu items', async ( t ) => {
     await t

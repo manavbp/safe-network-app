@@ -14,8 +14,7 @@ export const TYPES = {
     ALIAS_STORE_USER_PREFERENCES: 'ALIAS_STORE_USER_PREFERENCES',
     ALIAS_AUTO_LAUNCH: 'ALIAS_AUTO_LAUNCH',
     ALIAS_PIN_TO_TRAY: 'ALIAS_PIN_TO_TRAY',
-    ALIAS_TO_SET_STANDARD_WINDOW_VISIBILITY:
-        'ALIAS_TO_SET_STANDARD_WINDOW_VISIBILITY'
+    ALIAS_SET_AS_TRAY_WINDOW: 'ALIAS_SET_AS_TRAY_WINDOW'
 };
 
 export const storeUserPreferences = createAliasedAction(
@@ -52,12 +51,12 @@ export const pinToTray = createAliasedAction(
     } )
 );
 
-export const triggerSetStandardWindowVisibility = createAliasedAction(
-    TYPES.ALIAS_TO_SET_STANDARD_WINDOW_VISIBILITY,
-    ( isVisible: boolean ) => ( {
-        type: TYPES.ALIAS_TO_SET_STANDARD_WINDOW_VISIBILITY,
+export const triggerSetAsTrayWindow = createAliasedAction(
+    TYPES.ALIAS_SET_AS_TRAY_WINDOW,
+    ( setAsTray: boolean ) => ( {
+        type: TYPES.ALIAS_SET_AS_TRAY_WINDOW,
         payload: ( () => {
-            ipcRenderer.send( 'set-standard-window-visibility', isVisible );
+            ipcRenderer.send( 'set-as-tray-window', setAsTray );
         } )()
     } )
 );

@@ -10,11 +10,7 @@ import { logger } from '$Logger';
 import { configureStore } from '$Store/configureStore';
 import { MenuBuilder } from './menu';
 import { Application } from './definitions/application.d';
-import {
-    createSafeLaunchPadStandardWindow,
-    createSafeLaunchPadTrayWindow,
-    createTray
-} from './setupLaunchPad';
+import { createSafeLaunchPadTrayWindow, createTray } from './setupLaunchPad';
 import { setupBackground } from './setupBackground';
 
 import managedApplications from '$App/managedApplications.json';
@@ -112,12 +108,11 @@ if ( !gotTheLock ) {
             } );
         }
 
-        createTray( store, app );
-        mainWindow = createSafeLaunchPadStandardWindow( store, app );
-        trayWindow = createSafeLaunchPadTrayWindow( store, app );
-        setupBackground( store, mainWindow );
+        setupBackground( store );
+        trayWindow = createSafeLaunchPadTrayWindow( store );
+        createTray( store );
 
-        const menuBuilder = new MenuBuilder( mainWindow, store );
+        const menuBuilder = new MenuBuilder( trayWindow, store );
         menuBuilder.buildMenu();
 
         addNotification( store );
@@ -133,7 +128,7 @@ if ( !gotTheLock ) {
  */
 
 app.on( 'window-all-closed', () => {
-    // Respect the OSX convention of having the application in memory even
+    // Respect the MAC_OS convention of having the application in memory even
     // after all windows have been closed
     if ( process.platform !== 'darwin' ) {
         app.quit();
