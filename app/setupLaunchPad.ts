@@ -17,7 +17,6 @@ let tray;
 let safeLaunchPadStandardWindow: Application.Window;
 let safeLaunchPadTrayWindow: Application.Window;
 let theWindow: Application.Window;
-let programmaticallyTriggeredHideEvent = false;
 
 const getTrayWindowPosition = (
     window: Application.Window
@@ -136,19 +135,11 @@ export const createSafeLaunchPadTrayWindow = (
 
     safeLaunchPadTrayWindow.loadURL( `file://${CONFIG.APP_HTML_PATH}` );
 
-    // TODO: check we need this still w/ linux
-    safeLaunchPadTrayWindow.on( 'hide', () => {
-        if ( !isRunningOnLinux && !programmaticallyTriggeredHideEvent ) {
-            setWindowAsVisible( false );
-        }
-        if ( programmaticallyTriggeredHideEvent ) {
-            programmaticallyTriggeredHideEvent = false;
-        }
-    } );
-
     // Hide the safeLaunchPadTrayWindow when it loses focus
     safeLaunchPadTrayWindow.on( 'blur', () => {
-        if ( isRunningOnLinux ) {
+        const { isTrayWindow } = store.getState().launchpad;
+
+        if ( isRunningOnLinux && isTrayWindow ) {
             setWindowAsVisible( false );
         }
     } );
