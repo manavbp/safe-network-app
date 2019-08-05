@@ -3,11 +3,16 @@ import { connect } from 'react-redux';
 import { BasicSettings } from '$Components/BasicSettings';
 
 import { setUserPreferences } from '$Actions/launchpad_actions';
-import { storePreferences, autoLaunch } from '$Actions/alias/launchpad_actions';
+import {
+    storePreferences,
+    autoLaunch,
+    triggerSetAsTrayWindow
+} from '$Actions/alias/launchpad_actions';
 
 const mapStateToProperties = ( state ) => {
     return {
-        userPreferences: state.launchpad.userPreferences
+        userPreferences: state.launchpad.userPreferences,
+        isTrayWindow: state.launchpad.isTrayWindow
     };
 };
 
@@ -15,7 +20,8 @@ const mapDispatchToProperties = ( dispatch ) => {
     const actions = {
         setUserPreferences,
         storePreferences,
-        autoLaunch
+        autoLaunch,
+        triggerSetAsTrayWindow
     };
     return bindActionCreators( actions, dispatch );
 };

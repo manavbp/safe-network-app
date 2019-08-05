@@ -12,6 +12,7 @@ interface Props {
     onChange: Function;
     onChangeLaunchOnStart: Function;
     onChangePinToMenu: Function;
+    isTrayWindow: boolean;
 }
 
 export class Preferences extends Component<Props> {
@@ -34,12 +35,13 @@ export class Preferences extends Component<Props> {
             userPreferences,
             onChange,
             onChangeLaunchOnStart,
-            onChangePinToMenu
+            onChangePinToMenu,
+            isTrayWindow
         } = this.props;
 
         switch ( name ) {
             case 'pinToMenuBar':
-                onChangePinToMenu( changedStatus );
+                onChangePinToMenu( !isTrayWindow );
                 break;
             case 'launchOnStart':
                 onChangeLaunchOnStart( changedStatus );

@@ -8,16 +8,22 @@ import IconButton from '@material-ui/core/IconButton';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 
 import { Preferences } from '$Components/Preferences';
-import { UserPreferences } from '$Definitions/application.d';
+import {
+    UserPreferences,
+    AppPreferences,
+    Preferences as PreferencesDef
+} from '$Definitions/application.d';
 
 interface Props {
     userPreferences: UserPreferences;
+    appPreferences: AppPreferences;
     setUserPreferences: Function;
     getUserPreferences: Function;
-    storeUserPreferences: Function;
-    pinToTray: Function;
+    storePreferences: Function;
+    triggerSetAsTrayWindow: Function;
     autoLaunch: Function;
     history?: History;
+    isTrayWindow: boolean;
 }
 
 export class Settings extends Component<Props> {
@@ -31,8 +37,16 @@ export class Settings extends Component<Props> {
     };
 
     handlePreferenceChange = ( userPreferences: UserPreferences ) => {
-        const { storeUserPreferences, setUserPreferences } = this.props;
-        storeUserPreferences( userPreferences );
+        const {
+            storePreferences,
+            setUserPreferences,
+            appPreferences
+        } = this.props;
+        const preferences: PreferencesDef = {
+            userPreferences,
+            appPreferences
+        };
+        storePreferences( preferences );
         setUserPreferences( userPreferences );
     };
 
@@ -40,8 +54,9 @@ export class Settings extends Component<Props> {
         const {
             userPreferences,
             setUserPreferences,
-            pinToTray,
-            autoLaunch
+            triggerSetAsTrayWindow,
+            autoLaunch,
+            isTrayWindow
         } = this.props;
 
         return (
@@ -61,10 +76,11 @@ export class Settings extends Component<Props> {
                 </Box>
                 <Grid item xs={12}>
                     <Preferences
+                        isTrayWindow={isTrayWindow}
                         userPreferences={userPreferences}
                         onChange={this.handlePreferenceChange}
                         onChangeLaunchOnStart={autoLaunch}
-                        onChangePinToMenu={pinToTray}
+                        onChangePinToMenu={triggerSetAsTrayWindow}
                     />
                 </Grid>
             </Grid>

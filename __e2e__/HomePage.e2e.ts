@@ -1,15 +1,27 @@
 import { ClientFunction, Selector } from 'testcafe';
 import { ReactSelector, waitForReact } from 'testcafe-react-selectors';
-import { getPageUrl, getPageTitle } from './helpers';
+import { getPageUrl, getPageTitle, updatePreferences } from './helpers';
 
 const assertNoConsoleErrors = async ( t ): Promise<void> => {
     const { error } = await t.getBrowserConsoleMessages();
     await t.expect( error ).eql( [] );
 };
 
-fixture`Home Page`.page( '../app/app.html' ).beforeEach( async () => {
-    await waitForReact();
-} );
+fixture`Home Page`
+    .page( '../app/app.html' )
+    .beforeEach( async () => {
+        await waitForReact();
+    } )
+    .afterEach( async () => {
+        await updatePreferences( {
+            appPreferences: {
+                shouldOnboard: false
+            },
+            userPreferences: {
+                pinToMenuBar: false
+            }
+        } );
+    } );
 // .afterEach( assertNoConsoleErrors );
 
 test( 'should open window', async ( t ) => {

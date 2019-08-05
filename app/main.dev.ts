@@ -3,8 +3,10 @@ import path from 'path';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import { Store } from 'redux';
+import * as fs from 'fs-extra';
 
 import * as cp from 'child_process';
+import pkg from '$Package';
 import { addApplication } from '$Actions/application_actions';
 import { logger } from '$Logger';
 import { configureStore } from '$Store/configureStore';
@@ -14,10 +16,16 @@ import { createSafeLaunchPadTrayWindow, createTray } from './setupLaunchPad';
 import { setupBackground } from './setupBackground';
 
 import managedApplications from '$App/managedApplications.json';
-import { platform } from '$Constants';
 import { pushNotification } from '$Actions/launchpad_actions';
 import { notificationTypes } from '$Constants/notifications';
 import { addNotification } from '$App/env-handling';
+import {
+    isRunningTestCafeProcess,
+    getAppFolderPath,
+    platform,
+    settingsHandlerName,
+    defaultPreferences
+} from '$Constants/index';
 
 logger.info( 'User data exists: ', app.getPath( 'userData' ) );
 
@@ -64,6 +72,29 @@ const installExtensions = async () => {
     ).catch( console.log );
 };
 
+const createApplicationFolder = async () => {
+    return new Promise( async ( resolve, reject ) => {
+        let appFolderPath = app.getPath( 'appData' );
+        const tableName = isRunningTestCafeProcess
+            ? settingsHandlerName.test
+            : settingsHandlerName.production;
+
+        if ( !appFolderPath ) {
+            return reject( new Error( 'Unable to fetch application folder path' ) );
+        }
+        appFolderPath = path.resolve( appFolderPath, pkg.name );
+        try {
+            await fs.ensureDir( appFolderPath );
+            appFolderPath = path.resolve( appFolderPath, `${tableName}.json` );
+            await fs.ensureFile( appFolderPath );
+            fs.outputJson( appFolderPath, { ...defaultPreferences } );
+            return resolve();
+        } catch ( error ) {
+            return reject( error );
+        }
+    } );
+};
+
 // const loadMiddlewarePackages = [];
 
 let store: Store;
@@ -94,6 +125,7 @@ if ( !gotTheLock ) {
             process.env.DEBUG_PROD === 'true'
         ) {
             await installExtensions();
+            await createApplicationFolder();
         }
 
         const initialState = {};

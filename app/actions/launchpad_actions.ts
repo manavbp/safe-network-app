@@ -6,7 +6,6 @@ import {
 } from '$Definitions/application.d';
 
 import {
-    initiliseApplication,
     fetchPreferencesLocally,
     storePreferencesLocally
 } from './helpers/launchpad';
@@ -14,7 +13,6 @@ import {
 import { triggerSetAsTrayWindow } from './alias/launchpad_actions';
 
 export const TYPES = {
-    INITILISE_APP: 'INITILISE_APP',
     ONBOARD_COMPLETED: 'ONBOARD_COMPLETED',
     PUSH_NOTIFICATION: 'PUSH_NOTIFICATION',
     DISMISS_NOTIFICATION: 'DISMISS_NOTIFICATION',
@@ -48,9 +46,6 @@ export const getUserPreferences = () => {
 
 export const initialiseApp = () => {
     return async ( dispatch ) => {
-        await initiliseApplication();
-        dispatch( { type: TYPES.INITILISE_APP } );
-
         const {
             userPreferences,
             appPreferences

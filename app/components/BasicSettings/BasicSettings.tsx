@@ -8,18 +8,20 @@ import { UserPreferences } from '$Definitions/application.d';
 import { Preferences } from '$Components/Preferences';
 
 interface Props {
+    isTrayWindow: boolean;
     userPreferences: UserPreferences;
     setUserPreferences: Function;
-    pinToTray: Function;
+    triggerSetAsTrayWindow: Function;
     autoLaunch: Function;
-    storeUserPreferences: Function;
+    storePreferences: Function;
 }
 
 export const BasicSettings = ( props: Props ) => {
     const {
+        isTrayWindow,
         userPreferences,
         setUserPreferences,
-        pinToTray,
+        triggerSetAsTrayWindow,
         autoLaunch
     } = props;
     const requiredItems = {
@@ -41,11 +43,12 @@ export const BasicSettings = ( props: Props ) => {
             </Grid>
             <Grid item xs={12}>
                 <Preferences
+                    isTrayWindow={isTrayWindow}
                     userPreferences={userPreferences}
                     requiredItems={requiredItems}
                     onChange={setUserPreferences}
                     onChangeLaunchOnStart={autoLaunch}
-                    onChangePinToMenu={pinToTray}
+                    onChangePinToMenu={triggerSetAsTrayWindow}
                 />
             </Grid>
         </Grid>

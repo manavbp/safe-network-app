@@ -3,7 +3,7 @@ import AutoLaunch from 'auto-launch';
 
 import pkg from '$Package';
 import { Preferences } from '$Definitions/application.d';
-import { preferenceDatabase } from './preferences_db';
+import { settingsHandler } from './settings_handler';
 
 export const mockPromise = ( data = null ) =>
     new Promise( ( resolve ) => {
@@ -12,22 +12,10 @@ export const mockPromise = ( data = null ) =>
         }, 1000 );
     } );
 
-export const initiliseApplication = () =>
-    new Promise( async ( resolve ) => {
-        try {
-            await preferenceDatabase.init();
-            console.warn( 'Initialised database' );
-            resolve();
-        } catch ( error ) {
-            console.warn( 'Unable to initialise application', error );
-            resolve();
-        }
-    } );
-
 export const fetchPreferencesLocally = (): Promise<Preferences> =>
     new Promise( async ( resolve, reject ) => {
         try {
-            const preferences = await preferenceDatabase.getPreferences();
+            const preferences = await settingsHandler.getPreferences();
             return resolve( preferences );
         } catch ( error ) {
             return reject( error );
@@ -37,7 +25,7 @@ export const fetchPreferencesLocally = (): Promise<Preferences> =>
 export const storePreferencesLocally = ( preferences: Preferences ) =>
     new Promise( async ( resolve, reject ) => {
         try {
-            await preferenceDatabase.updatePreferences( preferences );
+            await settingsHandler.updatePreferences( preferences );
             return resolve();
         } catch ( error ) {
             return reject( error );

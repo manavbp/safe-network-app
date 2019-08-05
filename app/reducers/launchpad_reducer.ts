@@ -88,7 +88,6 @@ export function launchpadReducer( state = initialState, action ): LaunchpadState
         }
 
         // Alias Types Alias Pin To Tray is a duplicate of Set As Tray Window and Set As Tray Window is the right one
-        case TYPES.INITILISE_APP:
         case ALIAS_TYPES.ALIAS_AUTO_LAUNCH:
         case ALIAS_TYPES.ALIAS_PIN_TO_TRAY:
         case ALIAS_TYPES.ALIAS_STORE_PREFERENCES:

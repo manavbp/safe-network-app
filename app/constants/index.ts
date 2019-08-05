@@ -146,6 +146,13 @@ const safeNodeAppPath = () => {
     return nodeAppPath;
 };
 
+export const getAppFolderPath = () => {
+    if ( remote && remote.app ) {
+        return remote.app.getPath( 'appData' );
+    }
+    return null;
+};
+
 export const I18N_CONFIG = {
     locales: ['en'],
     directory: path.resolve( __dirname, 'locales' ),
@@ -324,7 +331,7 @@ export const defaultPreferences = {
     }
 };
 
-export const preferenceDatabaseName = {
+export const settingsHandlerName = {
     production: 'preferences',
     test: 'testPreferences'
 };
