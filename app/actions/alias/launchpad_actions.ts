@@ -1,37 +1,26 @@
 import { createAliasedAction } from 'electron-redux';
 import { ipcRenderer } from 'electron';
 
-import { UserPreferences } from '$Definitions/application.d';
+import { Preferences } from '$Definitions/application.d';
 import {
-    storeUserPreferencesLocally,
-    checkOnBoardingCompleted,
+    storePreferencesLocally,
     autoLaunchOnStart,
     pinLaunchpadToTray
 } from '../helpers/launchpad';
 
 export const TYPES = {
     ALIAS_SHOULD_ONBOARD: 'ALIAS_SHOULD_ONBOARD',
-    ALIAS_STORE_USER_PREFERENCES: 'ALIAS_STORE_USER_PREFERENCES',
+    ALIAS_STORE_PREFERENCES: 'ALIAS_STORE_PREFERENCES',
     ALIAS_AUTO_LAUNCH: 'ALIAS_AUTO_LAUNCH',
     ALIAS_PIN_TO_TRAY: 'ALIAS_PIN_TO_TRAY',
     ALIAS_SET_AS_TRAY_WINDOW: 'ALIAS_SET_AS_TRAY_WINDOW'
 };
 
-export const storeUserPreferences = createAliasedAction(
-    TYPES.ALIAS_STORE_USER_PREFERENCES,
-    ( userPreferences: UserPreferences ) => ( {
-        type: TYPES.ALIAS_STORE_USER_PREFERENCES,
-        payload: storeUserPreferencesLocally( userPreferences )
-    } )
-);
-
-export const shouldOnboard = createAliasedAction(
-    TYPES.ALIAS_SHOULD_ONBOARD,
-    () => ( {
-        type: TYPES.ALIAS_SHOULD_ONBOARD,
-        payload: checkOnBoardingCompleted().then( ( response: boolean ) => ( {
-            shouldOnboard: response
-        } ) )
+export const storePreferences = createAliasedAction(
+    TYPES.ALIAS_STORE_PREFERENCES,
+    ( preferences: Preferences ) => ( {
+        type: TYPES.ALIAS_STORE_PREFERENCES,
+        payload: storePreferencesLocally( preferences )
     } )
 );
 
@@ -43,6 +32,7 @@ export const autoLaunch = createAliasedAction(
     } )
 );
 
+// Dulipcate of triggerSetAsTrayWindow
 export const pinToTray = createAliasedAction(
     TYPES.ALIAS_PIN_TO_TRAY,
     ( enable ) => ( {

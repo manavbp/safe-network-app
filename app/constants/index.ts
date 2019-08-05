@@ -312,14 +312,19 @@ export const ERRORS = {
 };
 
 export const defaultPreferences = {
-    autoUpdate: false,
-    pinToMenuBar: true,
-    launchOnStart: true,
-    showDeveloperApps: false,
-    warnOnAccessingClearnet: true
+    userPreferences: {
+        autoUpdate: false,
+        pinToMenuBar: true,
+        launchOnStart: true,
+        showDeveloperApps: false,
+        warnOnAccessingClearnet: true
+    },
+    appPreferences: {
+        shouldOnboard: true
+    }
 };
 
 export const preferenceDatabaseName = {
-    production: 'userPreferences',
-    test: 'testUserPreferences'
+    production: 'preferences',
+    test: 'testPreferences'
 };

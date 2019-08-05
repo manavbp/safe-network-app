@@ -56,6 +56,16 @@ export interface UserPreferences {
     warnOnAccessingClearnet: boolean;
 }
 
+export interface AppPreferences {
+    shouldOnboard: boolean;
+}
+
+export interface Preferences {
+    userPreferences: UserPreferences;
+    appPreferences: AppPreferences;
+    id?: number;
+}
+
 export type AppType = 'userApplications' | 'developmentApplications';
 
 export interface App {
@@ -80,6 +90,7 @@ export interface App {
 
 export interface LaunchpadState {
     shouldOnboard: boolean;
+    appPreferences: AppPreferences;
     userPreferences: UserPreferences;
     notifications: { [s: string]: Notification };
     isTrayWindow: boolean;

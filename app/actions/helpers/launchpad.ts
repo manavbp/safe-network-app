@@ -2,8 +2,8 @@ import { ipcRenderer } from 'electron';
 import AutoLaunch from 'auto-launch';
 
 import pkg from '$Package';
-import { UserPreferences } from '$Definitions/application.d';
-import { userPreferenceDatabase } from './user_preferences_db';
+import { Preferences } from '$Definitions/application.d';
+import { preferenceDatabase } from './preferences_db';
 
 export const mockPromise = ( data = null ) =>
     new Promise( ( resolve ) => {
@@ -12,27 +12,32 @@ export const mockPromise = ( data = null ) =>
         }, 1000 );
     } );
 
-export const fetchUserPreferencesLocally = () =>
+export const initiliseApplication = () =>
+    new Promise( async ( resolve ) => {
+        try {
+            await preferenceDatabase.init();
+            console.warn( 'Initialised database' );
+            resolve();
+        } catch ( error ) {
+            console.warn( 'Unable to initialise application', error );
+            resolve();
+        }
+    } );
+
+export const fetchPreferencesLocally = (): Promise<Preferences> =>
     new Promise( async ( resolve, reject ) => {
         try {
-            if ( !userPreferenceDatabase.isReady() ) {
-                await userPreferenceDatabase.init();
-            }
-            const [userPreferences] = await userPreferenceDatabase.getAll();
-            delete userPreferences.id;
-            return resolve( userPreferences );
+            const preferences = await preferenceDatabase.getPreferences();
+            return resolve( preferences );
         } catch ( error ) {
             return reject( error );
         }
     } );
 
-export const storeUserPreferencesLocally = ( userPreferences: UserPreferences ) =>
+export const storePreferencesLocally = ( preferences: Preferences ) =>
     new Promise( async ( resolve, reject ) => {
         try {
-            if ( !userPreferenceDatabase.isReady() ) {
-                await userPreferenceDatabase.init();
-            }
-            await userPreferenceDatabase.updatePreferences( userPreferences );
+            await preferenceDatabase.updatePreferences( preferences );
             return resolve();
         } catch ( error ) {
             return reject( error );
@@ -63,6 +68,7 @@ export const autoLaunchOnStart = ( enable ) =>
         }
     } );
 
+// Dulipcate of triggerSetAsTrayWindow
 export const pinLaunchpadToTray = ( enable ) => {
     if ( enable ) {
         ipcRenderer.send( 'pinToTray' );
