@@ -79,13 +79,6 @@ export function launchpadReducer( state = initialState, action ): LaunchpadState
             };
         }
 
-        case ALIAS_TYPES.ALIAS_SHOULD_ONBOARD: {
-            if ( typeof payload.shouldOnboard !== 'boolean' )
-                throw ERRORS.INVALID_TYPE;
-
-            return { ...state, shouldOnboard: payload.shouldOnboard };
-        }
-
         case TYPES.SET_AS_TRAY_WINDOW: {
             return { ...state, isTrayWindow: payload };
         }

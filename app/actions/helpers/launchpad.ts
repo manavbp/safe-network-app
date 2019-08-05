@@ -67,12 +67,3 @@ export const autoLaunchOnStart = ( enable ) =>
             return resolve();
         }
     } );
-
-// Dulipcate of triggerSetAsTrayWindow
-export const pinLaunchpadToTray = ( enable ) => {
-    if ( enable ) {
-        ipcRenderer.send( 'pinToTray' );
-    } else {
-        ipcRenderer.send( 'releaseFromTray' );
-    }
-};

@@ -6,11 +6,7 @@ import {
     setUserPreferences,
     getUserPreferences
 } from '$Actions/launchpad_actions';
-import {
-    storeUserPreferences,
-    autoLaunch,
-    pinToTray
-} from '$Actions/alias/launchpad_actions';
+import { storePreferences, autoLaunch } from '$Actions/alias/launchpad_actions';
 
 const mapStateToProperties = ( state ) => {
     return {
@@ -22,9 +18,8 @@ const mapDispatchToProperties = ( dispatch ) => {
     const actions = {
         setUserPreferences,
         getUserPreferences,
-        storeUserPreferences,
-        autoLaunch,
-        pinToTray
+        storePreferences,
+        autoLaunch
     };
     return bindActionCreators( actions, dispatch );
 };

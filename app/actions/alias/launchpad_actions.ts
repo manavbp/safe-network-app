@@ -4,8 +4,7 @@ import { ipcRenderer } from 'electron';
 import { Preferences } from '$Definitions/application.d';
 import {
     storePreferencesLocally,
-    autoLaunchOnStart,
-    pinLaunchpadToTray
+    autoLaunchOnStart
 } from '../helpers/launchpad';
 
 export const TYPES = {
@@ -29,15 +28,6 @@ export const autoLaunch = createAliasedAction(
     ( enable ) => ( {
         type: TYPES.ALIAS_AUTO_LAUNCH,
         payload: autoLaunchOnStart( enable )
-    } )
-);
-
-// Dulipcate of triggerSetAsTrayWindow
-export const pinToTray = createAliasedAction(
-    TYPES.ALIAS_PIN_TO_TRAY,
-    ( enable ) => ( {
-        type: TYPES.ALIAS_PIN_TO_TRAY,
-        payload: pinLaunchpadToTray( enable )
     } )
 );
 

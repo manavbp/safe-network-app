@@ -11,8 +11,7 @@ import {
     storePreferencesLocally
 } from './helpers/launchpad';
 
-// this is the same as set as tray window
-// import { pinToTray } from './alias/launchpad_actions';
+import { triggerSetAsTrayWindow } from './alias/launchpad_actions';
 
 export const TYPES = {
     INITILISE_APP: 'INITILISE_APP',
@@ -33,6 +32,7 @@ export const {
     setAsTrayWindow
 } = createActions(
     TYPES.PUSH_NOTIFICATION,
+    TYPES.ONBOARD_COMPLETED,
     TYPES.DISMISS_NOTIFICATION,
     TYPES.SET_USER_PREFERENCES,
     TYPES.SET_APP_PREFERENCES,
@@ -60,9 +60,7 @@ export const initialiseApp = () => {
         dispatch( setUserPreferences( userPreferences ) );
 
         if ( !appPreferences.shouldOnboard && userPreferences.pinToMenuBar ) {
-            // Add this dispatch
-            // dispatch( setAsTrayWindow() );
-            // dispatch( pinToTray( true ) );
+            dispatch( triggerSetAsTrayWindow() );
         }
     };
 };
