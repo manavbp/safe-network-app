@@ -7,25 +7,13 @@ const assertNoConsoleErrors = async ( t ): Promise<void> => {
     await t.expect( error ).eql( [] );
 };
 
-fixture`Home Page`
-    .page( '../app/app.html' )
-    .beforeEach( async () => {
-        await waitForReact();
-    } )
-    .afterEach( async () => {
-        await updatePreferences( {
-            appPreferences: {
-                shouldOnboard: false
-            },
-            userPreferences: {
-                pinToMenuBar: false
-            }
-        } );
-    } );
+fixture`Overview Page`.page( '../app/app.html' ).beforeEach( async () => {
+    await waitForReact();
+} );
 // .afterEach( assertNoConsoleErrors );
 
 test( 'should open window', async ( t ) => {
-    await t.expect( getPageTitle() ).eql( 'SAFE Launchpad' );
+    await t.expect( getPageTitle() ).eql( 'SAFE Network App' );
 } );
 
 test(
@@ -38,14 +26,14 @@ test( 'clicking on window-switch button switches to normal window', async ( t ) 
     await t.click( Selector( 'button.Overview__btn--upper-right' ) );
     await t
         .expect(
-            Selector( 'span' ).withAttribute( 'data-istraywindow', 'false' ).exists
+            Selector( 'span' ).withAttribute( 'data-istraywindow', 'true' ).exists
         )
         .ok();
 } );
 
 test( 'clicking on a vert icon in application overview shows menu items', async ( t ) => {
     await t
-        .click( Selector( '.MeatballMenu__vert-icon' ) )
+        .click( Selector( '.MeatballMenu__vertIcon' ) )
         .expect( Selector( '.MuiMenu-list' ).exists )
         .ok();
 } );

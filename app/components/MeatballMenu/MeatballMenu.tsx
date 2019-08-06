@@ -46,7 +46,7 @@ export class MeatballMenu extends Component<
         return (
             <React.Fragment>
                 <IconButton
-                    className={styles['vert-icon']}
+                    className={styles.vertIcon}
                     onClick={this.handleClick}
                 >
                     <MoreVert />

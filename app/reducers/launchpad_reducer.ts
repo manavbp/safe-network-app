@@ -13,7 +13,7 @@ export const initialState: LaunchpadState = {
     ...defaultPreferences,
     notifications: {},
     notificationCheckBox: false,
-    isTrayWindow: true
+    isTrayWindow: false
 };
 
 export function launchpadReducer( state = initialState, action ): LaunchpadState {

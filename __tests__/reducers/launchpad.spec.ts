@@ -170,13 +170,13 @@ describe( 'launchpad reducer', () => {
 
     describe( 'SET_AS_TRAY_WINDOW', () => {
         it( 'Should update standard-window-is-visible flag', () => {
-            expect( initialState.isTrayWindow ).toBeTruthy();
+            expect( initialState.isTrayWindow ).toBeFalsy();
             expect(
                 launchpadReducer( initialState, {
                     type: TYPES.SET_AS_TRAY_WINDOW,
-                    payload: false
+                    payload: true
                 } ).isTrayWindow
-            ).toBeFalsy();
+            ).toBeTruthy();
         } );
     } );
 } );

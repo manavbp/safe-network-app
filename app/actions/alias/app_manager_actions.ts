@@ -5,7 +5,6 @@ import { getCurrentStore } from '$Actions/application_actions';
 import { mockPromise } from '$Actions/helpers/launchpad';
 import appData from '../../managedApplications.json';
 
-
 import {
     installApplicationById,
     uninstallApplicationById,

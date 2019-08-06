@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Grid, Button } from '@material-ui/core';
 import { MeatballMenu } from '$Components/MeatballMenu';
 import { logger } from '$Logger';
@@ -37,8 +38,7 @@ export class ApplicationOverview extends Component<Props> {
 
         return (
             <React.Fragment>
-                <Grid container spacing={3}>
-                    {/* progress ? (
+                {/* progress ? (
                         <div>{`Progress! ${progress}`}</div>
                     ) : (
                         // progress < 1 ? (
@@ -56,8 +56,11 @@ export class ApplicationOverview extends Component<Props> {
                         </Button>
                     ) */}
 
-                    <Grid item xs={6}>
-                        {application.name}
+                <Grid container alignItems="center">
+                    <Grid item xs={7} className={styles.name}>
+                        <Link to={`/application/${application.id}`}>
+                            {application.name}
+                        </Link>
                     </Grid>
                     <Grid item xs={3}>
                         <Button
@@ -70,7 +73,7 @@ export class ApplicationOverview extends Component<Props> {
                             Install
                         </Button>
                     </Grid>
-                    <Grid item xs={3}>
+                    <Grid item xs={2}>
                         <MeatballMenu {...this.props} />
                     </Grid>
                 </Grid>

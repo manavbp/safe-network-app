@@ -117,7 +117,7 @@ export const createSafeLaunchPadTrayWindow = (
     store: Store
 ): Application.Window => {
     safeLaunchPadTrayWindow = new BrowserWindow( {
-        width: 320,
+        width: 495,
         show: false,
         frame: false,
         fullscreenable: false,

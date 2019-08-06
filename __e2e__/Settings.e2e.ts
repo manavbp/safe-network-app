@@ -3,7 +3,7 @@ import { waitForReact } from 'testcafe-react-selectors';
 import { getPageUrl, getPageTitle, updatePreferences } from './helpers';
 
 const navigateToSettingsPage = async ( t ) =>
-    t.click( Selector( 'button' ).withAttribute( 'aria-label', 'Settings' ) );
+    t.click( Selector( 'button' ).withAttribute( 'aria-label', 'Go to settings' ) );
 
 const getPreferenceItems = () => {
     const Preferences = Selector( 'ul' ).withAttribute(
@@ -31,7 +31,7 @@ fixture`Settings Page`
 // .afterEach( assertNoConsoleErrors );
 
 test( 'e2e', async ( t ) => {
-    await t.expect( getPageTitle() ).eql( 'SAFE Launchpad' );
+    await t.expect( getPageTitle() ).eql( 'SAFE Network App' );
 } );
 
 test( 'can navigate to settings page', async ( t ) => {
@@ -95,7 +95,7 @@ test( 'Go back from Settings page to Home', async ( t ) => {
     await t
         .expect( getPageUrl() )
         .contains( '#/settings' )
-        .click( Selector( 'button' ).withAttribute( 'aria-label', 'GoBack' ) )
+        .click( Selector( 'button' ).withAttribute( 'aria-label', 'Go Backwards' ) )
         .expect( getPageUrl() )
         .contains( '#/' );
 } );
@@ -117,7 +117,7 @@ test( 'Changing any preference should persist', async ( t ) => {
         .expect( LaunchOnStartPreference.find( 'input.MuiSwitch-input' ).checked )
         .notOk()
         .click( LaunchOnStartPreference.find( 'input.MuiSwitch-input' ) )
-        .click( Selector( 'button' ).withAttribute( 'aria-label', 'GoBack' ) )
+        .click( Selector( 'button' ).withAttribute( 'aria-label', 'Go Backwards' ) )
         .expect( getPageUrl() )
         .contains( '#/' );
 

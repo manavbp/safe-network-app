@@ -44,24 +44,8 @@ describe( 'Settings Page', () => {
         expect( wrapper ).toMatchSnapshot();
     } );
 
-    it( 'should have title `Settings`', () => {
-        const expectedTitle = 'Settings';
-        const { wrapper } = shallowSetup();
-        const titleElement = wrapper
-            .find( Typography )
-            .filterWhere( ( n ) => n.prop( 'aria-label' ) === 'title' );
-        expect( titleElement.text() ).toEqual( expectedTitle );
-    } );
-
     it( 'should load preferences once', () => {
         const { wrapper } = shallowSetup();
         expect( wrapper.find( Preferences ) ).toHaveLength( 1 );
-    } );
-
-    it( 'should go to home on clicking back button', () => {
-        const { wrapper, props } = shallowSetup();
-        wrapper.find( IconButton ).simulate( 'click' );
-        expect( props.history.push ).toHaveBeenCalled();
-        expect( props.history.push ).toHaveBeenCalledWith( '/' );
     } );
 } );

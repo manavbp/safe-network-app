@@ -1,6 +1,6 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Home } from '$Components/Home';
+import { Overview } from '$Components/Overview';
 import {
     installApp,
     openApp,
@@ -17,7 +17,7 @@ import { AppState } from '../definitions/application.d';
 
 function mapStateToProperties( state: AppState ) {
     return {
-        appManagerState: state.appManager,
+        appList: state.appManager.applicationList,
         isTrayWindow: state.launchpad.isTrayWindow
     };
 }
@@ -40,7 +40,7 @@ function mapDispatchToProperties( dispatch ) {
     return bindActionCreators( actions, dispatch );
 }
 
-export const HomePage: React.ComponentClass = connect(
+export const OverviewPage: React.ComponentClass = connect(
     mapStateToProperties,
     mapDispatchToProperties
-)( Home );
+)( Overview );

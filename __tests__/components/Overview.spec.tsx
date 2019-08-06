@@ -22,25 +22,23 @@ describe( 'Overview', () => {
             uninstallApp: jest.fn(),
             openApp: jest.fn(),
             installApp: jest.fn(),
-            appManagerState: {
-                applicationList: {
-                    'safe.browser': {
-                        id: 'safe.browser',
-                        name: 'SAFE Browser',
-                        packageName: 'safe-browser',
-                        repository: 'https://github.com/joshuef/safe_browser',
-                        latestVersion: '0.1.0',
-                        type: 'userApplications'
-                    },
-                    'electron.ts.boiler': {
-                        id: 'electron.ts.boiler',
-                        name: 'ElectronTypescriptBoiler',
-                        packageName: 'ElectronTypescriptBoiler',
-                        repository:
-                            'https://github.com/joshuef/electron-typescript-react-boilerplate',
-                        latestVersion: '0.1.0',
-                        type: 'userApplications'
-                    }
+            appList: {
+                'safe.browser': {
+                    id: 'safe.browser',
+                    name: 'SAFE Browser',
+                    packageName: 'safe-browser',
+                    repository: 'https://github.com/joshuef/safe_browser',
+                    latestVersion: '0.1.0',
+                    type: 'userApplications'
+                },
+                'electron.ts.boiler': {
+                    id: 'electron.ts.boiler',
+                    name: 'ElectronTypescriptBoiler',
+                    packageName: 'ElectronTypescriptBoiler',
+                    repository:
+                        'https://github.com/joshuef/electron-typescript-react-boilerplate',
+                    latestVersion: '0.1.0',
+                    type: 'userApplications'
                 }
             },
             fetchApps: jest.fn(),
