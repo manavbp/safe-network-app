@@ -4,6 +4,8 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import { Store } from 'redux';
 
+import { setApps } from '$Actions/app_manager_actions';
+import hardCodedApps from './managedApplications.json';
 import { addApplication } from '$Actions/application_actions';
 import { logger } from '$Logger';
 import { configureStore } from '$Store/configureStore';
@@ -13,16 +15,13 @@ import { createSafeLaunchPadTrayWindow, createTray } from './setupLaunchPad';
 import { setupBackground } from './setupBackground';
 import { installExtensions, createApplicationFolder } from '$Utils/main_utils';
 
-import managedApplications from '$App/managedApplications.json';
-import { pushNotification } from '$Actions/launchpad_actions';
-import { notificationTypes } from '$Constants/notifications';
-import { addNotification } from '$App/env-handling';
 import {
     getAppFolderPath,
     platform,
     settingsHandlerName,
     defaultPreferences
-} from '$Constants/index';
+} from '$Constants';
+import { addNotification } from '$App/env-handling';
 
 require( '$Utils/ipcMainListners' );
 
@@ -93,14 +92,8 @@ if ( !gotTheLock ) {
         const initialState = {};
         store = configureStore( initialState );
 
-        // initialSetup of apps,
-        const allApplications = managedApplications.applications;
-        if ( managedApplications.version === '1' ) {
-            Object.keys( allApplications ).forEach( ( application ) => {
-                console.log( 'Managing:', application );
-                store.dispatch( addApplication( allApplications[application] ) );
-            } );
-        }
+        // start with hardcoded list of apps.
+        store.dispatch( setApps( hardCodedApps.applications ) );
 
         setupBackground( store );
         trayWindow = createSafeLaunchPadTrayWindow( store );

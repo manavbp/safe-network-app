@@ -11,12 +11,12 @@ import {
     inBgProcess,
     startedRunningProduction,
     startedRunningMock,
-    isRunningSpectronTestProcess,
-    isRunningSpectronTestProcessingPackagedApp,
+    isRunningTestCafeProcessingPackagedApp,
     isRunningTestCafeProcess,
     inMainProcess,
     isDryRun,
-    isCI
+    isCI,
+    LOG_FILE_NAME
 } from '$Constants';
 
 if ( log.transports ) {
@@ -27,7 +27,7 @@ if ( log.transports ) {
     log.transports.console.level = 'silly';
 
     if (
-        isRunningSpectronTestProcess ||
+        isRunningTestCafeProcess ||
         process.env.NODE_ENV === 'test' ||
         ( !isRunningDebug && isRunningPackaged )
     ) {
@@ -35,7 +35,7 @@ if ( log.transports ) {
         log.transports.console.level = 'warn';
     }
 
-    log.transports.file.file = path.resolve( os.tmpdir(), 'safe-launch-pad.log' );
+    log.transports.file.file = path.resolve( os.tmpdir(), LOG_FILE_NAME );
 
     log.transports.console.format = '[{label} {h}:{i}:{s}.{ms}] › {text}';
     if ( currentWindowId ) {
@@ -58,7 +58,7 @@ if ( log.transports ) {
 if (
     // ( inMainProcess && isRunningUnpacked ) ||
     isRunningDebug &&
-    !isRunningSpectronTestProcess
+    !isRunningTestCafeProcess
 ) {
     // TODO: add buld ID if prod. Incase you're opening up, NOT THIS BUILD.
     log.info( '' );
@@ -79,11 +79,10 @@ if (
     log.info( 'inMainProcess?', inMainProcess );
     log.info( 'startedRunningProduction?', startedRunningProduction );
     log.info( 'startedRunningMock?', startedRunningMock );
-    log.info( 'isRunningSpectronTestProcess?', isRunningSpectronTestProcess );
     log.info( 'isRunningTestCafeProcess?', isRunningTestCafeProcess );
     log.info(
-        'isRunningSpectronTestProcessingPackagedApp?',
-        isRunningSpectronTestProcessingPackagedApp
+        'isRunningTestCafeProcessingPackagedApp?',
+        isRunningTestCafeProcessingPackagedApp
     );
     log.info( '' );
     log.info( '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>' );

@@ -5,6 +5,10 @@ import { remote } from 'electron';
 import getPort from 'get-port';
 import pkg from '$Package';
 
+export const LOG_FILE_NAME = 'safe-network-app.log';
+export const APPLICATION_LIST_SOURCE =
+    'https://safe-network-app.s3.eu-west-2.amazonaws.com/managedApplications.json';
+
 export const { platform } = process;
 export const MAC_OS = 'darwin';
 export const LINUX = 'linux';
@@ -24,26 +28,21 @@ let shouldRunMockNetwork: boolean = fs.existsSync(
 let hasDebugFlag = false;
 let hasDryRunFlag = false;
 
-export const isRunningSpectronTestProcess =
-    !!process.env.SPECTRON_TEST || false;
-export const isRunningUnpacked = process.env.IS_UNPACKED;
-export const isRunningPackaged = !isRunningUnpacked;
-export const isRunningSpectronTestProcessingPackagedApp =
-    isRunningSpectronTestProcess && isRunningPackaged;
-
 export const isRunningTestCafeProcess =
     remote && remote.getGlobal
         ? remote.getGlobal( 'isRunningTestCafeProcess' )
         : process.env.TEST_CAFE || false;
 
+export const isRunningUnpacked = process.env.IS_UNPACKED;
+export const isRunningPackaged = !isRunningUnpacked;
+export const isRunningTestCafeProcessingPackagedApp =
+    isRunningTestCafeProcess && isRunningPackaged;
+
 export const inBgProcess = !!(
     typeof document !== 'undefined' && document.title.startsWith( 'Background' )
 );
 // override for spectron dev mode
-if (
-    isRunningSpectronTestProcess &&
-    !isRunningSpectronTestProcessingPackagedApp
-) {
+if ( isRunningTestCafeProcess && !isRunningTestCafeProcessingPackagedApp ) {
     shouldRunMockNetwork = true;
 }
 
@@ -93,8 +92,8 @@ export const startedRunningMock: boolean =
         : startAsMockNetwork || isRunningDevelopment;
 export const startedRunningProduction = !startedRunningMock;
 export const isRunningNodeEnvironmentTest = environment.startsWith( 'test' );
-export const isRunningDebug = hasDebugFlag || isRunningSpectronTestProcess;
-export const isDryRun = hasDryRunFlag || isRunningSpectronTestProcess;
+export const isRunningDebug = hasDebugFlag || isRunningTestCafeProcess;
+export const isDryRun = hasDryRunFlag || isRunningTestCafeProcess;
 export const inRendererProcess = typeof window !== 'undefined';
 export const inMainProcess = typeof remote === 'undefined';
 
@@ -204,10 +203,9 @@ if ( inMainProcess ) {
     global.isCI = isCI;
     global.startedRunningMock = startedRunningMock;
     global.isRunningTestCafeProcess = isRunningTestCafeProcess;
+    global.isRunningTestCafeProcessingPackagedApp = isRunningTestCafeProcessingPackagedApp;
     global.shouldStartAsMockFromFlagsOrPackage = shouldStartAsMockFromFlagsOrPackage;
     global.SAFE_NODE_LIB_PATH = CONFIG.SAFE_NODE_LIB_PATH;
-    global.isRunningSpectronTestProcessingPackagedApp = isRunningSpectronTestProcessingPackagedApp;
-    global.SPECTRON_TEST = isRunningSpectronTestProcess;
 }
 
 // if(  isRunningUnpacked  )
@@ -233,33 +231,6 @@ interface AppInfo {
         _public: Array<string>;
     };
 }
-// const appInfo: AppInfo = {
-//     info: {
-//         id: pkg.identifier,
-//         scope: null,
-//         name: pkg.productName,
-//         vendor: pkg.author.name,
-//         customExecPath: safeNodeAppPath()
-//     },
-//     // eslint-disable-next-line unicorn/prevent-abbreviations
-//     opts: {
-//         /* eslint-disable-next-line @typescript-eslint/camelcase */
-//         own_container: true
-//     },
-//     permissions: {
-//         _public: ['Read', 'Insert', 'Update', 'Delete']
-//         // _publicNames : ['Read', 'Insert', 'Update', 'Delete']
-//     }
-// };
-
-// MAC_OS: Add bundle for electron in dev mode
-// if (  isRunningUnpacked && process.platform === 'darwin'  ) {
-//     appInfo.info.bundle = 'com.github.electron';
-// } else if (  process.platform === 'darwin'  ) {
-//     appInfo.info.bundle = 'com.electron.safe-browser';
-// }
-
-// export const APP_INFO = appInfo;
 
 // TODO. Unify with test lib/constants browser UI?
 export const CLASSES = {
@@ -309,14 +280,6 @@ const getDomClasses = () => {
 export const GET_DOM_EL_CLASS = getDomClasses();
 
 export const LAUNCHPAD_APP_ID = '__LAUNCHPAD_APP_ID__';
-
-export const ERRORS = {
-    APP_ID_NOT_FOUND: new Error( 'Application ID not found' ),
-    VERSION_NOT_FOUND: new Error( 'Application not found' ),
-    INVALID_TYPE: new Error( 'Invalid type of value passed' ),
-    INVALID_PROP: new Error( 'Invalid properties found' ),
-    NOTIFICATION_ID_NOT_FOUND: new Error( 'Notification ID required' )
-};
 
 export const defaultPreferences = {
     userPreferences: {

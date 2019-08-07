@@ -2,7 +2,7 @@ import { launchpadReducer, initialState } from '$Reducers/launchpad_reducer';
 import { TYPES } from '$Actions/launchpad_actions';
 import { TYPES as ALIAS_TYPES } from '$Actions/alias/launchpad_actions';
 import { generateRandomString } from '$Utils/app_utils';
-import { ERRORS } from '$App/constants';
+import { ERRORS } from '$Constants/errors';
 
 describe( 'launchpad reducer', () => {
     it( 'should return the initial state', () => {
@@ -63,6 +63,7 @@ describe( 'launchpad reducer', () => {
                 id: generateRandomString(),
                 type: 'ALERT',
                 priority: 'HIGH',
+                notificationType: 'Native',
                 appId: generateRandomString()
             };
 
@@ -89,6 +90,7 @@ describe( 'launchpad reducer', () => {
             const newNotification = {
                 id: generateRandomString(),
                 type: 'ALERT',
+                notificationType: 'Native',
                 priority: 'HIGH'
             };
 
@@ -115,6 +117,7 @@ describe( 'launchpad reducer', () => {
             const newNotification = {
                 type: 'ALERT',
                 priority: 'HIGH',
+                notificationType: 'Native',
                 appId: generateRandomString()
             };
             expect( () =>
@@ -133,6 +136,7 @@ describe( 'launchpad reducer', () => {
         const notification = {
             type: 'ALERT',
             priority: 'HIGH',
+            notificationType: 'Native',
             appId: generateRandomString(),
             id: generateRandomString()
         };

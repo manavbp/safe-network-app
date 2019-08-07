@@ -1,8 +1,11 @@
 import { TYPES } from '$Actions/app_manager_actions';
 import { TYPES as ALIAS_TYPES } from '$App/actions/alias/app_manager_actions';
 
-import { AppManagerState } from '../definitions/application.d';
-import { ERRORS } from '$Constants/index';
+import {
+    AppManagerState,
+    ManagedApplication
+} from '../definitions/application.d';
+import { ERRORS } from '$Constants/errors';
 
 export const initialState: AppManagerState = {
     applicationList: {}
@@ -10,8 +13,9 @@ export const initialState: AppManagerState = {
 
 const setApplicationList = ( state, applicationList ) => {
     const newApplicationList = {};
-    applicationList.forEach( ( app ) => {
-        if ( !app.id ) throw ERRORS.APP_ID_NOT_FOUND;
+
+    Object.values( applicationList ).forEach( ( app: ManagedApplication ) => {
+        if ( !app.id ) throw new Error( ERRORS.APP_ID_NOT_FOUND );
         newApplicationList[app.id] = { ...app };
     } );
     return {
@@ -21,6 +25,7 @@ const setApplicationList = ( state, applicationList ) => {
 };
 
 const updateAppInApplicationList = ( state, targetApp ) => {
+    // console.log("HEREHEHHEREEEE", targetApp)
     const updatedState = {
         ...state,
         applicationList: { ...state.applicationList }
@@ -40,7 +45,7 @@ export function appManager( state = initialState, action ): AppManagerState {
 
     switch ( action.type ) {
         case `${TYPES.SET_APPS}`: {
-            return setApplicationList( state, payload.applicationList );
+            return setApplicationList( state, payload );
         }
 
         case TYPES.RESET_APP_STATE: {
@@ -137,7 +142,7 @@ export function appManager( state = initialState, action ): AppManagerState {
 
         case `${ALIAS_TYPES.ALIAS_SKIP_APP_UPDATE}_PENDING`: {
             if ( !targetApp ) return state;
-            if ( !payload.version ) throw ERRORS.VERSION_NOT_FOUND;
+            if ( !payload.version ) throw new Error( ERRORS.VERSION_NOT_FOUND );
             targetApp.hasUpdate = false;
             targetApp.lastSkippedVersion = payload.version;
             return updateAppInApplicationList( state, targetApp );
