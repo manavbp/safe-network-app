@@ -50,7 +50,9 @@ export class Preferences extends Component<Props> {
                 break;
         }
 
-        userPreferences[name] = changedStatus;
+        if ( name === 'pinToMenuBar' ) userPreferences[name] = !isTrayWindow;
+        else userPreferences[name] = changedStatus;
+
         onChange( userPreferences );
     };
 

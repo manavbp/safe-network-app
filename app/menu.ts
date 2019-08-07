@@ -294,6 +294,19 @@ export class MenuBuilder {
                             } )
                         );
                     }
+                },
+                {
+                    label: 'Reset Preferences',
+                    click: () => {
+                        this.store.dispatch(
+                            storePreferences( defaultPreferences )
+                        );
+                        this.store.dispatch(
+                            setUserPreferences(
+                                defaultPreferences.userPreferences
+                            )
+                        );
+                    }
                 }
             ]
         };

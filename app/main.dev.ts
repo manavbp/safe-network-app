@@ -13,7 +13,7 @@ import { MenuBuilder } from './menu';
 import { Application } from './definitions/application.d';
 import { createSafeLaunchPadTrayWindow, createTray } from './setupLaunchPad';
 import { setupBackground } from './setupBackground';
-import { installExtensions, createApplicationFolder } from '$Utils/main_utils';
+import { installExtensions, preferencesJsonSetup } from '$Utils/main_utils';
 
 import {
     getAppFolderPath,
@@ -86,7 +86,6 @@ if ( !gotTheLock ) {
             process.env.DEBUG_PROD === 'true'
         ) {
             await installExtensions();
-            await createApplicationFolder();
         }
 
         const initialState = {};
@@ -94,6 +93,8 @@ if ( !gotTheLock ) {
 
         // start with hardcoded list of apps.
         store.dispatch( setApps( hardCodedApps.applications ) );
+
+        await preferencesJsonSetup( store );
 
         setupBackground( store );
         trayWindow = createSafeLaunchPadTrayWindow( store );

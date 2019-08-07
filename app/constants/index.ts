@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs-extra';
-import { remote } from 'electron';
+import { app, remote } from 'electron';
 
 import getPort from 'get-port';
 import pkg from '$Package';
@@ -146,10 +146,8 @@ const safeNodeAppPath = () => {
 };
 
 export const getAppFolderPath = () => {
-    if ( remote && remote.app ) {
-        return remote.app.getPath( 'appData' );
-    }
-    return null;
+    if ( remote && remote.app ) return remote.app.getPath( 'appData' );
+    return app.getPath( 'appData' );
 };
 
 export const I18N_CONFIG = {

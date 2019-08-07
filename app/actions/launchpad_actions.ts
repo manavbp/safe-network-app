@@ -39,19 +39,3 @@ export const getUserPreferences = () => {
         dispatch( setUserPreferences( userPreferences ) );
     };
 };
-
-export const initialiseApp = () => {
-    return async ( dispatch ) => {
-        const {
-            userPreferences,
-            appPreferences
-        } = await settingsHandler.getPreferences();
-        dispatch( setAppPreferences( appPreferences ) );
-
-        dispatch( setUserPreferences( userPreferences ) );
-
-        if ( !appPreferences.shouldOnboard && userPreferences.pinToMenuBar ) {
-            dispatch( triggerSetAsTrayWindow() );
-        }
-    };
-};

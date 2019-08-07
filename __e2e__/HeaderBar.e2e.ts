@@ -1,5 +1,6 @@
 import { ClientFunction, Selector } from 'testcafe';
 import { ReactSelector, waitForReact } from 'testcafe-react-selectors';
+import { clickOnMainMenuItem } from 'testcafe-browser-provider-electron';
 import { getPageUrl, getPageTitle } from './helpers';
 
 const assertNoConsoleErrors = async ( t ): Promise<void> => {
@@ -22,7 +23,10 @@ test(
 );
 
 // we start as a tray window right now
-test( 'can navigate back from another page.', async ( t ) => {
+test.before( async ( t ) => {
+    // @ts-ignore
+    await clickOnMainMenuItem( ['Tests', 'Reset Preferences'] );
+} )( 'can navigate back from another page.', async ( t ) => {
     await t.click(
         Selector( 'button' ).withAttribute( 'aria-label', 'Go to settings' )
     );

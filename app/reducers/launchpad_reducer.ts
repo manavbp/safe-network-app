@@ -1,7 +1,11 @@
 import { TYPES } from '$App/actions/launchpad_actions';
 import { TYPES as NOTIFICATION_TYPES } from '$Actions/alias/notification_actions';
 import { TYPES as ALIAS_TYPES } from '$Actions/alias/launchpad_actions';
-import { LaunchpadState, UserPreferences } from '../definitions/application.d';
+import {
+    LaunchpadState,
+    UserPreferences,
+    AppPreferences
+} from '../definitions/application.d';
 import { defaultPreferences } from '$Constants/index';
 import { ERRORS } from '$Constants/errors';
 
@@ -72,7 +76,13 @@ export function launchpadReducer( state = initialState, action ): LaunchpadState
             if ( typeof payload.shouldOnboard !== 'boolean' )
                 throw new Error( ERRORS.INVALID_TYPE );
 
-            return { ...state, shouldOnboard: payload.shouldOnboard };
+            return {
+                ...state,
+                appPreferences: {
+                    ...state.appPreferences,
+                    shouldOnboard: payload.shouldOnboard
+                }
+            };
         }
 
         case TYPES.SET_AS_TRAY_WINDOW: {

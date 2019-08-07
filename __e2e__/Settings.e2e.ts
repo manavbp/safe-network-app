@@ -71,6 +71,36 @@ test( 'Go back from Settings page to Home', async ( t ) => {
         .contains( '#/' );
 } );
 
+test( 'clicking on pinToMenuBar button toggles window between normal window and tray', async ( t ) => {
+    await t.click(
+        Selector( 'button' ).withAttribute( 'aria-label', 'Go to settings' )
+    );
+
+    await t.expect( Selector( 'h5' ).withText( 'Settings' ).exists ).ok();
+
+    const PreferencesItemArray = getPreferenceItems();
+
+    const PinToMenuBar = PreferencesItemArray.nth( 1 );
+
+    await t
+        .expect( getPageUrl() )
+        .contains( '#/settings' )
+        .expect( PinToMenuBar.find( '.MuiListItemText-primary' ).textContent )
+        .eql( 'Pin To Menu Bar' )
+        .expect( PinToMenuBar.find( 'input.MuiSwitch-input' ).checked )
+        .ok()
+        .click( PinToMenuBar.find( 'input.MuiSwitch-input' ) )
+        .click( Selector( 'button' ).withAttribute( 'aria-label', 'Go Backwards' ) )
+        .expect( getPageUrl() )
+        .contains( '#/' );
+
+    await t
+        .expect(
+            Selector( 'span' ).withAttribute( 'data-istraywindow', 'false' ).exists
+        )
+        .ok();
+} );
+
 test( 'Changing any preference should persist', async ( t ) => {
     await t.click(
         Selector( 'button' ).withAttribute( 'aria-label', 'Go to settings' )
