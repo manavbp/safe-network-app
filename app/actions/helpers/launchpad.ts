@@ -2,34 +2,12 @@ import { ipcRenderer } from 'electron';
 import AutoLaunch from 'auto-launch';
 
 import pkg from '$Package';
-import { Preferences } from '$Definitions/application.d';
-import { settingsHandler } from './settings_handler';
 
 export const mockPromise = ( data = null ) =>
     new Promise( ( resolve ) => {
         setTimeout( () => {
             resolve( data );
         }, 1000 );
-    } );
-
-export const fetchPreferencesLocally = (): Promise<Preferences> =>
-    new Promise( async ( resolve, reject ) => {
-        try {
-            const preferences = await settingsHandler.getPreferences();
-            return resolve( preferences );
-        } catch ( error ) {
-            return reject( error );
-        }
-    } );
-
-export const storePreferencesLocally = ( preferences: Preferences ) =>
-    new Promise( async ( resolve, reject ) => {
-        try {
-            await settingsHandler.updatePreferences( preferences );
-            return resolve();
-        } catch ( error ) {
-            return reject( error );
-        }
     } );
 
 export const checkOnBoardingCompleted = () => mockPromise( true );

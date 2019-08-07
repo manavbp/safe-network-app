@@ -15,11 +15,11 @@ import {
 class SettingsHandler {
     private preferenceId: number | null;
 
-    private tableName: string;
+    private jsonFileName: string;
 
     public constructor() {
         this.preferenceId = null;
-        this.tableName = isRunningTestCafeProcess
+        this.jsonFileName = isRunningTestCafeProcess
             ? settingsHandlerName.test
             : settingsHandlerName.production;
     }
@@ -27,16 +27,16 @@ class SettingsHandler {
     private getJsonPath() {
         try {
             let appFolderPath = getAppFolderPath();
-            appFolderPath = path.resolve( appFolderPath, pkg.name );
-
-            fse.ensureDir( appFolderPath, ( error ) => {
-                console.log( error );
-            } );
 
             appFolderPath = path.resolve(
                 appFolderPath,
-                `${this.tableName}.json`
+                pkg.name,
+                `${this.jsonFileName}.json`
             );
+
+            fse.ensureFile( appFolderPath, ( error ) => {
+                console.log( error );
+            } );
             return appFolderPath;
         } catch ( error ) {
             console.log( 'error', error );

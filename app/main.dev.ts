@@ -3,10 +3,7 @@ import path from 'path';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import { Store } from 'redux';
-import * as fs from 'fs-extra';
 
-import * as cp from 'child_process';
-import pkg from '$Package';
 import { addApplication } from '$Actions/application_actions';
 import { logger } from '$Logger';
 import { configureStore } from '$Store/configureStore';
@@ -14,18 +11,20 @@ import { MenuBuilder } from './menu';
 import { Application } from './definitions/application.d';
 import { createSafeLaunchPadTrayWindow, createTray } from './setupLaunchPad';
 import { setupBackground } from './setupBackground';
+import { installExtensions, createApplicationFolder } from '$Utils/main_utils';
 
 import managedApplications from '$App/managedApplications.json';
 import { pushNotification } from '$Actions/launchpad_actions';
 import { notificationTypes } from '$Constants/notifications';
 import { addNotification } from '$App/env-handling';
 import {
-    isRunningTestCafeProcess,
     getAppFolderPath,
     platform,
     settingsHandlerName,
     defaultPreferences
 } from '$Constants/index';
+
+require( '$Utils/ipcMainListners' );
 
 logger.info( 'User data exists: ', app.getPath( 'userData' ) );
 
@@ -57,43 +56,6 @@ if (
     // eslint-disable-next-line @typescript-eslint/no-var-requires, global-require
     require( 'electron-debug' )();
 }
-
-const installExtensions = async () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires, global-require
-    const installer = require( 'electron-devtools-installer' );
-    const forceDownload = true;
-    // const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-    const extensions = ['REACT_DEVELOPER_TOOLS', 'REDUX_DEVTOOLS'];
-
-    return Promise.all(
-        extensions.map( ( name ) =>
-            installer.default( installer[name], forceDownload )
-        )
-    ).catch( console.log );
-};
-
-const createApplicationFolder = async () => {
-    return new Promise( async ( resolve, reject ) => {
-        let appFolderPath = app.getPath( 'appData' );
-        const tableName = isRunningTestCafeProcess
-            ? settingsHandlerName.test
-            : settingsHandlerName.production;
-
-        if ( !appFolderPath ) {
-            return reject( new Error( 'Unable to fetch application folder path' ) );
-        }
-        appFolderPath = path.resolve( appFolderPath, pkg.name );
-        try {
-            await fs.ensureDir( appFolderPath );
-            appFolderPath = path.resolve( appFolderPath, `${tableName}.json` );
-            await fs.ensureFile( appFolderPath );
-            fs.outputJson( appFolderPath, { ...defaultPreferences } );
-            return resolve();
-        } catch ( error ) {
-            return reject( error );
-        }
-    } );
-};
 
 // const loadMiddlewarePackages = [];
 
@@ -176,50 +138,4 @@ app.on( 'open-url', ( _, url ) => {
         );
         throw new Error( error );
     }
-} );
-
-// IPC handlers from actions.
-ipcMain.on( 'restart', () => {
-    if (
-        process.platform !== 'linux' &&
-        process.platform !== 'darwin' &&
-        process.platform !== 'win32'
-    ) {
-        throw new Error( 'Unknown or unsupported OS!' );
-    }
-    let finalcmd;
-    if ( process.platform !== 'linux' && process.platform !== 'win32' ) {
-        const cmdarguments = ['shutdown'];
-
-        cmdarguments.push( '-r' );
-
-        finalcmd = cmdarguments.join( ' ' );
-    }
-
-    if ( process.platform === 'darwin' ) {
-        finalcmd = `osascript -e 'tell app "System Events" to shut down'`;
-    }
-
-    cp.exec( finalcmd, ( error, stdout, stderr ) => {
-        if ( error ) {
-            console.error( error );
-            return;
-        }
-        // console.log(stdout);
-        app.exit( 0 );
-    } );
-} );
-
-ipcMain.on( 'close-app', ( application ) => {
-    console.log( 'close-app' );
-    if (
-        process.platform !== 'linux' &&
-        process.platform !== 'darwin' &&
-        process.platform !== 'win32'
-    ) {
-        throw new Error( 'Unknown or unsupported OS!' );
-    }
-
-    const appName = application.name;
-    console.log( `Should contact ${appName} and close the app` );
 } );

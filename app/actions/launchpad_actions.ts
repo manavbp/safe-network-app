@@ -4,11 +4,7 @@ import {
     AppPreferences,
     Preferences
 } from '$Definitions/application.d';
-
-import {
-    fetchPreferencesLocally,
-    storePreferencesLocally
-} from './helpers/launchpad';
+import { settingsHandler } from '$Actions/helpers/settings_handler';
 
 import { triggerSetAsTrayWindow } from './alias/launchpad_actions';
 
@@ -39,7 +35,7 @@ export const {
 
 export const getUserPreferences = () => {
     return async ( dispatch ) => {
-        const { userPreferences } = await fetchPreferencesLocally();
+        const { userPreferences } = await settingsHandler.getPreferences();
         dispatch( setUserPreferences( userPreferences ) );
     };
 };
@@ -49,7 +45,7 @@ export const initialiseApp = () => {
         const {
             userPreferences,
             appPreferences
-        } = await fetchPreferencesLocally();
+        } = await settingsHandler.getPreferences();
         dispatch( setAppPreferences( appPreferences ) );
 
         dispatch( setUserPreferences( userPreferences ) );

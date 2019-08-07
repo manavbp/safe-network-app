@@ -1,6 +1,6 @@
 import { ClientFunction, Selector } from 'testcafe';
 import { ReactSelector, waitForReact } from 'testcafe-react-selectors';
-import { getPageUrl, getPageTitle, updatePreferences } from './helpers';
+import { getPageUrl, getPageTitle } from './helpers';
 
 const assertNoConsoleErrors = async ( t ): Promise<void> => {
     const { error } = await t.getBrowserConsoleMessages();
@@ -20,16 +20,6 @@ test(
     "should haven't any logs in console of main window",
     assertNoConsoleErrors
 );
-
-// we start as a tray window right now
-test( 'clicking on window-switch button switches to normal window', async ( t ) => {
-    await t.click( Selector( 'button.Overview__btn--upper-right' ) );
-    await t
-        .expect(
-            Selector( 'span' ).withAttribute( 'data-istraywindow', 'true' ).exists
-        )
-        .ok();
-} );
 
 test( 'clicking on a vert icon in application overview shows menu items', async ( t ) => {
     await t

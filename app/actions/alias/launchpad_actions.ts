@@ -2,10 +2,8 @@ import { createAliasedAction } from 'electron-redux';
 import { ipcRenderer } from 'electron';
 
 import { Preferences } from '$Definitions/application.d';
-import {
-    storePreferencesLocally,
-    autoLaunchOnStart
-} from '../helpers/launchpad';
+import { settingsHandler } from '$Actions/helpers/settings_handler';
+import { autoLaunchOnStart } from '../helpers/launchpad';
 
 export const TYPES = {
     ALIAS_SHOULD_ONBOARD: 'ALIAS_SHOULD_ONBOARD',
@@ -15,11 +13,15 @@ export const TYPES = {
     ALIAS_SET_AS_TRAY_WINDOW: 'ALIAS_SET_AS_TRAY_WINDOW'
 };
 
+const updatePreferences = async ( preferences ) => {
+    await settingsHandler.updatePreferences( preferences );
+};
+
 export const storePreferences = createAliasedAction(
     TYPES.ALIAS_STORE_PREFERENCES,
     ( preferences: Preferences ) => ( {
         type: TYPES.ALIAS_STORE_PREFERENCES,
-        payload: storePreferencesLocally( preferences )
+        payload: updatePreferences( preferences )
     } )
 );
 
