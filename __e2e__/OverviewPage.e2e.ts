@@ -21,16 +21,6 @@ test(
     assertNoConsoleErrors
 );
 
-// we start as a tray window right now
-test( 'clicking on window-switch button switches to normal window', async ( t ) => {
-    await t.click( Selector( 'button.Overview__btn--upper-right' ) );
-    await t
-        .expect(
-            Selector( 'span' ).withAttribute( 'data-istraywindow', 'true' ).exists
-        )
-        .ok();
-} );
-
 test( 'clicking on a vert icon in application overview shows menu items', async ( t ) => {
     await t
         .click( Selector( '.MeatballMenu__vertIcon' ) )

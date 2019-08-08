@@ -1,4 +1,5 @@
 import * as launchpad from '$Actions/launchpad_actions';
+import * as launchpadHelper from '$Actions/helpers/launchpad';
 import { generateRandomString } from '$Utils/app_utils';
 
 describe( 'Launchpad actions', () => {
@@ -46,6 +47,29 @@ describe( 'Launchpad actions', () => {
             payload
         };
         expect( launchpad.setUserPreferences( payload ) ).toEqual( expectAction );
+    } );
+
+    it( 'should set app preferences', () => {
+        const payload = {
+            appPreferences: {
+                shouldOnboard: true
+            }
+        };
+        const expectAction = {
+            type: launchpad.TYPES.SET_APP_PREFERENCES,
+            payload
+        };
+        expect( launchpad.setAppPreferences( payload ) ).toEqual( expectAction );
+    } );
+
+    it( 'should set on-boarding completed', async () => {
+        const expectAction = {
+            type: launchpad.TYPES.ONBOARD_COMPLETED
+        };
+
+        expect( launchpad.onboardCompleted ).toBeDefined();
+
+        expect( launchpad.onboardCompleted() ).toEqual( expectAction );
     } );
 
     it( 'should create action to indicate window visibility', () => {

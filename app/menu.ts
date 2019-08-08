@@ -1,7 +1,11 @@
 import { app, Menu, shell } from 'electron';
-import { pushNotification } from '$Actions/launchpad_actions';
+import {
+    pushNotification,
+    setUserPreferences
+} from '$Actions/launchpad_actions';
 import { notificationTypes } from '$Constants/notifications';
-import { isRunningTestCafeProcess } from '$Constants/index';
+import { isRunningTestCafeProcess, defaultPreferences } from '$Constants/index';
+import { storePreferences } from '$Actions/alias/launchpad_actions';
 import { Application } from './definitions/application.d';
 import { logger } from '$Logger';
 
@@ -290,6 +294,19 @@ export class MenuBuilder {
                             } )
                         );
                     }
+                },
+                {
+                    label: 'Reset Preferences',
+                    click: () => {
+                        this.store.dispatch(
+                            storePreferences( defaultPreferences )
+                        );
+                        this.store.dispatch(
+                            setUserPreferences(
+                                defaultPreferences.userPreferences
+                            )
+                        );
+                    }
                 }
             ]
         };
@@ -491,6 +508,19 @@ export class MenuBuilder {
                                     appName
                                 )
                             } )
+                        );
+                    }
+                },
+                {
+                    label: 'Reset Preferences',
+                    click: () => {
+                        this.store.dispatch(
+                            storePreferences( defaultPreferences )
+                        );
+                        this.store.dispatch(
+                            setUserPreferences(
+                                defaultPreferences.userPreferences
+                            )
                         );
                     }
                 }

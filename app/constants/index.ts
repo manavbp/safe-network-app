@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs-extra';
-import { remote } from 'electron';
+import { app, remote } from 'electron';
 
 import getPort from 'get-port';
 import pkg from '$Package';
@@ -145,6 +145,11 @@ const safeNodeAppPath = () => {
     return nodeAppPath;
 };
 
+export const getAppFolderPath = () => {
+    if ( remote && remote.app ) return remote.app.getPath( 'appData' );
+    return app.getPath( 'appData' );
+};
+
 export const I18N_CONFIG = {
     locales: ['en'],
     directory: path.resolve( __dirname, 'locales' ),
@@ -275,14 +280,19 @@ export const GET_DOM_EL_CLASS = getDomClasses();
 export const LAUNCHPAD_APP_ID = '__LAUNCHPAD_APP_ID__';
 
 export const defaultPreferences = {
-    autoUpdate: false,
-    pinToMenuBar: true,
-    launchOnStart: true,
-    showDeveloperApps: false,
-    warnOnAccessingClearnet: true
+    userPreferences: {
+        autoUpdate: false,
+        pinToMenuBar: true,
+        launchOnStart: true,
+        showDeveloperApps: false,
+        warnOnAccessingClearnet: true
+    },
+    appPreferences: {
+        shouldOnboard: true
+    }
 };
 
-export const preferenceDatabaseName = {
-    production: 'userPreferences',
-    test: 'testUserPreferences'
+export const settingsHandlerName = {
+    production: 'preferences',
+    test: 'testPreferences'
 };

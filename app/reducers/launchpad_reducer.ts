@@ -1,13 +1,16 @@
 import { TYPES } from '$App/actions/launchpad_actions';
 import { TYPES as NOTIFICATION_TYPES } from '$Actions/alias/notification_actions';
 import { TYPES as ALIAS_TYPES } from '$Actions/alias/launchpad_actions';
-import { LaunchpadState, UserPreferences } from '../definitions/application.d';
+import {
+    LaunchpadState,
+    UserPreferences,
+    AppPreferences
+} from '../definitions/application.d';
 import { defaultPreferences } from '$Constants/index';
 import { ERRORS } from '$Constants/errors';
 
 export const initialState: LaunchpadState = {
-    shouldOnboard: false,
-    userPreferences: { ...defaultPreferences },
+    ...defaultPreferences,
     notifications: {},
     notificationCheckBox: false,
     isTrayWindow: false
@@ -30,6 +33,21 @@ export function launchpadReducer( state = initialState, action ): LaunchpadState
             }
 
             return { ...state, userPreferences: newUserPreferences };
+        }
+
+        case TYPES.SET_APP_PREFERENCES: {
+            const newAppPreferences: AppPreferences = {
+                ...state.appPreferences,
+                ...payload
+            };
+            if (
+                Object.keys( newAppPreferences ).length !==
+                Object.keys( initialState.appPreferences ).length
+            ) {
+                throw ERRORS.INVALID_PROP;
+            }
+
+            return { ...state, appPreferences: newAppPreferences };
         }
 
         case TYPES.PUSH_NOTIFICATION: {
@@ -58,7 +76,13 @@ export function launchpadReducer( state = initialState, action ): LaunchpadState
             if ( typeof payload.shouldOnboard !== 'boolean' )
                 throw new Error( ERRORS.INVALID_TYPE );
 
-            return { ...state, shouldOnboard: payload.shouldOnboard };
+            return {
+                ...state,
+                appPreferences: {
+                    ...state.appPreferences,
+                    shouldOnboard: payload.shouldOnboard
+                }
+            };
         }
 
         case TYPES.SET_AS_TRAY_WINDOW: {
@@ -69,6 +93,10 @@ export function launchpadReducer( state = initialState, action ): LaunchpadState
             return { ...state, notificationCheckBox: payload };
         }
 
+        // Alias Types Alias Pin To Tray is a duplicate of Set As Tray Window and Set As Tray Window is the right one
+        case ALIAS_TYPES.ALIAS_AUTO_LAUNCH:
+        case ALIAS_TYPES.ALIAS_PIN_TO_TRAY:
+        case ALIAS_TYPES.ALIAS_STORE_PREFERENCES:
         case NOTIFICATION_TYPES.ACCEPT_NOTIFICATION:
         case NOTIFICATION_TYPES.DENY_NOTIFICATION:
         default:

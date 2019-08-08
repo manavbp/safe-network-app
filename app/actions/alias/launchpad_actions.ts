@@ -1,37 +1,27 @@
 import { createAliasedAction } from 'electron-redux';
 import { ipcRenderer } from 'electron';
 
-import { UserPreferences } from '$Definitions/application.d';
-import {
-    storeUserPreferencesLocally,
-    checkOnBoardingCompleted,
-    autoLaunchOnStart,
-    pinLaunchpadToTray
-} from '../helpers/launchpad';
+import { Preferences } from '$Definitions/application.d';
+import { settingsHandler } from '$Actions/helpers/settings_handler';
+import { autoLaunchOnStart } from '../helpers/launchpad';
 
 export const TYPES = {
     ALIAS_SHOULD_ONBOARD: 'ALIAS_SHOULD_ONBOARD',
-    ALIAS_STORE_USER_PREFERENCES: 'ALIAS_STORE_USER_PREFERENCES',
+    ALIAS_STORE_PREFERENCES: 'ALIAS_STORE_PREFERENCES',
     ALIAS_AUTO_LAUNCH: 'ALIAS_AUTO_LAUNCH',
     ALIAS_PIN_TO_TRAY: 'ALIAS_PIN_TO_TRAY',
     ALIAS_SET_AS_TRAY_WINDOW: 'ALIAS_SET_AS_TRAY_WINDOW'
 };
 
-export const storeUserPreferences = createAliasedAction(
-    TYPES.ALIAS_STORE_USER_PREFERENCES,
-    ( userPreferences: UserPreferences ) => ( {
-        type: TYPES.ALIAS_STORE_USER_PREFERENCES,
-        payload: storeUserPreferencesLocally( userPreferences )
-    } )
-);
+const updatePreferences = async ( preferences ) => {
+    await settingsHandler.updatePreferences( preferences );
+};
 
-export const shouldOnboard = createAliasedAction(
-    TYPES.ALIAS_SHOULD_ONBOARD,
-    () => ( {
-        type: TYPES.ALIAS_SHOULD_ONBOARD,
-        payload: checkOnBoardingCompleted().then( ( response: boolean ) => ( {
-            shouldOnboard: response
-        } ) )
+export const storePreferences = createAliasedAction(
+    TYPES.ALIAS_STORE_PREFERENCES,
+    ( preferences: Preferences ) => ( {
+        type: TYPES.ALIAS_STORE_PREFERENCES,
+        payload: updatePreferences( preferences )
     } )
 );
 
@@ -40,14 +30,6 @@ export const autoLaunch = createAliasedAction(
     ( enable ) => ( {
         type: TYPES.ALIAS_AUTO_LAUNCH,
         payload: autoLaunchOnStart( enable )
-    } )
-);
-
-export const pinToTray = createAliasedAction(
-    TYPES.ALIAS_PIN_TO_TRAY,
-    ( enable ) => ( {
-        type: TYPES.ALIAS_PIN_TO_TRAY,
-        payload: pinLaunchpadToTray( enable )
     } )
 );
 

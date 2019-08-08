@@ -9,29 +9,6 @@ describe( 'launchpad reducer', () => {
         expect( launchpadReducer( undefined, {} ) ).toEqual( initialState );
     } );
 
-    describe( 'SHOULD_ONBOARD', () => {
-        it( 'Should update On-Boarding flag', () => {
-            expect(
-                launchpadReducer( undefined, {
-                    type: ALIAS_TYPES.ALIAS_SHOULD_ONBOARD,
-                    payload: {
-                        shouldOnboard: true
-                    }
-                } ).shouldOnboard
-            ).toBeTruthy();
-        } );
-        it( 'Should throw if invalid value passed', () => {
-            expect( () =>
-                launchpadReducer( undefined, {
-                    type: ALIAS_TYPES.ALIAS_SHOULD_ONBOARD,
-                    payload: {
-                        shouldOnboard: 'false'
-                    }
-                } )
-            ).toThrow( ERRORS.INVALID_TYPE );
-        } );
-    } );
-
     describe( 'SET_USER_PREFERENCES', () => {
         it( 'Should update user preferences', () => {
             const userPreferences = {

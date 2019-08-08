@@ -5,17 +5,10 @@ describe( 'Alias launchpad actions', () => {
         expect( launchpad.TYPES ).toBeDefined();
     } );
 
-    it( 'should check onboarding process completed', () => {
-        expect( launchpad.shouldOnboard ).toBeDefined();
-        expect( launchpad.shouldOnboard().meta.trigger ).toEqual(
-            launchpad.TYPES.ALIAS_SHOULD_ONBOARD
-        );
-    } );
-
-    it( 'should store user preferences', () => {
-        expect( launchpad.storeUserPreferences ).toBeDefined();
-        expect( launchpad.storeUserPreferences().meta.trigger ).toEqual(
-            launchpad.TYPES.ALIAS_STORE_USER_PREFERENCES
+    it( 'should store preferences', () => {
+        expect( launchpad.storePreferences ).toBeDefined();
+        expect( launchpad.storePreferences().meta.trigger ).toEqual(
+            launchpad.TYPES.ALIAS_STORE_PREFERENCES
         );
     } );
 
@@ -26,10 +19,10 @@ describe( 'Alias launchpad actions', () => {
         );
     } );
 
-    it( 'should pin launchpad to tray', () => {
-        expect( launchpad.pinToTray ).toBeDefined();
-        expect( launchpad.pinToTray( true ).meta.trigger ).toEqual(
-            launchpad.TYPES.ALIAS_PIN_TO_TRAY
+    it( 'should as tray window', () => {
+        expect( launchpad.triggerSetAsTrayWindow ).toBeDefined();
+        expect( launchpad.triggerSetAsTrayWindow().meta.trigger ).toEqual(
+            launchpad.TYPES.ALIAS_SET_AS_TRAY_WINDOW
         );
     } );
 } );

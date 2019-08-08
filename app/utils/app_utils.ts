@@ -11,8 +11,6 @@ export const generateRandomString = (): string => {
     );
 };
 
-export const getAppFolderPath = () => remote.app.getPath( 'appData' );
-
 export const databaseCallBackHandler = ( resolve, reject ) => {
     return ( success, data ) => {
         return success ? resolve( data ) : reject( data );

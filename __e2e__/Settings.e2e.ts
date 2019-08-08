@@ -1,9 +1,7 @@
 import { Selector } from 'testcafe';
 import { waitForReact } from 'testcafe-react-selectors';
+import { clickOnMainMenuItem } from 'testcafe-browser-provider-electron';
 import { getPageUrl, getPageTitle } from './helpers';
-
-const navigateToSettingsPage = async ( t ) =>
-    t.click( Selector( 'button' ).withAttribute( 'aria-label', 'Go to settings' ) );
 
 const getPreferenceItems = () => {
     const Preferences = Selector( 'ul' ).withAttribute(
@@ -13,22 +11,34 @@ const getPreferenceItems = () => {
     return Preferences.child( 'li' );
 };
 
-fixture`Settings Page`.page( '../app/app.html' ).beforeEach( async () => {
-    await waitForReact();
-} );
-// .afterEach( assertNoConsoleErrors );
+fixture`Settings Page`
+    .page( '../app/app.html' )
+    .beforeEach( async () => {
+        await waitForReact();
+    } )
+    .afterEach( async () => {
+        // @ts-ignore
+        await clickOnMainMenuItem( ['Tests', 'Reset Preferences'] );
+    } );
 
 test( 'e2e', async ( t ) => {
     await t.expect( getPageTitle() ).eql( 'SAFE Network App' );
 } );
 
 test( 'can navigate to settings page', async ( t ) => {
-    navigateToSettingsPage( t );
-    await t.expect( getPageUrl() ).contains( '#/settings' );
+    await t.click(
+        Selector( 'button' ).withAttribute( 'aria-label', 'Go to settings' )
+    );
+
+    await t.expect( Selector( 'h5' ).withText( 'Settings' ).exists ).ok();
 } );
 
 test( 'can toggle switch buttons', async ( t ) => {
-    navigateToSettingsPage( t );
+    await t.click(
+        Selector( 'button' ).withAttribute( 'aria-label', 'Go to settings' )
+    );
+
+    await t.expect( Selector( 'h5' ).withText( 'Settings' ).exists ).ok();
 
     const PreferencesItemArray = getPreferenceItems();
 
@@ -39,38 +49,19 @@ test( 'can toggle switch buttons', async ( t ) => {
             AutoUpdatePreference.find( '.MuiListItemText-primary' ).textContent
         )
         .eql( 'Auto Update' )
-        .click( AutoUpdatePreference.find( 'input.MuiSwitch-input' ) )
-        .expect( AutoUpdatePreference.find( 'input.MuiSwitch-input' ).checked )
-        .ok();
-
-    // reset
-    await t.click( AutoUpdatePreference.find( 'input.MuiSwitch-input' ) );
-} );
-
-test( 'can toggle back switch button from on state', async ( t ) => {
-    navigateToSettingsPage( t );
-
-    const PreferencesItemArray = getPreferenceItems();
-
-    const LaunchOnStartPreference = PreferencesItemArray.nth( 2 );
+        .click( AutoUpdatePreference.find( 'input.MuiSwitch-input' ) );
 
     await t
-        .expect(
-            LaunchOnStartPreference.find( '.MuiListItemText-primary' ).textContent
-        )
-        .eql( 'Launch On Start' )
-        .expect( LaunchOnStartPreference.find( 'input.MuiSwitch-input' ).checked )
-        .ok()
-        .click( LaunchOnStartPreference.find( 'input.MuiSwitch-input' ) )
-        .expect( LaunchOnStartPreference.find( 'input.MuiSwitch-input' ).checked )
-        .notOk();
-
-    // reset
-    await t.click( LaunchOnStartPreference.find( 'input.MuiSwitch-input' ) );
+        .expect( AutoUpdatePreference.find( 'input.MuiSwitch-input' ).checked )
+        .ok();
 } );
 
 test( 'Go back from Settings page to Home', async ( t ) => {
-    navigateToSettingsPage( t );
+    await t.click(
+        Selector( 'button' ).withAttribute( 'aria-label', 'Go to settings' )
+    );
+
+    await t.expect( Selector( 'h5' ).withText( 'Settings' ).exists ).ok();
 
     await t
         .expect( getPageUrl() )
@@ -80,39 +71,74 @@ test( 'Go back from Settings page to Home', async ( t ) => {
         .contains( '#/' );
 } );
 
-test( 'Changing any preference should persist', async ( t ) => {
-    navigateToSettingsPage( t );
+test( 'clicking on pinToMenuBar button toggles window between normal window and tray', async ( t ) => {
+    await t.click(
+        Selector( 'button' ).withAttribute( 'aria-label', 'Go to settings' )
+    );
+
+    await t.expect( Selector( 'h5' ).withText( 'Settings' ).exists ).ok();
 
     const PreferencesItemArray = getPreferenceItems();
 
-    const LaunchOnStartPreference = PreferencesItemArray.nth( 0 );
+    const PinToMenuBar = PreferencesItemArray.nth( 1 );
 
     await t
         .expect( getPageUrl() )
         .contains( '#/settings' )
-        .expect(
-            LaunchOnStartPreference.find( '.MuiListItemText-primary' ).textContent
-        )
-        .eql( 'Auto Update' )
-        .expect( LaunchOnStartPreference.find( 'input.MuiSwitch-input' ).checked )
-        .notOk()
-        .click( LaunchOnStartPreference.find( 'input.MuiSwitch-input' ) )
+        .expect( PinToMenuBar.find( '.MuiListItemText-primary' ).textContent )
+        .eql( 'Pin To Menu Bar' )
+        .expect( PinToMenuBar.find( 'input.MuiSwitch-input' ).checked )
+        .ok()
+        .click( PinToMenuBar.find( 'input.MuiSwitch-input' ) )
         .click( Selector( 'button' ).withAttribute( 'aria-label', 'Go Backwards' ) )
         .expect( getPageUrl() )
         .contains( '#/' );
 
-    navigateToSettingsPage( t );
+    await t
+        .expect(
+            Selector( 'span' ).withAttribute( 'data-istraywindow', 'false' ).exists
+        )
+        .ok();
+} );
+
+test( 'Changing any preference should persist', async ( t ) => {
+    await t.click(
+        Selector( 'button' ).withAttribute( 'aria-label', 'Go to settings' )
+    );
+
+    await t.expect( Selector( 'h5' ).withText( 'Settings' ).exists ).ok();
+
+    const PreferencesItemArray = getPreferenceItems();
+
+    const AutoUpdatePreference = PreferencesItemArray.nth( 0 );
 
     await t
         .expect( getPageUrl() )
         .contains( '#/settings' )
         .expect(
-            LaunchOnStartPreference.find( '.MuiListItemText-primary' ).textContent
+            AutoUpdatePreference.find( '.MuiListItemText-primary' ).textContent
         )
         .eql( 'Auto Update' )
-        .expect( LaunchOnStartPreference.find( 'input.MuiSwitch-input' ).checked )
-        .ok();
+        .expect( AutoUpdatePreference.find( 'input.MuiSwitch-input' ).checked )
+        .notOk()
+        .click( AutoUpdatePreference.find( 'input.MuiSwitch-input' ) )
+        .click( Selector( 'button' ).withAttribute( 'aria-label', 'Go Backwards' ) )
+        .expect( getPageUrl() )
+        .contains( '#/' );
 
-    // reset
-    await t.click( LaunchOnStartPreference.find( 'input.MuiSwitch-input' ) );
+    await t.click(
+        Selector( 'button' ).withAttribute( 'aria-label', 'Go to settings' )
+    );
+
+    await t.expect( Selector( 'h5' ).withText( 'Settings' ).exists ).ok();
+
+    await t
+        .expect( getPageUrl() )
+        .contains( '#/settings' )
+        .expect(
+            AutoUpdatePreference.find( '.MuiListItemText-primary' ).textContent
+        )
+        .eql( 'Auto Update' )
+        .expect( AutoUpdatePreference.find( 'input.MuiSwitch-input' ).checked )
+        .ok();
 } );

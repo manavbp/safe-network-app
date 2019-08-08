@@ -39,14 +39,6 @@ export class Overview extends Component<Props> {
         const { triggerSetAsTrayWindow, isTrayWindow } = this.props;
         return (
             <div className={styles.container} data-tid="container">
-                <button
-                    type="button"
-                    className={styles['btn--upper-right']}
-                    key="overview__switch-button"
-                    onClick={() => triggerSetAsTrayWindow( !isTrayWindow )}
-                >
-                    Switch
-                </button>
                 <span data-istraywindow={isTrayWindow} />
                 {this.loadApps()}
             </div>
