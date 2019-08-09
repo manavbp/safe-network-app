@@ -52,15 +52,6 @@ export class HeaderBar extends React.PureComponent<Props> {
                         <Typography aria-label="title" variant="h5">
                             {title}
                         </Typography>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="Go to onboarding"
-                        >
-                            <Link to={ON_BOARDING}>
-                                <Star fontSize="inherit" />
-                            </Link>
-                        </IconButton>
 
                         <IconButton
                             edge="start"

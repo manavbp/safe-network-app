@@ -1,1 +1,0 @@
-export { BasicSettings } from './BasicSettings';

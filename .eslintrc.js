@@ -28,6 +28,10 @@ module.exports = {
     },
     rules: {
         'arrow-parens': ['error', 'always'],
+        'no-unused-expressions': [
+            'error',
+            { allowShortCircuit: true, allowTernary: true }
+        ],
         'no-use-before-define': 'off',
         'unicorn/catch-error-name': 'off',
         'unicorn/filename-case': 'off',
@@ -64,17 +68,7 @@ module.exports = {
         '@typescript-eslint/no-namespace': 'off',
         '@typescript-eslint/array-type': ['error', 'generic'],
         indent: 'off',
-        '@typescript-eslint/indent': ['error', 4],
-        'unicorn/prevent-abbreviations': [
-            'error',
-            {
-                whitelist: {
-                    propOverrides: true,
-                    props: true
-                },
-                checkFilenames: false
-            }
-        ]
+        '@typescript-eslint/indent': ['error', 4]
     },
 
     overrides: [

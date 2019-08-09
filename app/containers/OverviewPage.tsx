@@ -17,6 +17,7 @@ import { AppState } from '../definitions/application.d';
 function mapStateToProperties( state: AppState ) {
     return {
         appList: state.appManager.applicationList,
+        appPreferences: state.launchpad.appPreferences,
         isTrayWindow: state.launchpad.isTrayWindow
     };
 }
@@ -27,7 +28,6 @@ function mapDispatchToProperties( dispatch ) {
         installApp,
         openApp,
         uninstallApp,
-
         updateInstallProgress,
         uninstallApplication,
         triggerSetAsTrayWindow

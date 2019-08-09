@@ -2,5 +2,7 @@
     "HOME": "/",
     "SETTINGS": "/settings",
     "ON_BOARDING": "/on-boarding",
-    "APPLICATION_DETAIL": "/application/:id"
+    "APPLICATION_DETAIL": "/application/:id",
+    "INTRO": "/on-boarding/intro",
+    "BASIC_SETTINGS": "/on-boarding/basic-settings"
 }
