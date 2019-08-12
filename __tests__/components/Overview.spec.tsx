@@ -22,6 +22,9 @@ describe( 'Overview', () => {
             uninstallApp: jest.fn(),
             openApp: jest.fn(),
             installApp: jest.fn(),
+            appPreferences: {
+                shouldOnboard: false
+            },
             appList: {
                 'safe.browser': {
                     id: 'safe.browser',

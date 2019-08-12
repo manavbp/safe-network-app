@@ -10,7 +10,8 @@ module.exports = {
     preset: 'ts-jest',
     testEnvironment: 'node',
     transform: {
-        '^.+\\.tsx?$': 'ts-jest'
+        '^.+\\.tsx?$': 'ts-jest',
+        '\\.(jpg|jpeg|png|gif|webp|svg)$': 'jest-transform-file'
     },
     moduleFileExtensions: ['js', 'jsx', 'json', 'ts', 'tsx'],
     testPathIgnorePatterns: ['node_modules', '__tests__/mock'],

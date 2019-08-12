@@ -68,7 +68,17 @@ module.exports = {
         '@typescript-eslint/no-namespace': 'off',
         '@typescript-eslint/array-type': ['error', 'generic'],
         indent: 'off',
-        '@typescript-eslint/indent': ['error', 4]
+        '@typescript-eslint/indent': ['error', 4],
+        'unicorn/prevent-abbreviations': [
+            'error',
+            {
+                checkFilenames: false,
+                whitelist: {
+                    propOverrides: true,
+                    props: true
+                }
+            }
+        ]
     },
 
     overrides: [

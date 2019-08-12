@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { History } from 'history';
 import Grid from '@material-ui/core/Grid';
-import { Switch, Route } from 'react-router';
+import { Switch, Route, Redirect } from 'react-router';
 import { styled } from '@material-ui/core/styles';
 import {
     UserPreferences,
@@ -10,7 +10,7 @@ import {
     LaunchpadState
 } from '$Definitions/application.d';
 
-import { Stepper } from './Stepper/Stepper';
+import { Stepper } from '$Components/OnBoarding/Stepper/Stepper';
 import { GetStarted } from './GetStarted';
 import { Intro } from './Intro';
 import { BasicSettings } from './BasicSettings/BasicSettings';
@@ -29,7 +29,6 @@ interface Props {
     appPreferences: AppPreferences;
     setUserPreferences: Function;
     getUserPreferences: Function;
-    storePreferences: Function;
     isTrayWindow: boolean;
     setOnboardCompleted: Function;
     autoLaunch: Function;
@@ -51,37 +50,18 @@ export class OnBoarding extends React.Component<Props> {
 
     totalSteps = 3;
 
-    componentWillMount() {
-        const { appPreferences, history, getUserPreferences } = this.props;
-
-        if ( !appPreferences.shouldOnboard ) {
-            history.push( HOME );
-        }
-        getUserPreferences();
-    }
-
     completed = () => {
         const {
-            storePreferences,
             userPreferences,
             autoLaunch,
-            setAppPreferences
+            setAppPreferences,
+            history
         } = this.props;
 
         const appPreferences: AppPreferences = {
             shouldOnboard: false
         };
 
-        const newUserPreferences: UserPreferences = {
-            ...userPreferences
-        };
-
-        const preferences: Preferences = {
-            userPreferences: { ...newUserPreferences },
-            appPreferences
-        };
-
-        storePreferences( preferences );
         setAppPreferences( { shouldOnboard: false } );
 
         if ( userPreferences.launchOnStart ) {
@@ -118,8 +98,8 @@ export class OnBoarding extends React.Component<Props> {
         const {
             userPreferences,
             setUserPreferences,
+            appPreferences,
             getUserPreferences,
-            storePreferences,
             isTrayWindow,
             triggerSetAsTrayWindow,
             autoLaunch,
@@ -127,6 +107,8 @@ export class OnBoarding extends React.Component<Props> {
         } = this.props;
 
         const isGetStarted = currentPosition === 0;
+
+        if ( !appPreferences.shouldOnboard ) return <Redirect to={HOME} />;
 
         return (
             <Base container>

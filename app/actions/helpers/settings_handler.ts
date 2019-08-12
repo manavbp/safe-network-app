@@ -27,7 +27,6 @@ class SettingsHandler {
     private getJsonPath() {
         try {
             let appFolderPath = getAppFolderPath();
-
             appFolderPath = path.resolve(
                 appFolderPath,
                 pkg.name,
@@ -35,7 +34,7 @@ class SettingsHandler {
             );
 
             fse.ensureFile( appFolderPath, ( error ) => {
-                console.log( error );
+                if ( error ) console.log( error );
             } );
             return appFolderPath;
         } catch ( error ) {
@@ -47,8 +46,10 @@ class SettingsHandler {
     public updatePreferences( preferences: Preferences ) {
         return new Promise( async ( resolve, reject ) => {
             const appFolderPath = this.getJsonPath();
+            console.log( 'appFolderPath', appFolderPath );
+            console.log( 'preferences', preferences );
             try {
-                fse.outputJson( appFolderPath, { ...preferences } );
+                fse.outputJsonSync( appFolderPath, { ...preferences } );
                 return resolve();
             } catch ( error ) {
                 return reject( error );
@@ -60,7 +61,7 @@ class SettingsHandler {
         return new Promise( async ( resolve, reject ) => {
             const appFolderPath = await this.getJsonPath();
             try {
-                return resolve( fse.readJson( appFolderPath ) );
+                return resolve( fse.readJsonSync( appFolderPath ) );
             } catch ( error ) {
                 return reject( error );
             }

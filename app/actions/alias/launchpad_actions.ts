@@ -14,6 +14,7 @@ export const TYPES = {
 };
 
 const updatePreferences = async ( preferences ) => {
+    console.error( preferences );
     await settingsHandler.updatePreferences( preferences );
 };
 

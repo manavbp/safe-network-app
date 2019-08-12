@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import { styled } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
+import styles from './BasicSettings.css';
 
 import { UserPreferences } from '$Definitions/application.d';
 import { Preferences } from '$Components/Preferences';
@@ -16,18 +16,6 @@ interface Props {
     autoLaunch: Function;
     isTrayWindow: boolean;
 }
-
-export const Base = styled( Paper )( {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'column',
-    padding: '0 24px'
-} );
-
-const Title = styled( Typography )( {
-    paddingTop: '10%',
-    marginBottom: '16px'
-} );
 
 export const BasicSettings = ( properties ) => {
     const {
@@ -44,9 +32,15 @@ export const BasicSettings = ( properties ) => {
         showDeveloperApps: true
     };
     return (
-        <Base elevation={0} aria-label="BasicSettingsPage">
+        <Paper
+            className={styles.Base}
+            elevation={0}
+            aria-label="BasicSettingsPage"
+        >
             <Box>
-                <Title variant="h5">Basic Settings</Title>
+                <Typography className={styles.Title} variant="h5">
+                    Basic Settings
+                </Typography>
                 <Typography>
                     Choose some basic settings. You can always change these
                     later.
@@ -62,6 +56,6 @@ export const BasicSettings = ( properties ) => {
                     />
                 </Grid>
             </Box>
-        </Base>
+        </Paper>
     );
 };

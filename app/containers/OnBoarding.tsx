@@ -8,13 +8,11 @@ import {
     getUserPreferences
 } from '$Actions/launchpad_actions';
 import {
-    storePreferences,
     autoLaunch,
     triggerSetAsTrayWindow
 } from '$Actions/alias/launchpad_actions';
 
 const mapStateToProperties = ( state ) => {
-    console.log( 'OnBoarding page called' );
     return {
         userPreferences: state.launchpad.userPreferences,
         appPreferences: state.launchpad.appPreferences,
@@ -27,7 +25,6 @@ const mapDispatchToProperties = ( dispatch ) => {
         setAppPreferences,
         setUserPreferences,
         getUserPreferences,
-        storePreferences,
         autoLaunch,
         triggerSetAsTrayWindow
     };

@@ -65,13 +65,11 @@ export const Stepper = ( properties ) => {
     const NextButton = (
         <NavButton
             size="small"
-            aria-label="NavNextButton"
+            aria-label="OnBoardingNextButton"
             onClick={() => {
                 onNext();
                 // @ts-ignore
-                activeStep === 1
-                    ? history.push( BASIC_SETTINGS )
-                    : history.push( HOME );
+                history.push( BASIC_SETTINGS );
             }}
         >
             Next
@@ -80,7 +78,7 @@ export const Stepper = ( properties ) => {
     const BackButton = (
         <NavButton
             size="small"
-            aria-label="NavBackButton"
+            aria-label="OnBoardingBackButton"
             onClick={() => {
                 onBack();
                 // @ts-ignore

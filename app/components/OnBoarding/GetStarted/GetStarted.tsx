@@ -1,11 +1,14 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
-import { Base, LogoBase, Container, Title, GetStartedButton } from './styles';
+import Paper from '@material-ui/core/Paper';
+import Box from '@material-ui/core/Box';
+import Fab from '@material-ui/core/Fab';
 // @ts-ignore
 import { INTRO } from '$App/constants/routes.json';
 
 // @ts-ignore
 import Logo from '$App/assets/images/logo.svg';
+import styles from './GetStarted.css';
 
 interface Props {
     onClickGetStarted: Function;
@@ -15,16 +18,19 @@ interface Props {
 export const GetStarted = ( properties ) => {
     const { onClickGetStarted, history } = properties;
     return (
-        <Base aria-label="GetStarted">
-            <LogoBase>
+        <Paper className={styles.Base} aria-label="GetStarted">
+            <Box className={styles.LogoBase}>
                 <img src={Logo} alt="Launchpad logo" />
-            </LogoBase>
-            <Container>
-                <Title variant="h5">SAFE Launchpad</Title>
+            </Box>
+            <Box className={styles.Container}>
+                <Typography className={styles.Title} variant="h5">
+                    SAFE Launchpad
+                </Typography>
                 <Typography>
                     All the apps you need to try the SAFE Network
                 </Typography>
-                <GetStartedButton
+                <Fab
+                    className={styles.GetStartedButton}
                     variant="extended"
                     size="medium"
                     aria-label="GetStarted"
@@ -35,8 +41,8 @@ export const GetStarted = ( properties ) => {
                     }}
                 >
                     Get Started
-                </GetStartedButton>
-            </Container>
-        </Base>
+                </Fab>
+            </Box>
+        </Paper>
     );
 };

@@ -8,7 +8,7 @@ import {
     AppManagerState
 } from '$Definitions/application.d';
 import { ApplicationOverview } from '$Components/ApplicationOverview';
-import { ON_BOARDING } from '$Constants/routes.json';
+import { ON_BOARDING, HOME } from '$Constants/routes.json';
 
 interface Props {
     uninstallApp: Function;
@@ -26,14 +26,6 @@ interface Props {
 }
 
 export class Overview extends Component<Props> {
-    componentDidUpdate() {
-        const { appPreferences, history } = this.props;
-        if ( appPreferences.shouldOnboard ) {
-            // @ts-ignore
-            history.push( ON_BOARDING );
-        }
-    }
-
     loadApps = () => {
         const { appList, uninstallApp, installApp, openApp } = this.props;
         return Object.values( appList ).map( ( theApplication ) => (
@@ -55,6 +47,7 @@ export class Overview extends Component<Props> {
             appPreferences
         } = this.props;
 
+        if ( appPreferences.shouldOnboard ) return <Redirect to={ON_BOARDING} />;
         return (
             <div className={styles.container} data-tid="container">
                 <span data-istraywindow={isTrayWindow} />
