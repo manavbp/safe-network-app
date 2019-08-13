@@ -4,6 +4,8 @@ import { notificationTypes } from '$Constants/notifications';
 import { Notification } from '$Components/Notifications/Notifications';
 import { HeaderBar } from '$Components/HeaderBar';
 
+import styles from './App.css';
+
 interface Props {
     children: React.ReactChild;
     notifications: object;
@@ -34,17 +36,23 @@ export class App extends React.PureComponent<Props> {
         const currentPath = router.location.pathname;
 
         return (
-            <React.Fragment>
-                <Notification
-                    notifications={notifications}
-                    acceptNotification={acceptNotification}
-                    denyNotification={denyNotification}
-                    toggleCheckBox={notificationToggleCheckBox}
-                    notificationCheckBox={notificationCheckBox}
-                />
-                <HeaderBar currentPath={currentPath} />
-                <Grid container>{children}</Grid>
-            </React.Fragment>
+            <div className={styles.wrap}>
+                <div className={styles.headerBar}>
+                    <HeaderBar currentPath={currentPath} />
+                </div>
+                <div className={styles.containerBase}>
+                    <Notification
+                        notifications={notifications}
+                        acceptNotification={acceptNotification}
+                        denyNotification={denyNotification}
+                        toggleCheckBox={notificationToggleCheckBox}
+                        notificationCheckBox={notificationCheckBox}
+                    />
+                    <Grid container className="commonBase">
+                        {children}
+                    </Grid>
+                </div>
+            </div>
         );
     }
 }

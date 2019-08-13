@@ -12,6 +12,7 @@
         "paths": {
             "$Tests/*": ["__tests__/*"],
             "$App/*": ["app/*"],
+            "$Assets/*": ["app/assets/*"],
             "$Actions/*": ["app/actions/*"],
             "$Store/*": ["app/store/*"],
             "$Reducers/*": ["app/reducers/*"],
@@ -22,8 +23,7 @@
             "$Constants": ["app/constants/index.ts"],
             "$Utils/*": ["app/utils/*"],
             "$Package": ["package.json"]
-        },
-        "skipLibCheck": true
+        }
     },
     "exclude": ["*.config*?js", "app/*.prod.js", "app/dist", "node_modules"]
 }

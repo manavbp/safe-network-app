@@ -1,6 +1,6 @@
 import React from 'react';
 import { I18n } from 'react-redux-i18n';
-import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 import { logger } from '$Logger';
 import { App } from '$Definitions/application.d';
 
@@ -84,12 +84,16 @@ export class AppStateButton extends React.Component<Props> {
         }
 
         return (
-            <Button
+            <Fab
+                className="primaryActionButton"
+                variant="extended"
+                size="small"
+                color="primary"
                 onClick={this.handleClick}
                 aria-label="Application Action Button"
             >
                 {buttonText}
-            </Button>
+            </Fab>
         );
     }
 }

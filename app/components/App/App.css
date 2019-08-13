@@ -1,0 +1,13 @@
+.wrap {
+    display: grid;
+    height: 100%;
+    grid-template-rows: 56px auto;
+}
+
+.headerBar {
+    grid-row: 1;
+}
+
+.containerBase {
+    grid-row: 2;
+}

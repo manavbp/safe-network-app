@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid, List } from '@material-ui/core';
 
 import { logger } from '$Logger';
 import styles from './Overview.css';
@@ -20,16 +20,24 @@ interface Props {
 export class Overview extends Component<Props> {
     loadApps = () => {
         const { appList, uninstallApp, installApp, openApp } = this.props;
-        return Object.values( appList ).map( ( theApplication ) => (
-            <ApplicationOverview
-                key={theApplication.name}
-                {...theApplication}
-                application={theApplication}
-                installApp={installApp}
-                uninstallApp={uninstallApp}
-                openApp={openApp}
-            />
-        ) );
+        return (
+            <Grid container justify="space-between">
+                <Grid item xs={12}>
+                    <List>
+                        {Object.values( appList ).map( ( theApplication ) => (
+                            <ApplicationOverview
+                                key={theApplication.name}
+                                {...theApplication}
+                                application={theApplication}
+                                installApp={installApp}
+                                uninstallApp={uninstallApp}
+                                openApp={openApp}
+                            />
+                        ) )}
+                    </List>
+                </Grid>
+            </Grid>
+        );
     };
 
     render() {
