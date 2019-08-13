@@ -9,6 +9,8 @@ const assertNoConsoleErrors = async ( t ): Promise<void> => {
 };
 
 fixture`HeaderBar`.page( '../app/app.html' ).beforeEach( async () => {
+    // @ts-ignore
+    await clickOnMainMenuItem( ['Tests', `Skip OnBoard App`] );
     await waitForReact();
 } );
 // .afterEach( assertNoConsoleErrors );

@@ -1,13 +1,17 @@
+import * as fs from 'fs-extra';
 import { app, Menu, shell } from 'electron';
+import path from 'path';
 import {
     pushNotification,
-    setUserPreferences
+    setUserPreferences,
+    setAppPreferences
 } from '$Actions/launchpad_actions';
 import { notificationTypes } from '$Constants/notifications';
 import { isRunningTestCafeProcess, defaultPreferences } from '$Constants/index';
 import { storePreferences } from '$Actions/alias/launchpad_actions';
 import { Application } from './definitions/application.d';
 import { logger } from '$Logger';
+import pkg from '$Package';
 
 export class MenuBuilder {
     private mainWindow: Application.Window;
@@ -307,6 +311,22 @@ export class MenuBuilder {
                             )
                         );
                     }
+                },
+                {
+                    label: 'OnBoard App',
+                    click: () => {
+                        this.store.dispatch(
+                            setAppPreferences( { shouldOnboard: true } )
+                        );
+                    }
+                },
+                {
+                    label: 'Skip OnBoard App',
+                    click: () => {
+                        this.store.dispatch(
+                            setAppPreferences( { shouldOnboard: false } )
+                        );
+                    }
                 }
             ]
         };
@@ -521,6 +541,22 @@ export class MenuBuilder {
                             setUserPreferences(
                                 defaultPreferences.userPreferences
                             )
+                        );
+                    }
+                },
+                {
+                    label: 'OnBoard App',
+                    click: () => {
+                        this.store.dispatch(
+                            setAppPreferences( { shouldOnboard: true } )
+                        );
+                    }
+                },
+                {
+                    label: 'Skip OnBoard App',
+                    click: () => {
+                        this.store.dispatch(
+                            setAppPreferences( { shouldOnboard: false } )
                         );
                     }
                 }

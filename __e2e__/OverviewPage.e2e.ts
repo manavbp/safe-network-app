@@ -1,5 +1,6 @@
 import { ClientFunction, Selector } from 'testcafe';
 import { ReactSelector, waitForReact } from 'testcafe-react-selectors';
+import { clickOnMainMenuItem } from 'testcafe-browser-provider-electron';
 import { getPageUrl, getPageTitle } from './helpers';
 
 const assertNoConsoleErrors = async ( t ): Promise<void> => {
@@ -8,6 +9,8 @@ const assertNoConsoleErrors = async ( t ): Promise<void> => {
 };
 
 fixture`Overview Page`.page( '../app/app.html' ).beforeEach( async () => {
+    // @ts-ignore
+    await clickOnMainMenuItem( ['Tests', `Skip OnBoard App`] );
     await waitForReact();
 } );
 // .afterEach( assertNoConsoleErrors );
