@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Link, Route } from 'react-router-dom';
+import _ from 'lodash';
 import Box from '@material-ui/core/Box';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -41,6 +42,8 @@ export class HeaderBar extends React.PureComponent<Props> {
         const targetTitle = currentPath.split( '/' )[1];
         const title = I18n.t( `pages.${targetTitle}` );
 
+        if ( _.startsWith( currentPath, ON_BOARDING ) ) return <div />;
+
         return (
             <div className={styles.headerBar}>
                 <Box>
@@ -52,16 +55,6 @@ export class HeaderBar extends React.PureComponent<Props> {
                         <Typography aria-label="title" variant="h5">
                             {title}
                         </Typography>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="Go to onboarding"
-                        >
-                            <Link to={ON_BOARDING}>
-                                <Star fontSize="inherit" />
-                            </Link>
-                        </IconButton>
-
                         <IconButton
                             edge="start"
                             color="inherit"

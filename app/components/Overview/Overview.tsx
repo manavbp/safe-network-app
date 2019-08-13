@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Grid } from '@material-ui/core';
 
+import { Redirect } from 'react-router';
 import { logger } from '$Logger';
 import styles from './Overview.css';
 import { App, AppManagerState } from '$Definitions/application.d';
 import { ApplicationOverview } from '$Components/ApplicationOverview';
+import { ON_BOARDING, HOME } from '$Constants/routes.json';
 
 interface Props {
     unInstallApp: Function;
@@ -13,6 +15,10 @@ interface Props {
     cancelDownload: Function;
     resumeDownload: Function;
     downloadAndInstallApp: Function;
+    installApp: Function;
+    appPreferences: {
+        shouldOnboard: boolean;
+    };
     appList: {
         app: App;
     };
@@ -47,7 +53,14 @@ export class Overview extends Component<Props> {
     };
 
     render() {
-        const { triggerSetAsTrayWindow, isTrayWindow } = this.props;
+        const {
+            triggerSetAsTrayWindow,
+            isTrayWindow,
+            appPreferences
+        } = this.props;
+
+        if ( appPreferences.shouldOnboard ) return <Redirect to={ON_BOARDING} />;
+
         return (
             <div className={styles.container} data-tid="container">
                 <span data-istraywindow={isTrayWindow} />

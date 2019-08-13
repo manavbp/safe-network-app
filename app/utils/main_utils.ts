@@ -56,14 +56,22 @@ export const preferencesJsonSetup = async ( store ) => {
             fs.pathExists( appFolderPath, ( error, exists ) => {
                 if ( error ) console.error( error );
                 if ( exists ) {
-                    fs.readJson( appFolderPath, ( readError, preferences ) => {
-                        if ( readError ) console.error( readError );
-                        setPreferences( store, preferences );
+                    let preferences = fs.readJsonSync( appFolderPath, {
+                        throws: false
                     } );
+                    if ( preferences === null ) {
+                        fs.outputJsonSync( appFolderPath, {
+                            ...defaultPreferences
+                        } );
+                        preferences = { ...defaultPreferences };
+                    }
+                    setPreferences( store, preferences );
                 } else
                     fs.ensureFile( appFolderPath, ( writeError ) => {
                         if ( writeError ) console.error( writeError );
-                        fs.outputJson( appFolderPath, { ...defaultPreferences } );
+                        fs.outputJsonSync( appFolderPath, {
+                            ...defaultPreferences
+                        } );
                         setPreferences( store, defaultPreferences );
                     } );
             } );
