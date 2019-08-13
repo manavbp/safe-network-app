@@ -24,14 +24,12 @@ import styles from './OnBoarding.css';
 
 interface Props {
     setAppPreferences: Function;
-    aliasShouldOnboard: Function;
     triggerSetAsTrayWindow: Function;
     userPreferences: UserPreferences;
     appPreferences: AppPreferences;
     setUserPreferences: Function;
     getUserPreferences: Function;
     isTrayWindow: boolean;
-    setOnboardCompleted: Function;
     autoLaunch: Function;
     history?: History;
 }

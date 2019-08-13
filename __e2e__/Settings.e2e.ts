@@ -14,6 +14,8 @@ const getPreferenceItems = () => {
 fixture`Settings Page`
     .page( '../app/app.html' )
     .beforeEach( async () => {
+        // @ts-ignore
+        await clickOnMainMenuItem( ['Tests', `Skip OnBoard App`] );
         await waitForReact();
     } )
     .afterEach( async () => {
