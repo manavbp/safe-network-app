@@ -103,7 +103,6 @@ describe( 'On Boarding', () => {
             .find( Stepper )
             .props()
             .onNext();
-        expect( props.storePreferences ).toHaveBeenCalled();
         expect( props.setAppPreferences ).toHaveBeenCalled();
     } );
 } );
