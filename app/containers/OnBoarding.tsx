@@ -1,10 +1,14 @@
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { BasicSettings } from '$Components/BasicSettings';
+import { OnBoarding } from '$Components/OnBoarding';
 
-import { setUserPreferences } from '$Actions/launchpad_actions';
 import {
-    storePreferences,
+    setUserPreferences,
+    setAppPreferences,
+    getUserPreferences
+} from '$Actions/launchpad_actions';
+
+import {
     autoLaunch,
     triggerSetAsTrayWindow
 } from '$Actions/alias/launchpad_actions';
@@ -12,14 +16,16 @@ import {
 const mapStateToProperties = ( state ) => {
     return {
         userPreferences: state.launchpad.userPreferences,
+        appPreferences: state.launchpad.appPreferences,
         isTrayWindow: state.launchpad.isTrayWindow
     };
 };
 
 const mapDispatchToProperties = ( dispatch ) => {
     const actions = {
+        setAppPreferences,
         setUserPreferences,
-        storePreferences,
+        getUserPreferences,
         autoLaunch,
         triggerSetAsTrayWindow
     };
@@ -29,4 +35,4 @@ const mapDispatchToProperties = ( dispatch ) => {
 export const OnBoardingPage: React.ComponentClass = connect(
     mapStateToProperties,
     mapDispatchToProperties
-)( BasicSettings );
+)( OnBoarding );
