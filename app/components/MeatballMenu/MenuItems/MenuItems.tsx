@@ -6,18 +6,24 @@ import { logger } from '$Logger';
 import styles from './MenuItems.css';
 
 interface MenuItemsProps {
-    uninstallApp: Function;
+    unInstallApp: Function;
     openApp: Function;
-    installApp: Function;
+
+    downloadAndInstallApp: Function;
+    pauseDownload: Function;
+    cancelDownload: Function;
+    resumeDownload: Function;
+
     application: App;
+
     handleClose: Function;
 }
 
 export class MenuItems extends Component<MenuItemsProps> {
     handleDownload = () => {
-        const { application, installApp, handleClose } = this.props;
+        const { application, downloadAndInstallApp, handleClose } = this.props;
         logger.silly( 'MeatballMenu: clicked download ', application );
-        installApp( application );
+        downloadAndInstallApp( application );
         handleClose();
     };
 
@@ -29,9 +35,30 @@ export class MenuItems extends Component<MenuItemsProps> {
     };
 
     handleUninstall = () => {
-        const { application, uninstallApp, handleClose } = this.props;
+        const { application, unInstallApp, handleClose } = this.props;
         logger.silly( 'MeatballMenu: clicked uninstall: ', application );
-        uninstallApp( application );
+        unInstallApp( application );
+        handleClose();
+    };
+
+    handleCancelDownload = () => {
+        const { application, cancelDownload, handleClose } = this.props;
+        logger.silly( 'MeatballMenu: clicked cancel', application );
+        cancelDownload( application );
+        handleClose();
+    };
+
+    handleResumeDownload = () => {
+        const { application, resumeDownload, handleClose } = this.props;
+        logger.silly( 'MeatballMenu: clicked resume download', application );
+        resumeDownload( application );
+        handleClose();
+    };
+
+    handlePauseDownload = () => {
+        const { application, pauseDownload, handleClose } = this.props;
+        logger.silly( 'MeatballMenu: clicked pause download', application );
+        pauseDownload( application );
         handleClose();
     };
 
@@ -40,10 +67,10 @@ export class MenuItems extends Component<MenuItemsProps> {
             name,
             id,
             progress,
-            isInstalling,
+            isDownloadingAndInstalling,
             isUninstalling,
-            isUpdating,
-            isDownloading,
+            isPaused,
+            isDownloadingAndUpdating,
             hasUpdate,
             isInstalled,
             installFailed
@@ -61,6 +88,9 @@ export class MenuItems extends Component<MenuItemsProps> {
                 <MenuItem
                     dense
                     className={styles['menu-item']}
+                    aria-label={
+                        isInstalled ? `Uninstall ${name}` : `Install ${name}`
+                    }
                     onClick={
                         isInstalled ? this.handleUninstall : this.handleDownload
                     }
@@ -72,41 +102,41 @@ export class MenuItems extends Component<MenuItemsProps> {
                         <MenuItem
                             dense
                             className={styles['menu-item']}
-                            onClick={() =>
-                                logger.warn(
-                                    'No method setup for checking for updates as yet.'
-                                )
-                            }
-                        >
-                            Check For Updates
-                        </MenuItem>
-                        <MenuItem
-                            dense
-                            className={styles['menu-item']}
                             onClick={this.handleOpen}
+                            aria-label={`Open ${name}`}
                         >
                             Open
                         </MenuItem>
                     </React.Fragment>
                 )}
-                {isDownloading && (
-                    <React.Fragment>
-                        <MenuItem dense className={styles['menu-item']}>
-                            Cancel Install
-                        </MenuItem>
-                        <MenuItem dense className={styles['menu-item']}>
-                            Pause Download
-                        </MenuItem>
-                    </React.Fragment>
-                )}
-                {isInstalling && (
-                    <MenuItem dense className={styles['menu-item']}>
+                {isDownloadingAndInstalling && (
+                    <MenuItem
+                        aria-label="Cancel Download"
+                        dense
+                        className={styles['menu-item']}
+                        onClick={this.handleCancelDownload}
+                    >
                         Cancel Install
                     </MenuItem>
                 )}
-                {installFailed && (
-                    <MenuItem dense className={styles['menu-item']}>
-                        Retry Install
+                {!isPaused && (
+                    <MenuItem
+                        aria-label="Pause Download"
+                        dense
+                        className={styles['menu-item']}
+                        onClick={this.handlePauseDownload}
+                    >
+                        Pause Download
+                    </MenuItem>
+                )}
+                {isPaused && (
+                    <MenuItem
+                        aria-label="Resume Download"
+                        dense
+                        className={styles['menu-item']}
+                        onClick={this.handleResumeDownload}
+                    >
+                        Pause Download
                     </MenuItem>
                 )}
                 {hasUpdate && (

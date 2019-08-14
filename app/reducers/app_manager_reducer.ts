@@ -57,10 +57,6 @@ export function appManager( state = initialState, action ): AppManagerState {
     if ( payload && payload.id ) {
         targetApp = { ...state.applicationList[payload.id] };
     }
-    // else
-    // {
-    //     logger.warn("Store received application without an \"id\" field.", action )
-    // }
 
     switch ( action.type ) {
         case `${TYPES.SET_APPS}`: {
@@ -69,66 +65,78 @@ export function appManager( state = initialState, action ): AppManagerState {
 
         case TYPES.RESET_APP_STATE: {
             if ( !targetApp ) return state;
-            targetApp.isInstalling = false;
+            targetApp.isDownloadingAndInstalling = false;
             targetApp.isUninstalling = false;
-            targetApp.isUpdating = false;
+            targetApp.isDownloadingAndUpdating = false;
             targetApp.progress = null;
             targetApp.error = null;
             return updateAppInApplicationList( state, targetApp );
         }
 
         // INSTALL
-        case TYPES.CANCEL_APP_INSTALLATION: {
-            if ( !targetApp || !targetApp.isInstalling ) return state;
-            targetApp.isInstalling = false;
-            targetApp.isDownloading = false;
+        case APP_TYPES.CANCEL_APP_DOWNLOAD_AND_INSTALLATION: {
+            if ( !targetApp || !targetApp.isDownloadingAndInstalling )
+                return state;
+            targetApp.isDownloadingAndInstalling = false;
             targetApp.progress = 0;
-            return updateAppInApplicationList( state, targetApp );
-        }
-
-        case TYPES.PAUSE_APP_INSTALLATION: {
-            if ( !targetApp || !targetApp.isInstalling ) return state;
-            targetApp.isInstalling = false;
-            return updateAppInApplicationList( state, targetApp );
-        }
-
-        case TYPES.RETRY_APP_INSTALLATION: {
-            if ( !targetApp || targetApp.isInstalling ) return state;
-            targetApp.isInstalling = true;
-            targetApp.isDownloading = true;
+            targetApp.isPaused = false;
 
             return updateAppInApplicationList( state, targetApp );
         }
 
-        case APP_TYPES.INSTALL_APP_PENDING: {
-            logger.info( 'Pending in the state....' );
+        case APP_TYPES.PAUSE_APP_DOWNLOAD_AND_INSTALLATION: {
+            if ( !targetApp || !targetApp.isDownloadingAndInstalling )
+                return state;
+            targetApp.isDownloadingAndInstalling = true;
+            targetApp.isPaused = true;
+            return updateAppInApplicationList( state, targetApp );
+        }
+
+        case APP_TYPES.RESUME_APP_DOWNLOAD_AND_INSTALLATION: {
+            if ( !targetApp || !targetApp.isDownloadingAndInstalling )
+                return state;
+            targetApp.isDownloadingAndInstalling = true;
+            targetApp.isPaused = false;
+
+            return updateAppInApplicationList( state, targetApp );
+        }
+
+        case APP_TYPES.DOWNLOAD_AND_INSTALL_APP_PENDING: {
             if ( !targetApp ) return state;
-            targetApp.isInstalling = true;
-            // these things are 99% the same....... kets do away with one?
-            targetApp.isDownloading = true;
+            targetApp.isDownloadingAndInstalling = true;
             targetApp.progress = payload.progress || 0;
+            targetApp.error = null;
+
             return updateAppInApplicationList( state, targetApp );
         }
 
-        case APP_TYPES.INSTALL_APP_SUCCESS: {
-            if ( !targetApp || !targetApp.isInstalling ) return state;
+        case APP_TYPES.UPDATE_DOWNLOAD_PROGRESS: {
+            if ( !targetApp ) return state;
+            targetApp.progress = payload.progress || 0;
+
+            return updateAppInApplicationList( state, targetApp );
+        }
+
+        case APP_TYPES.DOWNLOAD_AND_INSTALL_APP_SUCCESS: {
+            if ( !targetApp || !targetApp.isDownloadingAndInstalling )
+                return state;
 
             // TODO: this data needs to be saved to local.
-            targetApp.isInstalling = false;
+            targetApp.isDownloadingAndInstalling = false;
             targetApp.isInstalled = true;
             targetApp.progress = 100;
-            targetApp.isDownloading = false;
+            targetApp.isPaused = false;
 
             return updateAppInApplicationList( state, targetApp );
         }
 
-        case APP_TYPES.INSTALL_APP_FAILURE: {
-            if ( !targetApp || !targetApp.isInstalling ) return state;
-            targetApp.isInstalling = false;
-            targetApp.installFailed = true;
+        case APP_TYPES.DOWNLOAD_AND_INSTALL_APP_FAILURE: {
+            if ( !targetApp ) return state;
+            targetApp.isDownloadingAndInstalling = false;
+            targetApp.installFailed = true; // why do we need this?
             targetApp.progress = 0;
+            targetApp.isPaused = false;
             targetApp.error = payload.error;
-            targetApp.isDownloading = false;
 
             return updateAppInApplicationList( state, targetApp );
         }
@@ -154,14 +162,14 @@ export function appManager( state = initialState, action ): AppManagerState {
 
         case `${ALIAS_TYPES.ALIAS_UPDATE_APP}_PENDING`: {
             if ( !targetApp ) return state;
-            targetApp.isUpdating = true;
+            targetApp.isDownloadingAndUpdating = true;
             targetApp.progress = payload.progress || 0;
             return updateAppInApplicationList( state, targetApp );
         }
 
         case `${ALIAS_TYPES.ALIAS_UPDATE_APP}_SUCCESS`: {
             if ( !targetApp ) return state;
-            targetApp.isUpdating = false;
+            targetApp.isDownloadingAndUpdating = false;
             targetApp.hasUpdate = false;
             targetApp.progress = 100;
             return updateAppInApplicationList( state, targetApp );
@@ -169,7 +177,7 @@ export function appManager( state = initialState, action ): AppManagerState {
 
         case `${ALIAS_TYPES.ALIAS_UPDATE_APP}_FAILURE`: {
             if ( !targetApp ) return state;
-            targetApp.isUpdating = false;
+            targetApp.isDownloadingAndUpdating = false;
             targetApp.progress = 0;
             targetApp.error = payload.error;
             return updateAppInApplicationList( state, targetApp );
