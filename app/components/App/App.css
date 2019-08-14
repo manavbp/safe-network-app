@@ -11,3 +11,8 @@
 .containerBase {
     grid-row: 2;
 }
+
+.standardWindow {
+    padding-top: 20px;
+    box-sizing: border-box;
+}

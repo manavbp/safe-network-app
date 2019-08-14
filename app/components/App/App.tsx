@@ -8,6 +8,7 @@ import styles from './App.css';
 
 interface Props {
     children: React.ReactChild;
+    isTrayWindow: boolean;
     notifications: object;
     notificationCheckBox: boolean;
     acceptNotification: any;
@@ -24,6 +25,7 @@ interface Props {
 export class App extends React.PureComponent<Props> {
     render() {
         const {
+            isTrayWindow,
             notifications,
             children,
             notificationToggleCheckBox,
@@ -34,9 +36,12 @@ export class App extends React.PureComponent<Props> {
         } = this.props;
 
         const currentPath = router.location.pathname;
-
+        const baseClassList = [
+            styles.wrap,
+            !isTrayWindow ? styles.standardWindow : ''
+        ];
         return (
-            <div className={styles.wrap}>
+            <div className={baseClassList.join( ' ' )}>
                 <div className={styles.headerBar}>
                     <HeaderBar currentPath={currentPath} />
                 </div>
