@@ -3,7 +3,7 @@ import { mount, shallow } from 'enzyme';
 
 import configureStore from 'redux-mock-store';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 import Typography from '@material-ui/core/Typography';
 
 import { AppStateButton } from '$App/components/AppStateButton';
@@ -98,7 +98,7 @@ describe( 'AppStateButton', () => {
 
     describe( 'render', () => {
         it( 'has one install button normally', () => {
-            expect( wrapper.find( Button ) ).toHaveLength( 1 );
+            expect( wrapper.find( Fab ) ).toHaveLength( 1 );
         } );
         it( 'has lno progress circle normally', () => {
             expect( wrapper.find( CircularProgress ) ).toHaveLength( 0 );
@@ -115,7 +115,7 @@ describe( 'AppStateButton', () => {
             };
             wrapper = shallow( <AppStateButton {...props} /> );
 
-            expect( wrapper.find( Button ) ).toHaveLength( 2 );
+            expect( wrapper.find( Fab ) ).toHaveLength( 2 );
             expect( wrapper.find( CircularProgress ) ).toHaveLength( 1 );
         } );
 
@@ -129,7 +129,7 @@ describe( 'AppStateButton', () => {
             };
             wrapper = shallow( <AppStateButton {...props} /> );
 
-            expect( wrapper.find( Button ) ).toHaveLength( 2 );
+            expect( wrapper.find( Fab ) ).toHaveLength( 2 );
 
             const action = wrapper.find(
                 '[aria-label="Application Action Button"]'
@@ -159,7 +159,7 @@ describe( 'AppStateButton', () => {
             };
             wrapper = shallow( <AppStateButton {...props} /> );
 
-            expect( wrapper.find( Button ) ).toHaveLength( 2 );
+            expect( wrapper.find( Fab ) ).toHaveLength( 2 );
 
             const action = wrapper.find(
                 '[aria-label="Application Action Button"]'
@@ -189,7 +189,7 @@ describe( 'AppStateButton', () => {
             };
             wrapper = shallow( <AppStateButton {...props} /> );
 
-            expect( wrapper.find( Button ) ).toHaveLength( 1 );
+            expect( wrapper.find( Fab ) ).toHaveLength( 1 );
             expect( wrapper.find( Typography ) ).toHaveLength( 1 );
 
             const action = wrapper.find(
