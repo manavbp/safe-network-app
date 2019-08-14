@@ -122,7 +122,6 @@ export class AppStateButton extends React.Component<Props> {
                     className={styles.actionButton}
                     variant="extended"
                     color="primary"
-                    size="small"
                     onClick={handleClick}
                     aria-label="Application Action Button"
                 >
@@ -138,7 +137,6 @@ export class AppStateButton extends React.Component<Props> {
                     <Fab
                         className={styles.actionButton}
                         variant="extended"
-                        size="small"
                         color="primary"
                         onClick={handleSecondButtonClick}
                         aria-label="Application Secondary Action Button"

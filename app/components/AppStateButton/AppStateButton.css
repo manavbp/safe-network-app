@@ -2,6 +2,9 @@ button.actionButton {
     box-shadow: none;
     background-color: #4054b2;
     color: #fff;
-    height: 24px !important;
+    height: 24px;
+    border-radius: 17px;
+    padding: 0 8px;
+    min-width: 34px;
     font-size: 0.75rem;
 }
