@@ -88,8 +88,8 @@ describe( 'ApplicationDetail', () => {
             expect( html.includes( 'button' ) ).toBeTruthy();
         } );
 
-        // it( 'one header', () => {
-        //     expect( html.includes( 'h4' ) ).toBeTruthy();
-        // } );
+        it( 'one header', () => {
+            expect( html.includes( 'h6' ) ).toBeTruthy();
+        } );
     } );
 } );
