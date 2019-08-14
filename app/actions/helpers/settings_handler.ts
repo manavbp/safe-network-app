@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import * as fse from 'fs-extra';
+import { logger } from '$Logger';
 import pkg from '$Package';
 
 import { Preferences } from '$Definitions/application.d';
@@ -35,7 +36,7 @@ class SettingsHandler {
             );
 
             fse.ensureFile( appFolderPath, ( error ) => {
-                console.log( error );
+                if ( error ) logger.error( error );
             } );
             return appFolderPath;
         } catch ( error ) {
@@ -48,7 +49,7 @@ class SettingsHandler {
         return new Promise( async ( resolve, reject ) => {
             const appFolderPath = this.getJsonPath();
             try {
-                fse.outputJson( appFolderPath, { ...preferences } );
+                fse.outputJsonSync( appFolderPath, { ...preferences } );
                 return resolve();
             } catch ( error ) {
                 return reject( error );
@@ -60,7 +61,7 @@ class SettingsHandler {
         return new Promise( async ( resolve, reject ) => {
             const appFolderPath = await this.getJsonPath();
             try {
-                return resolve( fse.readJson( appFolderPath ) );
+                return resolve( fse.readJsonSync( appFolderPath ) );
             } catch ( error ) {
                 return reject( error );
             }

@@ -38,6 +38,8 @@ const Notifications = {
 const numberOfNotification = Object.keys( Notifications );
 
 fixture`Check App Notification`.page( '../app/app.html' ).beforeEach( async () => {
+    // @ts-ignore
+    await clickOnMainMenuItem( ['Tests', `Skip OnBoard App`] );
     await waitForReact();
 } );
 

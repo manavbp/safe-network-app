@@ -30,6 +30,10 @@ module.exports = {
         'arrow-parens': ['error', 'always'],
         'no-use-before-define': 'off',
         'unicorn/catch-error-name': 'off',
+        'no-unused-expressions': [
+            'error',
+            { allowShortCircuit: true, allowTernary: true }
+        ],
         'unicorn/filename-case': 'off',
         'unicorn/prefer-exponentiation-operator': 'off',
         'unicorn/prefer-query-selector': 'off',

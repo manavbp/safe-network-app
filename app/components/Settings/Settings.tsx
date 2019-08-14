@@ -21,7 +21,6 @@ interface Props {
     appPreferences: AppPreferences;
     setUserPreferences: Function;
     getUserPreferences: Function;
-    storePreferences: Function;
     triggerSetAsTrayWindow: Function;
     autoLaunch: Function;
     history?: History;
@@ -39,17 +38,7 @@ export class Settings extends Component<Props> {
     };
 
     handlePreferenceChange = ( userPreferences: UserPreferences ) => {
-        const {
-            storePreferences,
-            setUserPreferences,
-            appPreferences
-        } = this.props;
-        const preferences: PreferencesDef = {
-            userPreferences,
-            appPreferences
-        };
-        storePreferences( preferences );
-        setUserPreferences( userPreferences );
+        this.props.setUserPreferences( userPreferences );
     };
 
     render() {

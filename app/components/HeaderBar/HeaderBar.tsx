@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Link, Route } from 'react-router-dom';
+import _ from 'lodash';
 import Box from '@material-ui/core/Box';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
@@ -50,6 +51,8 @@ export class HeaderBar extends React.PureComponent<Props> {
         // path always starts with a slash
         const targetTitle = currentPath.split( '/' )[1];
         const title = I18n.t( `pages.${targetTitle}` );
+
+        if ( currentPath.startsWith( ON_BOARDING ) ) return <div />;
 
         return (
             <Box className={styles.base}>
