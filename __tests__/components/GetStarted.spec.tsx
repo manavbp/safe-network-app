@@ -37,22 +37,8 @@ describe( 'Get Started', () => {
         expect(
             getContainer( wrapper )
                 .childAt( 0 )
-                .text()
-        ).toEqual( 'SAFE Launchpad' );
-        expect(
-            getContainer( wrapper )
-                .childAt( 0 )
                 .prop( 'variant' )
         ).toEqual( 'h5' );
-    } );
-
-    it( 'description should be right', () => {
-        const { wrapper } = shallowSetup();
-        expect(
-            getContainer( wrapper )
-                .childAt( 1 )
-                .text()
-        ).toEqual( 'All the apps you need to try the SAFE Network' );
     } );
 
     it( 'clicking Get Started button works', () => {

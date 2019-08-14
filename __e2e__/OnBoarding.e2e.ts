@@ -37,10 +37,65 @@ test( 'load on-boarding if not completed', async ( t ) => {
     await t.expect( getPageUrl() ).contains( '#/on-boarding' );
 } );
 
+test( 'check getStarted page Title', async ( t ) => {
+    await t
+        .expect(
+            Selector( 'h5' ).withAttribute( 'aria-label', 'GetStartedTitle' )
+                .innerText
+        )
+        .eql( 'SAFE Network App' );
+} );
+
+test( 'check getStarted page SubTitle', async ( t ) => {
+    await t
+        .expect(
+            Selector( 'p' ).withAttribute( 'aria-label', 'GetStartedSubTitle' )
+                .innerText
+        )
+        .eql( 'All the apps you need to try the SAFE Network' );
+} );
+
+test( 'check get started page Button Text', async ( t ) => {
+    await t
+        .expect(
+            Selector( 'button' ).withAttribute( 'aria-label', 'GetStarted' )
+                .innerText
+        )
+        .eql( 'GET STARTED' );
+} );
+
 test( 'click Get Started button to navigate to Intro page', async ( t ) => {
     await clickGetStartedButton( t );
 
     await t.expect( Selector( 'div' ).withAttribute( 'aria-label', 'Intro' ) ).ok();
+} );
+
+test( 'check Intro page Title', async ( t ) => {
+    await clickGetStartedButton( t );
+
+    await t.expect( Selector( 'div' ).withAttribute( 'aria-label', 'Intro' ) ).ok();
+
+    await t
+        .expect(
+            Selector( 'h5' ).withAttribute( 'aria-label', 'IntroPageTitle' )
+                .innerText
+        )
+        .eql( 'One Place for All SAFE Apps' );
+} );
+
+test( 'check Intro page SubTitle', async ( t ) => {
+    await clickGetStartedButton( t );
+
+    await t.expect( Selector( 'div' ).withAttribute( 'aria-label', 'Intro' ) ).ok();
+
+    await t
+        .expect(
+            Selector( 'p' ).withAttribute( 'aria-label', 'IntroPageSubTitle' )
+                .innerText
+        )
+        .eql(
+            'A one-stop shop to access all SAFE Apps and manage instant app updates.'
+        );
 } );
 
 test( 'click back button to go back to Get started from Intro', async ( t ) => {

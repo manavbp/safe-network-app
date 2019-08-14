@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
+import { I18n } from 'react-redux-i18n';
 import Toolbar from '@material-ui/core/Toolbar';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
@@ -39,11 +40,10 @@ export const BasicSettings = ( properties ) => {
         >
             <Box>
                 <Typography className={styles.Title} variant="h5">
-                    Basic Settings
+                    {I18n.t( `onboarding.title.basic_settings` )}
                 </Typography>
                 <Typography>
-                    Choose some basic settings. You can always change these
-                    later.
+                    {I18n.t( `onboarding.subTitle.basic_settings` )}
                 </Typography>
                 <Grid item xs={12}>
                     <Preferences

@@ -1,6 +1,7 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
+import { I18n } from 'react-redux-i18n';
 import Box from '@material-ui/core/Box';
 import Fab from '@material-ui/core/Fab';
 // @ts-ignore
@@ -23,11 +24,15 @@ export const GetStarted = ( properties ) => {
                 <img src={Logo} alt="Launchpad logo" />
             </Box>
             <Box className={styles.Container}>
-                <Typography className={styles.Title} variant="h5">
-                    SAFE Launchpad
+                <Typography
+                    className={styles.Title}
+                    variant="h5"
+                    aria-label="GetStartedTitle"
+                >
+                    {I18n.t( `onboarding.title.getStarted` )}
                 </Typography>
-                <Typography>
-                    All the apps you need to try the SAFE Network
+                <Typography aria-label="GetStartedSubTitle">
+                    {I18n.t( `onboarding.subTitle.getStarted` )}
                 </Typography>
                 <Fab
                     className={styles.GetStartedButton}
@@ -40,7 +45,7 @@ export const GetStarted = ( properties ) => {
                         history.push( INTRO );
                     }}
                 >
-                    Get Started
+                    {I18n.t( `onboarding.button.getStarted` )}
                 </Fab>
             </Box>
         </Paper>

@@ -15,6 +15,21 @@
         "uninstalling": "Uninstalling",
         "open": "Open"
     },
+    "onboarding": {
+        "title": {
+            "getStarted": "SAFE Network App",
+            "intro": "One Place for All SAFE Apps",
+            "basic_settings": "Basic Settings"
+        },
+        "subTitle": {
+            "getStarted": "All the apps you need to try the SAFE Network",
+            "intro": "A one-stop shop to access all SAFE Apps and manage instant app updates.",
+            "basic_settings": "Choose some basic settings. You can always change these later."
+        },
+        "button": {
+            "getStarted": "Get Started"
+        }
+    },
     "notifications": {
         "title": {
             "disc_full": "Disk is full. Your install has been paused. Free up some space and resume.",
