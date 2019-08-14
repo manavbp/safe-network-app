@@ -2,6 +2,6 @@ button.actionButton {
     box-shadow: none;
     background-color: #4054b2;
     color: #fff;
-    height: 24px;
+    height: 24px !important;
     font-size: 0.75rem;
 }

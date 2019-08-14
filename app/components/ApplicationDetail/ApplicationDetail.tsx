@@ -63,6 +63,11 @@ export class ApplicationDetail extends React.PureComponent<Props> {
                             <FolderIcon fontSize="large" />
                         </Avatar>
                     </Grid>
+                    <Grid item xs={12} className={styles.error}>
+                        <Typography color="error" variant="body2">
+                            {application.error}
+                        </Typography>
+                    </Grid>
                     <Grid item xs={12} className={styles.appDesc}>
                         <Typography aria-label="description" variant="body2">
                             {application.description}

@@ -84,7 +84,6 @@ export class AppStateButton extends React.Component<Props> {
 
         let handleClick = isInstalled ? this.handleOpen : this.handleDownload;
         let handleSecondButtonClick = () => {}; // otherwise nothing
-        const errorMessage = error;
 
         if ( error ) {
             buttonText = I18n.t( `buttons.retryInstall` );
@@ -119,13 +118,11 @@ export class AppStateButton extends React.Component<Props> {
 
         return (
             <React.Fragment>
-                {errorMessage && (
-                    <Typography color="error">{errorMessage}</Typography>
-                )}
                 <Fab
                     className={styles.actionButton}
                     variant="extended"
                     color="primary"
+                    size="small"
                     onClick={handleClick}
                     aria-label="Application Action Button"
                 >
@@ -141,6 +138,7 @@ export class AppStateButton extends React.Component<Props> {
                     <Fab
                         className={styles.actionButton}
                         variant="extended"
+                        size="small"
                         color="primary"
                         onClick={handleSecondButtonClick}
                         aria-label="Application Secondary Action Button"

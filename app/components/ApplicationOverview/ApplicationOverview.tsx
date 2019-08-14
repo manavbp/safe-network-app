@@ -41,7 +41,13 @@ export class ApplicationOverview extends React.PureComponent<Props> {
                         </Avatar>
                     </ListItemAvatar>
                     <Link to={`/application/${application.id}`}>
-                        <ListItemText primary={application.name} />
+                        <ListItemText
+                            primary={application.name}
+                            secondary={application.error}
+                            secondaryTypographyProps={{
+                                color: 'error'
+                            }}
+                        />
                     </Link>
                     <ListItemSecondaryAction className={styles.actions}>
                         <AppStateButton {...this.props} />

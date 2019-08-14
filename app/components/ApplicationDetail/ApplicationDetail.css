@@ -16,6 +16,9 @@
 .wrap .appDesc p {
     margin-bottom: 30px;
 }
+.wrap .error {
+    margin-bottom: 16px;
+}
 .appInfo {
     padding-bottom: 25px;
 }

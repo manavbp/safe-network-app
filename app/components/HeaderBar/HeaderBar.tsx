@@ -53,7 +53,7 @@ export class HeaderBar extends React.PureComponent<Props> {
 
         return (
             <Box className={styles.base}>
-                <Toolbar className={styles.wrap}>
+                <Toolbar className={styles.wrap} disableGutters>
                     {
                         // This regex route matches everywhere, but `/` home
                     }
