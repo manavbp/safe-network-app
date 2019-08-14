@@ -28,25 +28,7 @@ describe( 'Intro', () => {
             wrapper
                 .childAt( 0 )
                 .childAt( 0 )
-                .text()
-        ).toEqual( 'One Place for All SAFE Apps' );
-        expect(
-            wrapper
-                .childAt( 0 )
-                .childAt( 0 )
                 .prop( 'variant' )
         ).toEqual( 'h5' );
-    } );
-
-    it( 'description should be right', () => {
-        const { wrapper } = shallowSetup();
-        expect(
-            wrapper
-                .childAt( 0 )
-                .childAt( 1 )
-                .text()
-        ).toEqual(
-            'A one-stop shop to access all SAFE Apps and manage instant app updates.'
-        );
     } );
 } );

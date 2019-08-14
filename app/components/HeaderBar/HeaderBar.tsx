@@ -42,7 +42,7 @@ export class HeaderBar extends React.PureComponent<Props> {
         const targetTitle = currentPath.split( '/' )[1];
         const title = I18n.t( `pages.${targetTitle}` );
 
-        if ( _.startsWith( currentPath, ON_BOARDING ) ) return <div />;
+        if ( currentPath.startsWith( ON_BOARDING ) ) return <div />;
 
         return (
             <div className={styles.headerBar}>
