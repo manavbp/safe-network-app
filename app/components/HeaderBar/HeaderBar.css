@@ -10,7 +10,7 @@
 .appLogo img {
     height: 100%;
 }
-.title {
+.navigation .title {
     float: right;
-    line-height: 50px !important;
+    line-height: 50px;
 }

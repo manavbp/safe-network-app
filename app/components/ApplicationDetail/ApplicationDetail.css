@@ -5,25 +5,25 @@
     background-color: #fafafa;
     box-sizing: border-box;
 }
+.wrap .appIcon {
+    width: 80px;
+    height: 80px;
+    float: right;
+}
+.wrap .appDesc {
+    margin-bottom: 16px;
+}
+.wrap .appDesc p {
+    margin-bottom: 30px;
+}
 .appInfo {
     padding-bottom: 25px;
 }
 .appInfoActions {
     margin-top: 16px;
 }
-.appSize {
-    margin-left: 16px !important;
-}
-.appIcon {
-    width: 80px !important;
-    height: 80px !important;
-    float: right;
-}
-.appDesc {
-    margin-bottom: 16px !important;
-}
-.appDesc p {
-    margin-bottom: 30px !important;
+.appInfoActions .appSize {
+    margin-left: 16px;
 }
 
 .markdown h3 {

@@ -57,7 +57,7 @@ export class HeaderBar extends React.PureComponent<Props> {
                     {
                         // This regex route matches everywhere, but `/` home
                     }
-                    <Box>
+                    <Box className={styles.navigation}>
                         <Route path="/" component={BackButton} />
                         {currentPath === '/' ? (
                             <AppLogo />

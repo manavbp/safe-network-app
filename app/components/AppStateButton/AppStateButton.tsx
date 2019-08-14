@@ -4,6 +4,8 @@ import Fab from '@material-ui/core/Fab';
 import { logger } from '$Logger';
 import { App } from '$Definitions/application.d';
 
+import styles from './AppStateButton.css';
+
 interface Props {
     uninstallApp: Function;
     openApp: Function;
@@ -85,9 +87,8 @@ export class AppStateButton extends React.Component<Props> {
 
         return (
             <Fab
-                className="primaryActionButton"
+                className={styles.actionButton}
                 variant="extended"
-                size="small"
                 color="primary"
                 onClick={this.handleClick}
                 aria-label="Application Action Button"

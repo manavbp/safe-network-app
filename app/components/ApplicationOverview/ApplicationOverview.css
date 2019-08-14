@@ -1,6 +1,6 @@
-.list {
-    padding-right: 140px !important;
+li .list {
+    padding-right: 140px;
 }
-.actions {
-    right: 0 !important;
+li .actions {
+    right: 0;
 }
