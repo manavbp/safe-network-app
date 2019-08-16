@@ -13,19 +13,11 @@ import { Preferences } from '$Components/Preferences';
 interface Props {
     userPreferences: UserPreferences;
     setUserPreferences: Function;
-    triggerSetAsTrayWindow: Function;
-    autoLaunch: Function;
     isTrayWindow: boolean;
 }
 
 export const BasicSettings = ( properties ) => {
-    const {
-        userPreferences,
-        setUserPreferences,
-        triggerSetAsTrayWindow,
-        autoLaunch,
-        isTrayWindow
-    } = properties;
+    const { userPreferences, setUserPreferences, isTrayWindow } = properties;
     const requiredItems = {
         autoUpdate: true,
         pinToMenuBar: true,
@@ -51,8 +43,6 @@ export const BasicSettings = ( properties ) => {
                         userPreferences={userPreferences}
                         requiredItems={requiredItems}
                         onChange={setUserPreferences}
-                        onChangeLaunchOnStart={autoLaunch}
-                        onChangePinToMenu={triggerSetAsTrayWindow}
                     />
                 </Grid>
             </Box>

@@ -5,13 +5,14 @@ import { PreferenceItem } from './PreferenceItem';
 
 import { UserPreferences } from '$Definitions/application.d';
 import { generateRandomString } from '$Utils/app_utils';
+import { SETTINGS } from '$Constants/routes.json';
 
 interface Props {
     userPreferences: UserPreferences;
     requiredItems?: { [item: string]: boolean };
     onChange: Function;
-    onChangeLaunchOnStart: Function;
-    onChangePinToMenu: Function;
+    onChangeLaunchOnStart?: Function;
+    onChangePinToMenu?: Function;
     isTrayWindow: boolean;
 }
 
@@ -50,9 +51,9 @@ export class Preferences extends Component<Props> {
                 break;
         }
 
-        if ( name === 'pinToMenuBar' ) userPreferences[name] = !isTrayWindow;
+        if ( name === 'pinToMenuBar' )
+            userPreferences[name] = !userPreferences.pinToMenuBar;
         else userPreferences[name] = changedStatus;
-
         onChange( userPreferences );
     };
 
