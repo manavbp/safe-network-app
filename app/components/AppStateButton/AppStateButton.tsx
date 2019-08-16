@@ -13,6 +13,7 @@ interface Props {
     pauseDownload: Function;
     cancelDownload: Function;
     resumeDownload: Function;
+    showErrorText?: boolean;
     application: App;
 }
 
@@ -60,7 +61,7 @@ export class AppStateButton extends React.Component<Props> {
     };
 
     render() {
-        const { application } = this.props;
+        const { application, showErrorText = false } = this.props;
 
         const {
             isDownloadingAndInstalling,
@@ -84,6 +85,7 @@ export class AppStateButton extends React.Component<Props> {
 
         let handleClick = isInstalled ? this.handleOpen : this.handleDownload;
         let handleSecondButtonClick = () => {}; // otherwise nothing
+        const errorMessage = showErrorText ? error : null;
 
         if ( error ) {
             buttonText = I18n.t( `buttons.retryInstall` );
@@ -118,6 +120,9 @@ export class AppStateButton extends React.Component<Props> {
 
         return (
             <React.Fragment>
+                {errorMessage && (
+                    <Typography color="error">{errorMessage}</Typography>
+                )}
                 <Fab
                     className={styles.actionButton}
                     variant="extended"

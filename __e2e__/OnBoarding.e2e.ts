@@ -22,7 +22,7 @@ const clickNavBackButton = async ( t ) => {
     );
 };
 
-fixture.skip`On Boarding Page`.page( '../app/app.html' ).beforeEach( async () => {
+fixture`On Boarding Page`.page( '../app/app.html' ).beforeEach( async () => {
     // @ts-ignore
     await clickOnMainMenuItem( ['Tests', `OnBoard App`] );
 

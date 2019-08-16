@@ -1,18 +1,18 @@
-.wrap {
+.standardWindow {
+    padding-top: 20px;
+    box-sizing: border-box;
+}
+
+.gridContainer {
     display: grid;
     height: 100%;
     grid-template-rows: 56px auto;
 }
 
-.headerBar {
+.gridContainer .headerBar {
     grid-row: 1;
 }
 
-.containerBase {
+.gridContainer .containerBase {
     grid-row: 2;
-}
-
-.standardWindow {
-    padding-top: 20px;
-    box-sizing: border-box;
 }

@@ -48,6 +48,7 @@ export class ApplicationDetail extends React.PureComponent<Props> {
                                 <AppStateButton
                                     {...this.props}
                                     application={application}
+                                    showErrorText
                                 />
                             </Grid>
                             <Grid item className={styles.appSize}>
@@ -62,11 +63,6 @@ export class ApplicationDetail extends React.PureComponent<Props> {
                         <Avatar className={styles.appIcon}>
                             <FolderIcon fontSize="large" />
                         </Avatar>
-                    </Grid>
-                    <Grid item xs={12} className={styles.error}>
-                        <Typography color="error" variant="body2">
-                            {application.error}
-                        </Typography>
                     </Grid>
                     <Grid item xs={12} className={styles.appDesc}>
                         <Typography aria-label="description" variant="body2">

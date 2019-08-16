@@ -9,6 +9,7 @@ import styles from './App.css';
 interface Props {
     children: React.ReactChild;
     isTrayWindow: boolean;
+    shouldOnboard: boolean;
     notifications: object;
     notificationCheckBox: boolean;
     acceptNotification: any;
@@ -26,6 +27,7 @@ export class App extends React.PureComponent<Props> {
     render() {
         const {
             isTrayWindow,
+            shouldOnboard,
             notifications,
             children,
             notificationToggleCheckBox,
@@ -37,7 +39,7 @@ export class App extends React.PureComponent<Props> {
 
         const currentPath = router.location.pathname;
         const baseClassList = [
-            styles.wrap,
+            !shouldOnboard ? styles.gridContainer : '',
             !isTrayWindow ? styles.standardWindow : ''
         ];
         return (

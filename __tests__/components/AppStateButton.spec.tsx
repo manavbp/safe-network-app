@@ -177,5 +177,35 @@ describe( 'AppStateButton', () => {
             expect( props.resumeDownload ).toHaveBeenCalled();
             expect( props.cancelDownload ).toHaveBeenCalled();
         } );
+
+        it( 'has error msg and one button w/ an errorr', () => {
+            props = {
+                ...props,
+                showErrorText: true,
+                application: {
+                    ...props.application,
+                    isDownloadingAndInstalling: false,
+                    error: 'Oh no'
+                }
+            };
+            wrapper = shallow( <AppStateButton {...props} /> );
+
+            expect( wrapper.find( Fab ) ).toHaveLength( 1 );
+            expect( wrapper.find( Typography ) ).toHaveLength( 1 );
+
+            const action = wrapper.find(
+                '[aria-label="Application Action Button"]'
+            );
+            const secondaryAction = wrapper.find(
+                '[aria-label="Application Secondary Action Button"]'
+            );
+
+            expect( action ).toHaveLength( 1 );
+            expect( secondaryAction ).toHaveLength( 0 );
+            expect( wrapper.html().includes( 'Oh no' ) ).toBeTruthy();
+            action.simulate( 'click' );
+
+            expect( props.downloadAndInstallApp ).toHaveBeenCalled();
+        } );
     } );
 } );

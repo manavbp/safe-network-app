@@ -15,6 +15,7 @@ import { logger } from '$Logger';
 
 function mapStateToProperties( state ) {
     return {
+        shouldOnboard: state.launchpad.appPreferences.shouldOnboard,
         isTrayWindow: state.launchpad.isTrayWindow,
         notifications: state.launchpad.notifications,
         notificationCheckBox: state.launchpad.notificationCheckBox,
