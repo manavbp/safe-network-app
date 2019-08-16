@@ -8,3 +8,20 @@ button.actionButton {
     min-width: 34px;
     font-size: 0.75rem;
 }
+
+.wrap {
+    position: relative;
+    display: inline-block;
+}
+
+.wrap .error {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    width: 100%;
+    margin-left: 12px;
+    min-width: 120px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

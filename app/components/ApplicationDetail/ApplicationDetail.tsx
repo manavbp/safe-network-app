@@ -51,11 +51,13 @@ export class ApplicationDetail extends React.PureComponent<Props> {
                                     showErrorText
                                 />
                             </Grid>
-                            <Grid item className={styles.appSize}>
-                                <Typography variant="body2">
-                                    {application.size}
-                                </Typography>
-                            </Grid>
+                            {!application.error && (
+                                <Grid item className={styles.appSize}>
+                                    <Typography variant="body2">
+                                        {application.size}
+                                    </Typography>
+                                </Grid>
+                            )}
                         </Grid>
                     </Grid>
 

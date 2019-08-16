@@ -1,6 +1,6 @@
 import React from 'react';
 import { I18n } from 'react-redux-i18n';
-import { Fab, Typography, CircularProgress } from '@material-ui/core';
+import { Box, Fab, Typography, CircularProgress } from '@material-ui/core';
 import { logger } from '$Logger';
 import { App } from '$Definitions/application.d';
 
@@ -112,10 +112,7 @@ export class AppStateButton extends React.Component<Props> {
         const percentageProgress = progress * 100;
 
         return (
-            <React.Fragment>
-                {errorMessage && (
-                    <Typography color="error">{errorMessage}</Typography>
-                )}
+            <Box className={styles.wrap}>
                 <Fab
                     className={styles.actionButton}
                     variant="extended"
@@ -132,7 +129,16 @@ export class AppStateButton extends React.Component<Props> {
                         variant="determinate"
                     />
                 )}
-            </React.Fragment>
+                {errorMessage && (
+                    <Typography
+                        className={styles.error}
+                        color="error"
+                        variant="body2"
+                    >
+                        {errorMessage}
+                    </Typography>
+                )}
+            </Box>
         );
     }
 }
