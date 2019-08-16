@@ -50,8 +50,14 @@ export class ApplicationOverview extends React.PureComponent<Props> {
                         />
                     </Link>
                     <ListItemSecondaryAction className={styles.actions}>
-                        <AppStateButton {...this.props} />
-                        <MeatballMenu {...this.props} />
+                        <AppStateButton
+                            {...this.props}
+                            key="list-secondary-action-1"
+                        />
+                        <MeatballMenu
+                            {...this.props}
+                            key="list-secondary-action-2"
+                        />
                     </ListItemSecondaryAction>
                 </ListItem>
                 <Divider />

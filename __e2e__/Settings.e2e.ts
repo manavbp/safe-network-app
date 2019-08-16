@@ -32,7 +32,9 @@ test( 'can navigate to settings page', async ( t ) => {
         Selector( 'button' ).withAttribute( 'aria-label', 'Go to settings' )
     );
 
-    await t.expect( Selector( 'h5' ).withText( 'Settings' ).exists ).ok();
+    await t
+        .expect( Selector( 'p.MuiTypography-body1' ).withText( 'Settings' ).exists )
+        .ok();
 } );
 
 test( 'can toggle switch buttons', async ( t ) => {
@@ -40,7 +42,9 @@ test( 'can toggle switch buttons', async ( t ) => {
         Selector( 'button' ).withAttribute( 'aria-label', 'Go to settings' )
     );
 
-    await t.expect( Selector( 'h5' ).withText( 'Settings' ).exists ).ok();
+    await t
+        .expect( Selector( 'p.MuiTypography-body1' ).withText( 'Settings' ).exists )
+        .ok();
 
     const PreferencesItemArray = getPreferenceItems();
 
@@ -63,7 +67,9 @@ test( 'Go back from Settings page to Home', async ( t ) => {
         Selector( 'button' ).withAttribute( 'aria-label', 'Go to settings' )
     );
 
-    await t.expect( Selector( 'h5' ).withText( 'Settings' ).exists ).ok();
+    await t
+        .expect( Selector( 'p.MuiTypography-body1' ).withText( 'Settings' ).exists )
+        .ok();
 
     await t
         .expect( getPageUrl() )
@@ -78,7 +84,9 @@ test( 'clicking on pinToMenuBar button toggles window between normal window and 
         Selector( 'button' ).withAttribute( 'aria-label', 'Go to settings' )
     );
 
-    await t.expect( Selector( 'h5' ).withText( 'Settings' ).exists ).ok();
+    await t
+        .expect( Selector( 'p.MuiTypography-body1' ).withText( 'Settings' ).exists )
+        .ok();
 
     const PreferencesItemArray = getPreferenceItems();
 
@@ -108,7 +116,9 @@ test( 'Changing any preference should persist', async ( t ) => {
         Selector( 'button' ).withAttribute( 'aria-label', 'Go to settings' )
     );
 
-    await t.expect( Selector( 'h5' ).withText( 'Settings' ).exists ).ok();
+    await t
+        .expect( Selector( 'p.MuiTypography-body1' ).withText( 'Settings' ).exists )
+        .ok();
 
     const PreferencesItemArray = getPreferenceItems();
 
@@ -132,7 +142,9 @@ test( 'Changing any preference should persist', async ( t ) => {
         Selector( 'button' ).withAttribute( 'aria-label', 'Go to settings' )
     );
 
-    await t.expect( Selector( 'h5' ).withText( 'Settings' ).exists ).ok();
+    await t
+        .expect( Selector( 'p.MuiTypography-body1' ).withText( 'Settings' ).exists )
+        .ok();
 
     await t
         .expect( getPageUrl() )

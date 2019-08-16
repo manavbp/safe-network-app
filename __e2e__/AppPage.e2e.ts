@@ -29,9 +29,13 @@ test( 'can navigate to the application page.', async ( t ) => {
     await t.click(
         Selector( 'a' ).withAttribute( 'href', '#/application/safe.browser' )
     );
-    await t.expect( Selector( 'h3' ).withText( 'SAFE Browser' ).exists ).ok();
+    await t.expect( Selector( 'h6' ).withText( 'SAFE Browser' ).exists ).ok();
 
-    await t.expect( Selector( 'h4' ).withText( 'Maidsafe Ltd.' ).exists ).ok();
+    await t
+        .expect(
+            Selector( 'p.MuiTypography-body2' ).withText( 'Maidsafe Ltd.' ).exists
+        )
+        .ok();
 
     await t
         .expect(
