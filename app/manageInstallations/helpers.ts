@@ -1,6 +1,25 @@
-import { MAC_OS, LINUX, WINDOWS, platform } from '$Constants';
+import path from 'path';
+
+import { Store } from 'redux';
+import fs from 'fs-extra';
+import {
+    MAC_OS,
+    LINUX,
+    WINDOWS,
+    platform,
+    isRunningTestCafeProcess
+} from '$Constants';
+import { INSTALL_TARGET_DIR } from '$Constants/installConstants';
+
+import { setCurrentVersion } from '$Actions/application_actions';
+
 import { logger } from '$Logger';
 import { App } from '$Definitions/application.d';
+
+export const delay = ( time: number ): Promise<void> =>
+    new Promise(
+        ( resolve ): ReturnType<typeof setTimeout> => setTimeout( resolve, time )
+    );
 
 export const getApplicationExecutable = ( application: App ): string => {
     // https://github.com/joshuef/electron-typescript-react-boilerplate/releases/tag/v0.1.0
@@ -34,4 +53,48 @@ export const getApplicationExecutable = ( application: App ): string => {
     }
     logger.verbose( 'Executable is called: ', applicationExecutable );
     return applicationExecutable;
+};
+
+export const getInstalledLocation = ( application: App ): string => {
+    const applicationExecutable = getApplicationExecutable( application );
+
+    const installedPath = path.resolve(
+        INSTALL_TARGET_DIR,
+        applicationExecutable
+    );
+
+    return installedPath;
+};
+
+export const checkForKnownAppsLocally = async ( store: Store ): Promise<void> => {
+    logger.info( 'Checking for currently isntalled known apps' );
+
+    const knownApps = store.getState().appManager.applicationList;
+
+    if ( isRunningTestCafeProcess ) return;
+
+    Object.keys( knownApps ).forEach( async ( theAppId ) => {
+        const application = knownApps[theAppId];
+
+        const applicationExecutable = getApplicationExecutable( application );
+
+        const installedPath = path.resolve(
+            INSTALL_TARGET_DIR,
+            applicationExecutable
+        );
+
+        const exists = await fs.pathExists( installedPath );
+
+        logger.warn( 'Checking if path exists', installedPath, exists );
+
+        if ( exists ) {
+            store.dispatch(
+                setCurrentVersion( {
+                    ...application,
+                    currentVersion: '1.0.0'
+                } )
+            );
+        }
+        // fs grab version somehow...
+    } );
 };

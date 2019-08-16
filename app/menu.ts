@@ -6,8 +6,13 @@ import {
     setUserPreferences,
     setAppPreferences
 } from '$Actions/launchpad_actions';
+import { resetToInitialState } from '$Actions/app_manager_actions';
 import { notificationTypes } from '$Constants/notifications';
-import { isRunningTestCafeProcess, defaultPreferences } from '$Constants/index';
+import {
+    isRunningTestCafeProcess,
+    defaultPreferences,
+    isRunningDebug
+} from '$Constants/index';
 import { storePreferences } from '$Actions/alias/launchpad_actions';
 import { Application } from './definitions/application.d';
 import { logger } from '$Logger';
@@ -26,7 +31,8 @@ export class MenuBuilder {
     public buildMenu(): Menu {
         if (
             process.env.NODE_ENV === 'development' ||
-            process.env.DEBUG_PROD === 'true'
+            process.env.DEBUG_PROD === 'true' ||
+            isRunningDebug
         ) {
             this.setupDevelopmentEnvironment();
         }
@@ -216,86 +222,90 @@ export class MenuBuilder {
             label: 'Tests',
             submenu: [
                 {
+                    label: 'Reset application list',
+                    click: () => {
+                        this.store.dispatch( resetToInitialState() );
+                    }
+                },
+                {
                     label: 'Add a No Internet Notification',
                     click: () => {
-                        const appId: string = Math.random().toString( 36 );
+                        const application = { id: Math.random().toString( 36 ) };
                         this.store.dispatch(
-                            pushNotification( {
-                                notification: notificationTypes.NO_INTERNET(
-                                    appId
-                                )
-                            } )
+                            pushNotification(
+                                notificationTypes.NO_INTERNET( application )
+                            )
                         );
                     }
                 },
                 {
                     label: 'Add a Disc Full Notification',
                     click: () => {
-                        const appId: string = Math.random().toString( 36 );
+                        const application = { id: Math.random().toString( 36 ) };
                         this.store.dispatch(
-                            pushNotification( {
-                                notification: notificationTypes.DISC_FULL( appId )
-                            } )
+                            pushNotification(
+                                notificationTypes.DISC_FULL( application )
+                            )
                         );
                     }
                 },
                 {
                     label: 'Add a Global Failure Notification',
                     click: () => {
-                        const appId: string = Math.random().toString( 36 );
+                        const application = { id: Math.random().toString( 36 ) };
                         this.store.dispatch(
-                            pushNotification( {
-                                notification: notificationTypes.GLOBAL_FAILURE(
-                                    appId
-                                )
-                            } )
+                            pushNotification(
+                                notificationTypes.GLOBAL_FAILURE( application )
+                            )
                         );
                     }
                 },
                 {
                     label: 'Add a Update Available Notification',
                     click: () => {
-                        const appId: string = Math.random().toString( 36 );
-                        const appName = 'SAFE Browser';
+                        const application = {
+                            id: Math.random().toString( 36 ),
+                            name: 'SAFE Browser'
+                        };
+
                         const version = 'v1.0';
                         this.store.dispatch(
-                            pushNotification( {
-                                notification: notificationTypes.UPDATE_AVAILABLE(
-                                    appId,
-                                    appName,
+                            pushNotification(
+                                notificationTypes.UPDATE_AVAILABLE(
+                                    application,
                                     version
                                 )
-                            } )
+                            )
                         );
                     }
                 },
                 {
                     label: 'Add a Admin Pass Req Notification',
                     click: () => {
-                        const appId: string = Math.random().toString( 36 );
-                        const appName = 'SAFE Browser';
+                        const application = {
+                            id: Math.random().toString( 36 ),
+                            name: 'SAFE Browser'
+                        };
+
                         this.store.dispatch(
-                            pushNotification( {
-                                notification: notificationTypes.ADMIN_PASS_REQ(
-                                    appId,
-                                    appName
-                                )
-                            } )
+                            pushNotification(
+                                notificationTypes.ADMIN_PASS_REQ( application )
+                            )
                         );
                     }
                 },
                 {
                     label: 'Add a Server Timed Out Notification',
                     click: () => {
-                        const appId: string = Math.random().toString( 36 );
-                        const appName = 'SAFE Browser';
+                        const application = {
+                            id: Math.random().toString( 36 ),
+                            name: 'SAFE Browser'
+                        };
+
                         this.store.dispatch(
-                            pushNotification( {
-                                notification: notificationTypes.SERVER_TIMED_OUT(
-                                    appId,
-                                    appName
-                                )
-                            } )
+                            pushNotification(
+                                notificationTypes.SERVER_TIMED_OUT( application )
+                            )
                         );
                     }
                 },
@@ -450,84 +460,82 @@ export class MenuBuilder {
                 {
                     label: 'Add a No Internet Notification',
                     click: () => {
-                        const appId: string = Math.random().toString( 36 );
+                        const application = { id: Math.random().toString( 36 ) };
                         this.store.dispatch(
-                            pushNotification( {
-                                notification: notificationTypes.NO_INTERNET(
-                                    appId
-                                )
-                            } )
+                            pushNotification(
+                                notificationTypes.NO_INTERNET( application )
+                            )
                         );
                     }
                 },
                 {
                     label: 'Add a Disc Full Notification',
                     click: () => {
-                        const appId: string = Math.random().toString( 36 );
+                        const application = { id: Math.random().toString( 36 ) };
                         this.store.dispatch(
-                            pushNotification( {
-                                notification: notificationTypes.DISC_FULL( appId )
-                            } )
+                            pushNotification(
+                                notificationTypes.DISC_FULL( application )
+                            )
                         );
                     }
                 },
                 {
                     label: 'Add a Global Failure Notification',
                     click: () => {
-                        const appId: string = Math.random().toString( 36 );
+                        const application = { id: Math.random().toString( 36 ) };
                         this.store.dispatch(
-                            pushNotification( {
-                                notification: notificationTypes.GLOBAL_FAILURE(
-                                    appId
-                                )
-                            } )
+                            pushNotification(
+                                notificationTypes.GLOBAL_FAILURE( application )
+                            )
                         );
                     }
                 },
                 {
                     label: 'Add a Update Available Notification',
                     click: () => {
-                        const appId: string = Math.random().toString( 36 );
-                        const appName = 'SAFE Browser';
+                        const application = {
+                            id: Math.random().toString( 36 ),
+                            name: 'SAFE Browser'
+                        };
+
                         const version = 'v1.0';
                         this.store.dispatch(
-                            pushNotification( {
-                                notification: notificationTypes.UPDATE_AVAILABLE(
-                                    appId,
-                                    appName,
+                            pushNotification(
+                                notificationTypes.UPDATE_AVAILABLE(
+                                    application,
                                     version
                                 )
-                            } )
+                            )
                         );
                     }
                 },
                 {
                     label: 'Add a Admin Pass Req Notification',
                     click: () => {
-                        const appId: string = Math.random().toString( 36 );
-                        const appName = 'SAFE Browser';
+                        const application = {
+                            id: Math.random().toString( 36 ),
+                            name: 'SAFE Browser'
+                        };
+
                         this.store.dispatch(
-                            pushNotification( {
-                                notification: notificationTypes.ADMIN_PASS_REQ(
-                                    appId,
-                                    appName
-                                )
-                            } )
+                            pushNotification(
+                                notificationTypes.ADMIN_PASS_REQ( application )
+                            )
                         );
                     }
                 },
                 {
                     label: 'Add a Server Timed Out Notification',
                     click: () => {
-                        const appId: string = Math.random().toString( 36 );
-                        const appName = 'SAFE Browser';
+                        const application = {
+                            id: Math.random().toString( 36 ),
+                            name: 'SAFE Browser'
+                        };
+
                         this.store.dispatch(
-                            pushNotification( {
-                                notification: notificationTypes.SERVER_TIMED_OUT(
-                                    appId,
-                                    appName
-                                )
-                            } )
+                            pushNotification(
+                                notificationTypes.SERVER_TIMED_OUT( application )
+                            )
                         );
                     }
                 },

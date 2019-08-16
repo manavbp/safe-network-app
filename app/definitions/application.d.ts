@@ -28,7 +28,7 @@ export interface Notification {
     id: string;
     type: string;
     priority: 'HIGH' | 'MEDIUM' | 'LOW';
-    appId?: string;
+    application?: App;
 }
 
 export interface UserPreferences {
@@ -63,7 +63,8 @@ export interface App {
     repositorySlug: string;
 
     type: AppType;
-    latestVersion?: string;
+    currentVersion?: string;
+    latestVersion: string;
 
     isOpen?: boolean; // ?why...
     progress?: number;

@@ -1,21 +1,26 @@
 import { ipcRenderer } from 'electron';
 import { createAliasedAction } from 'electron-redux';
 import request from 'request-promise-native';
+import { I18n } from 'react-redux-i18n';
 
-import { LAUNCHPAD_APP_ID, APPLICATION_LIST_SOURCE } from '$Constants/index';
-import { setApps } from '$Actions/app_manager_actions';
+import {
+    LAUNCHPAD_APP_ID,
+    APPLICATION_LIST_SOURCE,
+    isRunningTestCafeProcess
+} from '$Constants/index';
+import { updateAppInfoIfNewer } from '$Actions/app_manager_actions';
+import { getInstalledLocation } from '$App/manageInstallations/helpers';
+import { NOTIFICATION_TYPES } from '$Constants/notifications';
+
 import {
     getCurrentStore,
-    setNextReleaseDescription,
     downloadAndInstallAppPending
 } from '$Actions/application_actions';
 import { mockPromise } from '$Actions/helpers/launchpad';
-import appData from '$App/managedApplications.json';
 import { logger } from '$Logger';
 import { pushNotification } from '$Actions/launchpad_actions';
 import { App } from '$Definitions/application.d';
 
-export const unInstallApplication = ( application: App ) => mockPromise();
 export const updateApplication = ( application: App ) => mockPromise();
 export const checkForApplicationUpdate = ( application: App ) => mockPromise();
 export const storeApplicationSkipVersion = ( application: App ) => mockPromise();
@@ -31,7 +36,6 @@ const userAgentRequest = request.defaults( {
 export const TYPES = {
     ALIAS_FETCH_APPS: 'ALIAS_FETCH_APPS',
 
-    // difference here?
     ALIAS_FETCH_UPDATE_INFO: 'ALIAS_FETCH_UPDATE_INFO',
     ALIAS_CHECK_APP_HAS_UPDATE: 'ALIAS_CHECK_APP_HAS_UPDATE',
 
@@ -49,29 +53,43 @@ export const TYPES = {
 
 const fetchAppListFromServer = async (): Promise<void> => {
     logger.debug( 'Attempting to fetch application list' );
+
+    if ( isRunningTestCafeProcess ) return;
+
     const store = getCurrentStore();
     try {
         const response = await request( APPLICATION_LIST_SOURCE );
         const apps = JSON.parse( response );
         logger.debug( 'Application list retrieved sucessfully' );
-        store.dispatch( setApps( apps.applications ) );
+
+        Object.keys( apps.applications ).forEach( ( theApp ) => {
+            store.dispatch( updateAppInfoIfNewer( apps.applications[theApp] ) );
+        } );
     } catch ( error ) {
         logger.error( error.message );
         const id: string = Math.random().toString( 36 );
 
         const errorNotification = {
             id,
-            title: 'Remote application list could not be retrieved.',
-            notificationType: 'Native'
+            title: I18n.t( 'notifications.title.unable_to_get_app_list' ),
+            notificationType: NOTIFICATION_TYPES.STANDARD,
+            type: 'NO_APP_LIST'
         };
-        store.dispatch( pushNotification( { notification: errorNotification } ) );
+        store.dispatch( pushNotification( errorNotification ) );
     }
+};
+
+export const unInstallApplication = ( application: App ) => {
+    ipcRenderer.send( 'unInstallApplication', application );
 };
 
 const installThatApp = ( application ) => {
     const store = getCurrentStore();
     store.dispatch( downloadAndInstallAppPending( application ) );
     ipcRenderer.send( 'initiateDownload', application );
+};
+const openTheApplication = ( application ) => {
+    ipcRenderer.send( 'openApplication', application );
 };
 
 const pauseDownloadOfApp = ( application ) => {
@@ -166,7 +184,7 @@ export const openApp = createAliasedAction(
     TYPES.ALIAS_OPEN_APP,
     ( application: App ) => ( {
         type: TYPES.ALIAS_OPEN_APP,
-        payload: {}
+        payload: openTheApplication( application )
     } )
 );
 

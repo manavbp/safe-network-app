@@ -92,7 +92,7 @@ export const startedRunningMock: boolean =
         : startAsMockNetwork || isRunningDevelopment;
 export const startedRunningProduction = !startedRunningMock;
 export const isRunningNodeEnvironmentTest = environment.startsWith( 'test' );
-export const isRunningDebug = hasDebugFlag || isRunningTestCafeProcess;
+export const isRunningDebug = hasDebugFlag;
 export const isDryRun = hasDryRunFlag || isRunningTestCafeProcess;
 export const inRendererProcess = typeof window !== 'undefined';
 export const inMainProcess = typeof remote === 'undefined';
@@ -124,13 +124,14 @@ export const PROTOCOLS = {
 };
 
 export const CONFIG = {
-    APP_HTML_PATH: path.resolve( __dirname, '..', './app.html' ),
+    APP_HTML_PATH: path.join( __dirname, '..', './app.html' ),
+    APP_HTML_PATH_ASAR: path.join( __dirname, './app.html' ),
     DATE_FORMAT: 'h:MM-mmm dd',
     NET_STATUS_CONNECTED: 'Connected'
 };
 
 if ( inMainProcess ) {
-    const developmentPort = process.env.PORT || 1232;
+    const developmentPort = process.env.PORT || 1458;
 
     global.preloadFile = `file://${__dirname}/webPreload.prod.js`;
     global.appDirectory = __dirname;

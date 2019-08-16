@@ -1,9 +1,11 @@
-import { BrowserWindow, DownloadItem, ipcMain, app } from 'electron';
+import { BrowserWindow, DownloadItem, ipcMain } from 'electron';
 import { Store } from 'redux';
 import { download } from 'electron-dl';
-import { spawnSync } from 'child_process';
-import del from 'del';
-import path from 'path';
+import open from 'open';
+import { I18n } from 'react-redux-i18n';
+
+import { getInstalledLocation } from '$App/manageInstallations/helpers';
+
 import {
     cancelAppDownloadAndInstallation,
     pauseAppDownloadAndInstallation,
@@ -12,7 +14,9 @@ import {
     downloadAndInstallAppFailure
 } from '$Actions/application_actions';
 
+import { pushNotification } from '$Actions/launchpad_actions';
 import { MAC_OS, LINUX, WINDOWS, isDryRun, platform } from '$Constants';
+import { NOTIFICATION_TYPES } from '$Constants/notifications';
 
 import { silentInstall } from '$App/manageInstallations/installers';
 import { unInstallApplication } from '$App/manageInstallations/uninstall';
@@ -57,7 +61,7 @@ const resumeDownload = ( store: Store, application: App ) => {
         theCurrentDl.resume();
         store.dispatch( resumeAppDownloadAndInstallation( application ) );
     } else {
-        // TODO throw some notificaiton
+        // TODO throw some notification
         theCurrentDl.cancel();
         store.dispatch( cancelAppDownloadAndInstallation( application ) );
     }
@@ -187,7 +191,7 @@ const downloadAndInstall = async (
                 // TODO: check hashhhhh
                 const downloadLocation = theDownload.getSavePath();
 
-                silentInstall( store, application );
+                silentInstall( store, application, downloadLocation );
 
                 // remove tracked download item
                 delete currentDownloads[application.id];
@@ -218,6 +222,16 @@ const downloadAndInstall = async (
             error: error.message
         };
         store.dispatch( downloadAndInstallAppFailure( appWithError ) );
+
+        store.dispatch(
+            pushNotification( {
+                title: `Error downloading ${application.name}`,
+                application,
+                acceptText: 'Retry',
+                type: 'RETRY_INSTALL',
+                notificationType: NOTIFICATION_TYPES.STANDARD
+            } )
+        );
     }
 };
 
@@ -241,6 +255,11 @@ export function manageDownloads( store: Store, targetWindow: BrowserWindow ) {
     );
 
     ipcMain.on( 'unInstallApplication', ( event, application: App ) =>
-        unInstallApplication( application )
+        unInstallApplication( store, application )
     );
+
+    ipcMain.on( 'openApplication', ( event, application: App ) => {
+        logger.info( 'Opening app: ', application.name );
+        open( getInstalledLocation( application ) );
+    } );
 }

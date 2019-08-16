@@ -1,42 +1,14 @@
+import compareVersions from 'compare-versions';
 import { TYPES } from '$Actions/app_manager_actions';
-import { TYPES as ALIAS_TYPES } from '$App/actions/alias/app_manager_actions';
-import { TYPES as APP_TYPES } from '$App/actions/application_actions';
+import { TYPES as ALIAS_TYPES } from '$Actions/alias/app_manager_actions';
+import { TYPES as APP_TYPES } from '$Actions/application_actions';
 import { logger } from '$Logger';
-
 import { AppManagerState, App } from '../definitions/application.d';
 import { ERRORS } from '$Constants/errors';
 
-export const initialState: AppManagerState = {
-    applicationList: {
-        'safe.browser': {
-            id: 'safe.browser',
-            name: 'SAFE Browser',
-            size: '2MB',
-            author: 'Maidsafe Ltd.',
-            packageName: 'safe-browser',
-            repositoryOwner: 'maidsafe',
-            repositorySlug: 'safe_browser',
-            latestVersion: '0.1.0',
-            description:
-                'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-            updateDescription: '',
-            type: 'userApplications'
-        }
-    }
-};
+import { initialAppManager } from '$Reducers/initialAppManager';
 
-const setApplicationList = ( state, applicationList ) => {
-    const newApplicationList = {};
-
-    Object.values( applicationList ).forEach( ( app: App ) => {
-        if ( !app.id ) throw new Error( ERRORS.APP_ID_NOT_FOUND );
-        newApplicationList[app.id] = { ...app };
-    } );
-    return {
-        ...state,
-        applicationList: newApplicationList
-    };
-};
+export const initialState = initialAppManager;
 
 const updateAppInApplicationList = ( state, targetApp ) => {
     const updatedState = {
@@ -59,8 +31,36 @@ export function appManager( state = initialState, action ): AppManagerState {
     }
 
     switch ( action.type ) {
-        case `${TYPES.SET_APPS}`: {
-            return setApplicationList( state, payload );
+        case `${TYPES.UPDATE_APP_INFO_IF_NEWER}`: {
+            if ( !payload.latestVersion )
+                throw new Error( ERRORS.VERSION_NOT_FOUND );
+
+            if ( !payload.id ) throw new Error( ERRORS.APP_ID_NOT_FOUND );
+
+            if ( !state.applicationList[payload.id] ) {
+                // if a new app, we just add it.
+                targetApp = { ...payload };
+                return updateAppInApplicationList( state, targetApp );
+            }
+
+            const theCurrentApp = state.applicationList[payload.id];
+
+            const currentVersion = theCurrentApp.latestVersion;
+            const newVersion = payload.latestVersion;
+
+            if ( compareVersions( newVersion, currentVersion ) < 1 ) {
+                // do nothing
+                return state;
+            }
+
+            // otherwise we overwrite.
+            targetApp = { ...payload, isInstalled: theCurrentApp.isInstalled };
+
+            return updateAppInApplicationList( state, targetApp );
+        }
+
+        case TYPES.RESET_TO_INITIAL_STATE: {
+            return initialState;
         }
 
         case TYPES.RESET_APP_STATE: {
@@ -124,8 +124,9 @@ export function appManager( state = initialState, action ): AppManagerState {
             // TODO: this data needs to be saved to local.
             targetApp.isDownloadingAndInstalling = false;
             targetApp.isInstalled = true;
-            targetApp.progress = 100;
+            targetApp.progress = 0;
             targetApp.isPaused = false;
+            targetApp.currentVersion = payload.latestVersion;
 
             return updateAppInApplicationList( state, targetApp );
         }
@@ -142,15 +143,24 @@ export function appManager( state = initialState, action ): AppManagerState {
         }
 
         // UNISTALL APP
-        case `${ALIAS_TYPES.ALIAS_UNINSTALL_APP}_PENDING`: {
+        case APP_TYPES.UNINSTALL_APP_PENDING: {
             if ( !targetApp ) return state;
             targetApp.isUninstalling = true;
             return updateAppInApplicationList( state, targetApp );
         }
 
-        case `${ALIAS_TYPES.ALIAS_UNINSTALL_APP}_SUCCESS`: {
+        case APP_TYPES.UNINSTALL_APP_SUCCESS: {
             if ( !targetApp ) return state;
             targetApp.isUninstalling = false;
+            targetApp.progress = 0;
+            targetApp.isInstalled = false;
+            return updateAppInApplicationList( state, targetApp );
+        }
+
+        case APP_TYPES.UNINSTALL_APP_FAILURE: {
+            if ( !targetApp ) return state;
+            targetApp.isUninstalling = false;
+            targetApp.error = payload.error;
             return updateAppInApplicationList( state, targetApp );
         }
 
@@ -185,16 +195,20 @@ export function appManager( state = initialState, action ): AppManagerState {
 
         case `${ALIAS_TYPES.ALIAS_SKIP_APP_UPDATE}_PENDING`: {
             if ( !targetApp ) return state;
-            if ( !payload.version ) throw new Error( ERRORS.VERSION_NOT_FOUND );
+            if ( !payload.latestVersion )
+                throw new Error( ERRORS.VERSION_NOT_FOUND );
             targetApp.hasUpdate = false;
-            targetApp.lastSkippedVersion = payload.version;
+            targetApp.lastSkippedVersion = payload.latestVersion;
             return updateAppInApplicationList( state, targetApp );
         }
 
-        case APP_TYPES.SET_NEXT_RELEASE_DESCRIPTION: {
+        case APP_TYPES.SET_CURRENT_VERSION: {
             if ( !targetApp ) return state;
+            if ( !payload.currentVersion )
+                throw new Error( ERRORS.VERSION_NOT_FOUND );
 
-            targetApp.updateDescription = payload.updateDescription;
+            targetApp.isInstalled = true;
+            targetApp.currentVersion = payload.currentVersion;
 
             return updateAppInApplicationList( state, targetApp );
         }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Grid } from '@material-ui/core';
 import { notificationTypes } from '$Constants/notifications';
-import { Notification } from '$Components/Notifications/Notifications';
+import { NotificationsHandler } from '$Components/Notifications/NotificationsHandler';
 import { HeaderBar } from '$Components/HeaderBar';
 
 import styles from './App.css';
@@ -48,7 +48,7 @@ export class App extends React.PureComponent<Props> {
                     <HeaderBar currentPath={currentPath} />
                 </div>
                 <div className={styles.containerBase}>
-                    <Notification
+                    <NotificationsHandler
                         notifications={notifications}
                         acceptNotification={acceptNotification}
                         denyNotification={denyNotification}

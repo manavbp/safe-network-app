@@ -8,12 +8,18 @@ const assertNoConsoleErrors = async ( t ): Promise<void> => {
     await t.expect( error ).eql( [] );
 };
 
-fixture`Application Page`.page( '../app/app.html' ).beforeEach( async () => {
-    // @ts-ignore
-    await clickOnMainMenuItem( ['Tests', `Skip OnBoard App`] );
-    await waitForReact();
-} );
-// .afterEach( assertNoConsoleErrors );
+fixture`Application Page`
+    .page( '../app/app.html' )
+    .beforeEach( async () => {
+        // @ts-ignore
+        await clickOnMainMenuItem( ['Tests', `Skip OnBoard App`] );
+        await waitForReact();
+    } )
+    .afterEach( async ( t ) => {
+        await assertNoConsoleErrors( t );
+        // @ts-ignore
+        await clickOnMainMenuItem( ['Tests', 'Reset application list'] );
+    } );
 
 test( 'should open window', async ( t ) => {
     await t.expect( getPageTitle() ).eql( 'SAFE Network App' );
@@ -25,7 +31,7 @@ test(
 );
 
 // we start as a tray window right now
-test( 'can navigate to the application page.', async ( t ) => {
+test( 'can navigate to the application page and install', async ( t ) => {
     await t.click(
         Selector( 'a' ).withAttribute( 'href', '#/application/safe.browser' )
     );
@@ -45,4 +51,21 @@ test( 'can navigate to the application page.', async ( t ) => {
             ).exists
         )
         .ok();
+
+    const actionButton = Selector( 'button' ).withAttribute(
+        'aria-label',
+        'Application Action Button'
+    );
+    const progress = Selector( '.MuiCircularProgress-root' );
+
+    await t
+        .expect( actionButton.innerText )
+        .eql( 'INSTALL' )
+        .click( actionButton )
+        .expect( actionButton.innerText )
+        .eql( 'PAUSE DOWNLOAD' )
+        .expect( progress.exists )
+        .ok()
+        .expect( actionButton.innerText )
+        .eql( 'OPEN' );
 } );
