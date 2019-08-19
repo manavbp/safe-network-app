@@ -16,10 +16,8 @@ import {
 
 const setPreferences = ( store, preferences ) => {
     const { userPreferences, appPreferences } = preferences;
-    const { pinToMenuBar } = userPreferences;
     store.dispatch( setUserPreferences( userPreferences ) );
     store.dispatch( setAppPreferences( appPreferences ) );
-    store.dispatch( setAsTrayWindow( pinToMenuBar ) );
 };
 
 export const installExtensions = async () => {
@@ -66,6 +64,8 @@ export const preferencesJsonSetup = async ( store ) => {
                         preferences = { ...defaultPreferences };
                     }
                     setPreferences( store, preferences );
+                    const { pinToMenuBar } = preferences.userPreferences;
+                    store.dispatch( setAsTrayWindow( pinToMenuBar ) );
                 } else
                     fs.ensureFile( appFolderPath, ( writeError ) => {
                         if ( writeError ) console.error( writeError );

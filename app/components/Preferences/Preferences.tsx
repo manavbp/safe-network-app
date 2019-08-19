@@ -5,7 +5,6 @@ import { PreferenceItem } from './PreferenceItem';
 
 import { UserPreferences } from '$Definitions/application.d';
 import { generateRandomString } from '$Utils/app_utils';
-import { SETTINGS } from '$Constants/routes.json';
 
 interface Props {
     userPreferences: UserPreferences;
