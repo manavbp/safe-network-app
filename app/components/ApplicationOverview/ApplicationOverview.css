@@ -1,3 +1,6 @@
-.placeholder {
-    display: none;
+li .list {
+    padding-right: 140px;
+}
+li .actions {
+    right: 0;
 }

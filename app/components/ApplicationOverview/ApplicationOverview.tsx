@@ -1,6 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Grid } from '@material-ui/core';
+import {
+    ListItem,
+    ListItemAvatar,
+    ListItemText,
+    ListItemSecondaryAction,
+    Divider,
+    Avatar,
+    Fab,
+    Typography
+} from '@material-ui/core';
+import indigo from '@material-ui/core/colors/indigo';
+import FolderIcon from '@material-ui/icons/Folder';
 import { MeatballMenu } from '$Components/MeatballMenu';
 // import { logger } from '$Logger';
 import { AppStateButton } from '$Components/AppStateButton';
@@ -23,19 +34,33 @@ export class ApplicationOverview extends React.PureComponent<Props> {
 
         return (
             <React.Fragment>
-                <Grid container alignItems="center">
-                    <Grid item xs={7} className={styles.name}>
-                        <Link to={`/application/${application.id}`}>
-                            {application.name}
-                        </Link>
-                    </Grid>
-                    <Grid item xs={3}>
-                        <AppStateButton {...this.props} />
-                    </Grid>
-                    <Grid item xs={2}>
-                        <MeatballMenu {...this.props} />
-                    </Grid>
-                </Grid>
+                <ListItem className={styles.list}>
+                    <ListItemAvatar>
+                        <Avatar>
+                            <FolderIcon />
+                        </Avatar>
+                    </ListItemAvatar>
+                    <Link to={`/application/${application.id}`}>
+                        <ListItemText
+                            primary={application.name}
+                            secondary={application.error}
+                            secondaryTypographyProps={{
+                                color: 'error'
+                            }}
+                        />
+                    </Link>
+                    <ListItemSecondaryAction className={styles.actions}>
+                        <AppStateButton
+                            {...this.props}
+                            key="list-secondary-action-1"
+                        />
+                        <MeatballMenu
+                            {...this.props}
+                            key="list-secondary-action-2"
+                        />
+                    </ListItemSecondaryAction>
+                </ListItem>
+                <Divider />
             </React.Fragment>
         );
     }

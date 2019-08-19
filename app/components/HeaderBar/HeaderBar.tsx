@@ -11,6 +11,8 @@ import Star from '@material-ui/icons/Star';
 import { I18n } from 'react-redux-i18n';
 import { SETTINGS, ON_BOARDING } from '$Constants/routes.json';
 
+import appLogo from '$Assets/images/app_logo.png';
+
 import styles from './HeaderBar.css';
 
 interface Props {
@@ -21,17 +23,25 @@ const BackButton = ( { location } ) => {
     return (
         <React.Fragment>
             {location.pathname !== '/' && (
-                <IconButton
-                    edge="start"
-                    color="inherit"
-                    aria-label="Go Backwards"
-                >
-                    <Link to="/">
+                <Link to="/">
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="Go Backwards"
+                    >
                         <ArrowBack fontSize="inherit" />
-                    </Link>
-                </IconButton>
+                    </IconButton>
+                </Link>
             )}
         </React.Fragment>
+    );
+};
+
+const AppLogo = () => {
+    return (
+        <Box className={styles.appLogo}>
+            <img src={appLogo} alt="App logo" />
+        </Box>
     );
 };
 
@@ -45,28 +55,38 @@ export class HeaderBar extends React.PureComponent<Props> {
         if ( currentPath.startsWith( ON_BOARDING ) ) return <div />;
 
         return (
-            <div className={styles.headerBar}>
-                <Box>
-                    <Toolbar>
-                        {
-                            // This regex route matches everywhere, but `/` home
-                        }
+            <Box className={styles.base}>
+                <Toolbar className={styles.wrap} disableGutters>
+                    {
+                        // This regex route matches everywhere, but `/` home
+                    }
+                    <Box className={styles.navigation}>
                         <Route path="/" component={BackButton} />
-                        <Typography aria-label="title" variant="h5">
-                            {title}
-                        </Typography>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="Go to settings"
-                        >
-                            <Link to={SETTINGS}>
+                        {currentPath === '/' ? (
+                            <AppLogo />
+                        ) : (
+                            <Typography
+                                className={styles.title}
+                                aria-label="title"
+                                variant="body1"
+                            >
+                                {title}
+                            </Typography>
+                        )}
+                    </Box>
+                    <Box>
+                        <Link to={SETTINGS}>
+                            <IconButton
+                                edge="start"
+                                color="inherit"
+                                aria-label="Go to settings"
+                            >
                                 <Settings fontSize="inherit" />
-                            </Link>
-                        </IconButton>
-                    </Toolbar>
-                </Box>
-            </div>
+                            </IconButton>
+                        </Link>
+                    </Box>
+                </Toolbar>
+            </Box>
         );
     }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import Markdown from 'markdown-to-jsx';
-import { Grid } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
+import { Grid, Fab, Divider, Avatar, Typography } from '@material-ui/core';
+import FolderIcon from '@material-ui/icons/Folder';
 import { MeatballMenu } from '$Components/MeatballMenu';
 import { logger } from '$Logger';
 import styles from './ApplicationDetail.css';
@@ -34,77 +34,90 @@ export class ApplicationDetail extends React.PureComponent<Props> {
         const { name, author } = application;
 
         return (
-            <React.Fragment>
-                <Grid item xs={8}>
-                    <Typography aria-label="title" variant="h3">
-                        {name}
-                    </Typography>
-                    <Typography aria-label="author" variant="h4">
-                        {author}
-                    </Typography>
-                    <Grid container>
-                        <Grid item xs={6}>
-                            <AppStateButton
-                                {...this.props}
-                                application={application}
-                            />
+            <Grid item className={styles.wrap}>
+                <Grid container>
+                    <Grid item xs={8} className={styles.appInfo}>
+                        <Typography aria-label="title" variant="h6">
+                            {name}
+                        </Typography>
+                        <Typography aria-label="author" variant="body2">
+                            {author}
+                        </Typography>
+                        <Grid container className={styles.appInfoActions}>
+                            <Grid item>
+                                <AppStateButton
+                                    {...this.props}
+                                    application={application}
+                                    showErrorText
+                                />
+                            </Grid>
+                            {!application.error && (
+                                <Grid item className={styles.appSize}>
+                                    <Typography variant="body2">
+                                        {application.size}
+                                    </Typography>
+                                </Grid>
+                            )}
                         </Grid>
-                        <Grid item xs={6}>
-                            {application.size}
-                        </Grid>
-                        <Typography aria-label="description">
+                    </Grid>
+
+                    <Grid item xs={4}>
+                        <Avatar className={styles.appIcon}>
+                            <FolderIcon fontSize="large" />
+                        </Avatar>
+                    </Grid>
+                    <Grid item xs={12} className={styles.appDesc}>
+                        <Typography aria-label="description" variant="body2">
                             {application.description}
                         </Typography>
+                        <Divider />
                     </Grid>
-                </Grid>
-
-                <Grid item xs={4}>
-                    App Icon
-                </Grid>
-                <Grid item xs={12}>
-                    {application.updateDescription && (
-                        <Markdown
-                            aria-label="latest release description"
-                            options={{
-                                overrides: {
-                                    h1: {
-                                        component: Typography,
-                                        props: {
-                                            variant: 'h3'
-                                        }
-                                    },
-                                    h2: {
-                                        component: Typography,
-                                        props: {
-                                            variant: 'h4'
-                                        }
-                                    },
-                                    h3: {
-                                        component: Typography,
-                                        props: {
-                                            variant: 'h5'
-                                        }
-                                    },
-                                    h4: {
-                                        component: Typography,
-                                        props: {
-                                            variant: 'h6'
-                                        }
-                                    },
-                                    a: {
-                                        component: 'a',
-                                        props: {
-                                            target: '_blank'
+                    <Grid item xs={12}>
+                        {application.updateDescription && (
+                            <Markdown
+                                className={styles.markdown}
+                                aria-label="latest release description"
+                                options={{
+                                    overrides: {
+                                        h1: {
+                                            component: Typography,
+                                            props: {
+                                                variant: 'h3'
+                                            }
+                                        },
+                                        h2: {
+                                            component: Typography,
+                                            props: {
+                                                variant: 'h4'
+                                            }
+                                        },
+                                        h3: {
+                                            component: Typography,
+                                            props: {
+                                                variant: 'h5'
+                                            }
+                                        },
+                                        h4: {
+                                            component: Typography,
+                                            props: {
+                                                variant: 'h6'
+                                            }
+                                        },
+                                        a: {
+                                            component: 'a',
+                                            props: {
+                                                target: '_blank'
+                                            }
                                         }
                                     }
-                                }
-                            }}
-                        >
-                            {application.updateDescription}
-                        </Markdown>
-                    )}
+                                }}
+                            >
+                                {application.updateDescription}
+                            </Markdown>
+                        )}
+                    </Grid>
                 </Grid>
-            </React.Fragment>
+            </Grid>
         );
     }
 }

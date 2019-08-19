@@ -55,11 +55,7 @@ describe( 'ApplicationDetail', () => {
         } );
 
         it( 'one header', () => {
-            expect( html.includes( 'h4' ) ).toBeTruthy();
-        } );
-
-        it( 'one author', () => {
-            expect( html.includes( 'h4' ) ).toBeTruthy();
+            expect( html.includes( 'h6' ) ).toBeTruthy();
         } );
     } );
 } );

@@ -8,6 +8,8 @@ import IconButton from '@material-ui/core/IconButton';
 import ArrowBack from '@material-ui/icons/ArrowBack';
 
 import { Preferences } from '$Components/Preferences';
+import styles from './Settings.css';
+
 import {
     UserPreferences,
     AppPreferences,
@@ -49,7 +51,7 @@ export class Settings extends Component<Props> {
         } = this.props;
 
         return (
-            <Grid item xs={12}>
+            <Grid item xs={12} className={styles.wrap}>
                 <Preferences
                     isTrayWindow={isTrayWindow}
                     userPreferences={userPreferences}

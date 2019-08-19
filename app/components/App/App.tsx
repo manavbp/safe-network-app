@@ -4,8 +4,12 @@ import { notificationTypes } from '$Constants/notifications';
 import { NotificationsHandler } from '$Components/Notifications/NotificationsHandler';
 import { HeaderBar } from '$Components/HeaderBar';
 
+import styles from './App.css';
+
 interface Props {
     children: React.ReactChild;
+    isTrayWindow: boolean;
+    shouldOnboard: boolean;
     notifications: object;
     notificationCheckBox: boolean;
     acceptNotification: any;
@@ -22,6 +26,8 @@ interface Props {
 export class App extends React.PureComponent<Props> {
     render() {
         const {
+            isTrayWindow,
+            shouldOnboard,
             notifications,
             children,
             notificationToggleCheckBox,
@@ -32,19 +38,28 @@ export class App extends React.PureComponent<Props> {
         } = this.props;
 
         const currentPath = router.location.pathname;
-
+        const baseClassList = [
+            !shouldOnboard ? styles.gridContainer : '',
+            !isTrayWindow ? styles.standardWindow : ''
+        ];
         return (
-            <React.Fragment>
-                <NotificationsHandler
-                    notifications={notifications}
-                    acceptNotification={acceptNotification}
-                    denyNotification={denyNotification}
-                    toggleCheckBox={notificationToggleCheckBox}
-                    notificationCheckBox={notificationCheckBox}
-                />
-                <HeaderBar currentPath={currentPath} />
-                <Grid container>{children}</Grid>
-            </React.Fragment>
+            <div className={baseClassList.join( ' ' )}>
+                <div className={styles.headerBar}>
+                    <HeaderBar currentPath={currentPath} />
+                </div>
+                <div className={styles.containerBase}>
+                    <NotificationsHandler
+                        notifications={notifications}
+                        acceptNotification={acceptNotification}
+                        denyNotification={denyNotification}
+                        toggleCheckBox={notificationToggleCheckBox}
+                        notificationCheckBox={notificationCheckBox}
+                    />
+                    <Grid container className="commonBase">
+                        {children}
+                    </Grid>
+                </div>
+            </div>
         );
     }
 }

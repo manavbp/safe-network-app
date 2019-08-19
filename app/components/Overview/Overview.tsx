@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid } from '@material-ui/core';
+import { Grid, List } from '@material-ui/core';
 
 import { Redirect } from 'react-router';
 import { logger } from '$Logger';
@@ -37,19 +37,27 @@ export class Overview extends Component<Props> {
             resumeDownload,
             openApp
         } = this.props;
-        return Object.values( appList ).map( ( theApplication ) => (
-            <ApplicationOverview
-                key={theApplication.name}
-                {...theApplication}
-                application={theApplication}
-                downloadAndInstallApp={downloadAndInstallApp}
-                unInstallApp={unInstallApp}
-                openApp={openApp}
-                pauseDownload={pauseDownload}
-                cancelDownload={cancelDownload}
-                resumeDownload={resumeDownload}
-            />
-        ) );
+        return (
+            <Grid container justify="space-between">
+                <Grid item xs={12}>
+                    <List>
+                        {Object.values( appList ).map( ( theApplication ) => (
+                            <ApplicationOverview
+                                key={theApplication.name}
+                                {...theApplication}
+                                application={theApplication}
+                                downloadAndInstallApp={downloadAndInstallApp}
+                                unInstallApp={unInstallApp}
+                                openApp={openApp}
+                                pauseDownload={pauseDownload}
+                                cancelDownload={cancelDownload}
+                                resumeDownload={resumeDownload}
+                            />
+                        ) )}
+                    </List>
+                </Grid>
+            </Grid>
+        );
     };
 
     render() {

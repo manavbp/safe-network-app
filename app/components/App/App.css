@@ -1,0 +1,18 @@
+.standardWindow {
+    padding-top: 20px;
+    box-sizing: border-box;
+}
+
+.gridContainer {
+    display: grid;
+    height: 100%;
+    grid-template-rows: 56px auto;
+}
+
+.gridContainer .headerBar {
+    grid-row: 1;
+}
+
+.gridContainer .containerBase {
+    grid-row: 2;
+}

@@ -74,7 +74,7 @@ const showAsRegularWindow = (): void => {
     theWindow.center();
     theWindow.show();
     theWindow.focus();
-    theWindow.setResizable( true );
+    theWindow.setResizable( false );
     theWindow.setMovable( true );
 
     if ( isRunningOnMac ) {
@@ -120,7 +120,7 @@ export const createSafeLaunchPadTrayWindow = (
     store: Store
 ): Application.Window => {
     safeLaunchPadTrayWindow = new BrowserWindow( {
-        width: 495,
+        width: 400,
         show: false,
         frame: false,
         fullscreenable: false,

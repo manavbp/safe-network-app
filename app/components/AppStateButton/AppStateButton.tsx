@@ -1,10 +1,10 @@
 import React from 'react';
 import { I18n } from 'react-redux-i18n';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import CircularProgress from '@material-ui/core/CircularProgress';
+import { Box, Fab, Typography, CircularProgress } from '@material-ui/core';
 import { logger } from '$Logger';
 import { App } from '$Definitions/application.d';
+
+import styles from './AppStateButton.css';
 
 interface Props {
     unInstallApp: Function;
@@ -13,6 +13,7 @@ interface Props {
     pauseDownload: Function;
     cancelDownload: Function;
     resumeDownload: Function;
+    showErrorText?: boolean;
     application: App;
 }
 
@@ -63,7 +64,7 @@ export class AppStateButton extends React.Component<Props> {
     };
 
     render() {
-        const { application } = this.props;
+        const { application, showErrorText = false } = this.props;
 
         const {
             isDownloadingAndInstalling,
@@ -83,7 +84,7 @@ export class AppStateButton extends React.Component<Props> {
             : I18n.t( `buttons.install` );
 
         let handleClick = isInstalled ? this.handleOpen : this.handleDownload;
-        const errorMessage = error;
+        const errorMessage = showErrorText ? error : null;
 
         if ( error ) {
             buttonText = I18n.t( `buttons.retryInstall` );
@@ -108,27 +109,36 @@ export class AppStateButton extends React.Component<Props> {
             buttonText = I18n.t( `buttons.uninstalling` );
         }
 
-        const precentageProgress = progress * 100;
+        const percentageProgress = progress * 100;
 
         return (
-            <React.Fragment>
-                {errorMessage && (
-                    <Typography color="error">{errorMessage}</Typography>
-                )}
-                <Button
+            <Box className={styles.wrap}>
+                <Fab
+                    className={styles.actionButton}
+                    variant="extended"
+                    color="primary"
                     onClick={handleClick}
                     aria-label="Application Action Button"
                     disabled={!!isUninstalling}
                 >
                     {buttonText}
-                </Button>
+                </Fab>
                 {progress > 0 && !isInstalled && (
                     <CircularProgress
-                        value={precentageProgress}
+                        value={percentageProgress}
                         variant="determinate"
                     />
                 )}
-            </React.Fragment>
+                {errorMessage && (
+                    <Typography
+                        className={styles.error}
+                        color="error"
+                        variant="body2"
+                    >
+                        {errorMessage}
+                    </Typography>
+                )}
+            </Box>
         );
     }
 }
