@@ -57,8 +57,7 @@ export class OnBoarding extends React.Component<Props> {
 
         setAppPreferences( { shouldOnboard: false } );
 
-        if ( userPreferences.pinToMenuBar !== isTrayWindow )
-            triggerSetAsTrayWindow( !isTrayWindow );
+        triggerSetAsTrayWindow( userPreferences.pinToMenuBar );
 
         if ( userPreferences.launchOnStart ) {
             autoLaunch( true );
