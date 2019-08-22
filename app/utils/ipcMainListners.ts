@@ -46,3 +46,9 @@ ipcMain.on( 'close-app', ( _event, application ) => {
     const appName = application.name;
     console.log( `Should contact ${appName} and close the app` );
 } );
+
+ipcMain.on( 'onClickQuitApp', () => {
+    if ( process.platform !== 'darwin' ) {
+        app.quit();
+    }
+} );
