@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Grid } from '@material-ui/core';
+import TitleBar from 'frameless-titlebar';
 import { notificationTypes } from '$Constants/notifications';
 import { NotificationsHandler } from '$Components/Notifications/NotificationsHandler';
 import { HeaderBar } from '$Components/HeaderBar';
@@ -43,21 +44,36 @@ export class App extends React.PureComponent<Props> {
             !isTrayWindow ? styles.standardWindow : ''
         ];
         return (
-            <div className={baseClassList.join( ' ' )}>
-                <div className={styles.headerBar}>
-                    <HeaderBar currentPath={currentPath} />
+            <div>
+                <div className={styles.titleBarContainer}>
+                    {!isTrayWindow && (
+                        <TitleBar
+                            app="SAFE Network App"
+                            theme={{
+                                barTheme: 'light',
+                                barBackgroundColor: '#eaeaea',
+                                menuHighlightColor: '#33c151',
+                                showIconDarwin: false
+                            }}
+                        />
+                    )}
                 </div>
-                <div className={styles.containerBase}>
-                    <NotificationsHandler
-                        notifications={notifications}
-                        acceptNotification={acceptNotification}
-                        denyNotification={denyNotification}
-                        toggleCheckBox={notificationToggleCheckBox}
-                        notificationCheckBox={notificationCheckBox}
-                    />
-                    <Grid container className="commonBase">
-                        {children}
-                    </Grid>
+                <div className={baseClassList.join( ' ' )}>
+                    <div className={styles.headerBar}>
+                        <HeaderBar currentPath={currentPath} />
+                    </div>
+                    <div className={styles.containerBase}>
+                        <NotificationsHandler
+                            notifications={notifications}
+                            acceptNotification={acceptNotification}
+                            denyNotification={denyNotification}
+                            toggleCheckBox={notificationToggleCheckBox}
+                            notificationCheckBox={notificationCheckBox}
+                        />
+                        <Grid container className="commonBase">
+                            {children}
+                        </Grid>
+                    </div>
                 </div>
             </div>
         );
