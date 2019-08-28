@@ -85,8 +85,8 @@ if ( !gotTheLock ) {
         await preferencesJsonSetup( store );
 
         setupBackground( store );
-        trayWindow = createSafeLaunchPadTrayWindow( store );
         await createTray( store );
+        trayWindow = createSafeLaunchPadTrayWindow( store );
 
         const menuBuilder = new MenuBuilder( trayWindow, store );
         menuBuilder.buildMenu();

@@ -87,6 +87,7 @@ export interface LaunchpadState {
     notifications: { [s: string]: Notification };
     isTrayWindow: boolean;
     notificationCheckBox: boolean;
+    currentPath: string;
 }
 
 export interface AppManagerState {

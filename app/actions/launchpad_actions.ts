@@ -14,7 +14,8 @@ export const TYPES = {
     DISMISS_NOTIFICATION: 'DISMISS_NOTIFICATION',
     SET_USER_PREFERENCES: 'SET_USER_PREFERENCES',
     SET_APP_PREFERENCES: 'SET_APP_PREFERENCES',
-    SET_AS_TRAY_WINDOW: 'SET_AS_TRAY_WINDOW'
+    SET_AS_TRAY_WINDOW: 'SET_AS_TRAY_WINDOW',
+    SET_CURRENT_PATH: 'SET_CURRENT_PATH'
 };
 
 export const {
@@ -23,14 +24,16 @@ export const {
     dismissNotification,
     setUserPreferences,
     setAppPreferences,
-    setAsTrayWindow
+    setAsTrayWindow,
+    setCurrentPath
 } = createActions(
     TYPES.PUSH_NOTIFICATION,
     TYPES.ONBOARD_COMPLETED,
     TYPES.DISMISS_NOTIFICATION,
     TYPES.SET_USER_PREFERENCES,
     TYPES.SET_APP_PREFERENCES,
-    TYPES.SET_AS_TRAY_WINDOW
+    TYPES.SET_AS_TRAY_WINDOW,
+    TYPES.SET_CURRENT_PATH
 );
 
 export const getUserPreferences = () => {

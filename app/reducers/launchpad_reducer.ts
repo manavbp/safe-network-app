@@ -15,13 +15,22 @@ export const initialState: LaunchpadState = {
     ...defaultPreferences,
     notifications: {},
     notificationCheckBox: false,
-    isTrayWindow: false
+    isTrayWindow: false,
+    currentPath: '/'
 };
 
 export function launchpadReducer( state = initialState, action ): LaunchpadState {
     const { payload } = action;
 
     switch ( action.type ) {
+        case TYPES.SET_CURRENT_PATH: {
+            const { pathname } = payload;
+            const newState = {
+                ...state,
+                currentPath: pathname
+            };
+            return newState;
+        }
         case TYPES.SET_USER_PREFERENCES: {
             const newUserPreferences: UserPreferences = {
                 ...state.userPreferences,

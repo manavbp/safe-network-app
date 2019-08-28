@@ -17,9 +17,8 @@ import {
 } from '$Constants';
 
 let tray;
+let safeLaunchPadWindow: Application.Window;
 let safeLaunchPadStandardWindow: Application.Window;
-let safeLaunchPadTrayWindow: Application.Window;
-let theWindow: Application.Window;
 
 const getTrayWindowPosition = (
     window: Application.Window
@@ -53,42 +52,90 @@ const getTrayWindowPosition = (
     return { x, y };
 };
 
-const showAsTrayWindow = (): void => {
-    logger.info( 'Setting as tray' );
-    const position = getTrayWindowPosition( theWindow );
-    theWindow.setPosition( position.x, position.y, false );
+const createTrayWindow = () => {
+    safeLaunchPadWindow = new BrowserWindow( {
+        width: 400,
+        show: false,
+        frame: false,
+        fullscreenable: false,
+        resizable: false,
+        webPreferences: {
+            // Prevents renderer process code from not running when safeLaunchPadWindow is
+            // hidden
+            // preload: path.join(__dirname, 'browserPreload.js'),
+            backgroundThrottling: false,
+            nodeIntegration: true
+        }
+    } ) as Application.Window;
 
-    theWindow.setMovable( false );
-    theWindow.setResizable( false );
-    theWindow.show();
-    theWindow.focus();
+    if ( is.usingAsar || isRunningTestCafeProcess ) {
+        safeLaunchPadWindow.loadURL( `file://${CONFIG.APP_HTML_PATH_ASAR}` );
+    } else {
+        safeLaunchPadWindow.loadURL( `file://${CONFIG.APP_HTML_PATH}` );
+    }
+
+    safeLaunchPadWindow.setMovable( false );
+    safeLaunchPadWindow.setResizable( false );
+    const position = getTrayWindowPosition( safeLaunchPadWindow );
+    safeLaunchPadWindow.setPosition( position.x, position.y, false );
 
     if ( isRunningOnMac ) {
-        theWindow.setWindowButtonVisibility( false );
         app.dock.hide();
     }
 };
 
-const showAsRegularWindow = (): void => {
-    logger.info( 'Setting as window' );
-    theWindow.center();
-    theWindow.show();
-    theWindow.focus();
-    theWindow.setResizable( false );
-    theWindow.setMovable( true );
+const createRegularWindow = () => {
+    safeLaunchPadWindow = new BrowserWindow( {
+        width: 400,
+        show: false,
+        frame: true,
+        fullscreenable: false,
+        resizable: false,
+        webPreferences: {
+            // Prevents renderer process code from not running when safeLaunchPadWindow is
+            // hidden
+            // preload: path.join(__dirname, 'browserPreload.js'),
+            backgroundThrottling: false,
+            nodeIntegration: true
+        }
+    } ) as Application.Window;
+
+    if ( is.usingAsar || isRunningTestCafeProcess ) {
+        safeLaunchPadWindow.loadURL( `file://${CONFIG.APP_HTML_PATH_ASAR}` );
+    } else {
+        safeLaunchPadWindow.loadURL( `file://${CONFIG.APP_HTML_PATH}` );
+    }
+
+    safeLaunchPadWindow.center();
+    safeLaunchPadWindow.setResizable( false );
+    safeLaunchPadWindow.setMovable( true );
 
     if ( isRunningOnMac ) {
         app.dock.show();
-        theWindow.setWindowButtonVisibility( true );
     }
+};
+
+const createWindow = ( pinToMenuBar ) => {
+    pinToMenuBar
+        ? logger.info( 'Setting as tray' )
+        : logger.info( 'Setting as window' );
+
+    if ( safeLaunchPadWindow ) safeLaunchPadWindow.close();
+
+    pinToMenuBar ? createTrayWindow() : createRegularWindow();
+
+    safeLaunchPadWindow.on( 'ready-to-show', () => {
+        safeLaunchPadWindow.show();
+        safeLaunchPadWindow.focus();
+    } );
 };
 
 const setWindowAsVisible = ( setVisible: boolean ): void => {
     if ( !setVisible ) {
-        theWindow.hide();
+        safeLaunchPadWindow.hide();
     } else {
-        theWindow.show();
-        theWindow.focus();
+        safeLaunchPadWindow.show();
+        safeLaunchPadWindow.focus();
     }
 };
 
@@ -122,51 +169,15 @@ export const createTray = ( store: Store ) => {
 export const createSafeLaunchPadTrayWindow = (
     store: Store
 ): Application.Window => {
-    safeLaunchPadTrayWindow = new BrowserWindow( {
-        width: 400,
-        show: false,
-        frame: false,
-        fullscreenable: false,
-        resizable: false,
-        webPreferences: {
-            // Prevents renderer process code from not running when safeLaunchPadWindow is
-            // hidden
-            // preload: path.join(__dirname, 'browserPreload.js'),
-            backgroundThrottling: false,
-            nodeIntegration: true
-        }
-    } ) as Application.Window;
-
-    theWindow = safeLaunchPadTrayWindow;
-
-    if ( is.usingAsar || isRunningTestCafeProcess ) {
-        safeLaunchPadTrayWindow.loadURL( `file://${CONFIG.APP_HTML_PATH_ASAR}` );
-    } else {
-        safeLaunchPadTrayWindow.loadURL( `file://${CONFIG.APP_HTML_PATH}` );
-    }
+    const { pinToMenuBar } = store.getState().launchpad.userPreferences;
+    createWindow( pinToMenuBar );
 
     // Hide the safeLaunchPadTrayWindow when it loses focus
-    safeLaunchPadTrayWindow.on( 'blur', () => {
+    safeLaunchPadWindow.on( 'blur', () => {
         const { isTrayWindow } = store.getState().launchpad;
 
         if ( isTrayWindow ) {
             setWindowAsVisible( false );
-        }
-    } );
-
-    safeLaunchPadTrayWindow.webContents.on( 'did-finish-load', () => {
-        logger.info( 'Tray Window: Loaded' );
-
-        const { isTrayWindow } = store.getState().launchpad;
-
-        if ( isTrayWindow ) {
-            showAsTrayWindow();
-        } else {
-            showAsRegularWindow();
-        }
-
-        if ( isRunningUnpacked ) {
-            safeLaunchPadTrayWindow.openDevTools( { mode: 'undocked' } );
         }
     } );
 
@@ -175,21 +186,21 @@ export const createSafeLaunchPadTrayWindow = (
             // must be first for dock icon changes
             await createTray( store );
             store.dispatch( setAsTrayWindow( true ) );
-            showAsTrayWindow();
+            createWindow( true );
         } else {
             // must be first for dock icon changes
             tray.destroy();
             store.dispatch( setAsTrayWindow( false ) );
-            showAsRegularWindow();
+            createWindow( false );
         }
     } );
 
     // prevent links in pulled updates to trigger window opening. Use default
     // OS browser...
-    safeLaunchPadTrayWindow.webContents.on( 'new-window', function( event, url ) {
+    safeLaunchPadWindow.webContents.on( 'new-window', function( event, url ) {
         event.preventDefault();
         open( url );
     } );
 
-    return safeLaunchPadTrayWindow;
+    return safeLaunchPadWindow;
 };
