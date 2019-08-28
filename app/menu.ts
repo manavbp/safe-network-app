@@ -458,6 +458,12 @@ export class MenuBuilder {
             label: 'Tests',
             submenu: [
                 {
+                    label: 'Reset application list',
+                    click: () => {
+                        this.store.dispatch( resetToInitialState() );
+                    }
+                },
+                {
                     label: 'Add a No Internet Notification',
                     click: () => {
                         const application = { id: Math.random().toString( 36 ) };
