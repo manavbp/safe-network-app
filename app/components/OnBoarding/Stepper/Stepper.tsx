@@ -18,7 +18,6 @@ interface Props {
     onBack: Function;
     steps: number;
     activeStep: number;
-    history?: History;
 }
 
 const defaultTheme = {
@@ -53,8 +52,7 @@ export const Stepper = ( properties ) => {
         activeStep,
         onBack,
         onNext,
-        noElevation,
-        history
+        noElevation
     } = properties;
 
     const NavButton = styled( Button )( {
@@ -66,26 +64,16 @@ export const Stepper = ( properties ) => {
         <NavButton
             size="small"
             aria-label="OnBoardingNextButton"
-            onClick={() => {
-                onNext();
-                // @ts-ignore
-                history.push( BASIC_SETTINGS );
-            }}
+            onClick={() => onNext()}
         >
-            Next
+            {activeStep === steps - 1 ? 'Save' : 'Next'}
         </NavButton>
     );
     const BackButton = (
         <NavButton
             size="small"
             aria-label="OnBoardingBackButton"
-            onClick={() => {
-                onBack();
-                // @ts-ignore
-                activeStep === 1
-                    ? history.push( ON_BOARDING )
-                    : history.push( INTRO );
-            }}
+            onClick={() => onBack()}
         >
             Back
         </NavButton>

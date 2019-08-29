@@ -21,6 +21,7 @@ import {
     ON_BOARDING
 } from '$Constants/routes.json';
 import styles from './OnBoarding.css';
+import { logger } from '$Logger';
 
 interface Props {
     setAppPreferences: Function;
@@ -40,6 +41,29 @@ export class OnBoarding extends React.Component<Props> {
     };
 
     totalSteps = 3;
+
+    navigate = ( position ) => {
+        const { history } = this.props;
+        enum ON_BOARDING_PAGES {
+            GET_STARTED_PAGE,
+            INTRO_PAGE,
+            BASIC_SETTINGS_PAGE
+        }
+
+        switch ( position ) {
+            case ON_BOARDING_PAGES.GET_STARTED_PAGE:
+                history.push( ON_BOARDING );
+                break;
+            case ON_BOARDING_PAGES.INTRO_PAGE:
+                history.push( INTRO );
+                break;
+            case ON_BOARDING_PAGES.BASIC_SETTINGS_PAGE:
+                history.push( BASIC_SETTINGS );
+                break;
+            default:
+                logger.error( 'Invalid Page' );
+        }
+    };
 
     completed = () => {
         const {
@@ -65,8 +89,7 @@ export class OnBoarding extends React.Component<Props> {
     };
 
     onNext = () => {
-        const { currentPosition } = this.state;
-        const position = currentPosition;
+        let { currentPosition } = this.state;
 
         if ( currentPosition < this.totalSteps - 1 ) {
             this.setState( {
@@ -75,17 +98,18 @@ export class OnBoarding extends React.Component<Props> {
         } else {
             this.completed();
         }
+        this.navigate( ( currentPosition += 1 ) );
     };
 
     onBack = () => {
-        const { currentPosition } = this.state;
-        const position = currentPosition;
+        let { currentPosition } = this.state;
 
         if ( currentPosition > 0 ) {
             this.setState( {
                 currentPosition: currentPosition - 1
             } );
         }
+        this.navigate( ( currentPosition -= 1 ) );
     };
 
     render() {
@@ -113,11 +137,7 @@ export class OnBoarding extends React.Component<Props> {
                             exact
                             path={ON_BOARDING}
                             component={() => (
-                                <GetStarted
-                                    onClickGetStarted={this.onNext}
-                                    // @ts-ignore
-                                    history={history}
-                                />
+                                <GetStarted onClickGetStarted={this.onNext} />
                             )}
                         />
                         <Route path={INTRO} component={() => <Intro />} />
@@ -141,8 +161,6 @@ export class OnBoarding extends React.Component<Props> {
                     onBack={this.onBack}
                     steps={this.totalSteps}
                     activeStep={this.state.currentPosition}
-                    // @ts-ignore
-                    history={history}
                 />
             </Grid>
         );

@@ -4,8 +4,6 @@ import Paper from '@material-ui/core/Paper';
 import { I18n } from 'react-redux-i18n';
 import Box from '@material-ui/core/Box';
 import Fab from '@material-ui/core/Fab';
-// @ts-ignore
-import { INTRO } from '$App/constants/routes.json';
 
 // @ts-ignore
 import Logo from '$App/assets/images/logo.svg';
@@ -13,7 +11,6 @@ import styles from './GetStarted.css';
 
 interface Props {
     onClickGetStarted: Function;
-    history?: History;
 }
 
 export const GetStarted = ( properties ) => {
@@ -41,8 +38,6 @@ export const GetStarted = ( properties ) => {
                     aria-label="GetStarted"
                     onClick={() => {
                         onClickGetStarted();
-                        // @ts-ignore
-                        history.push( INTRO );
                     }}
                 >
                     {I18n.t( `onboarding.button.getStarted` )}
