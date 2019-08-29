@@ -36,7 +36,9 @@ const shallowSetup = ( propOverrides? ) => {
             getUserPreferences: jest.fn(),
             setUserPreferences: jest.fn(),
             autoLaunch: jest.fn(),
-            history: jest.fn()
+            history: {
+                push: jest.fn()
+            }
         },
         propOverrides
     );
