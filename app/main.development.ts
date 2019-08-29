@@ -45,8 +45,8 @@ if ( process.env.NODE_ENV === 'production' ) {
 }
 
 let store: Store;
-let mainWindow: Application.Window;
-let trayWindow: Application.Window;
+let theWindow: Application.Window;
+let appExiting = false;
 
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -58,9 +58,9 @@ if ( !gotTheLock ) {
 } else {
     app.on( 'second-instance', ( event, commandLine, workingDirectory ) => {
         // Someone tried to run a second instance, we should focus our window.
-        if ( mainWindow ) {
-            if ( mainWindow.isMinimized() ) mainWindow.restore();
-            mainWindow.focus();
+        if ( theWindow ) {
+            if ( theWindow.isMinimized() ) theWindow.restore();
+            theWindow.focus();
         }
     } );
 
@@ -76,7 +76,6 @@ if ( !gotTheLock ) {
 
         const initialState = {};
         store = configureStore( initialState );
-
         // start with hardcoded list of apps.
         checkForKnownAppsLocally( store );
 
@@ -85,9 +84,21 @@ if ( !gotTheLock ) {
         await preferencesJsonSetup( store );
 
         setupBackground( store );
-        trayWindow = createSafeLaunchPadTrayWindow( store );
+        theWindow = createSafeLaunchPadTrayWindow( store );
 
-        const menuBuilder = new MenuBuilder( trayWindow, store );
+        theWindow.on( 'close', ( event ) => {
+            if ( !appExiting && process.platform === 'darwin' ) {
+                event.preventDefault();
+                if (
+                    process.env.NODE_ENV === 'development' ||
+                    process.env.DEBUG_PROD === 'true'
+                )
+                    app.hide();
+                else theWindow.hide();
+            }
+        } );
+
+        const menuBuilder = new MenuBuilder( theWindow, store );
         menuBuilder.buildMenu();
 
         addNotification( store );
@@ -101,6 +112,14 @@ if ( !gotTheLock ) {
 /**
  * Add event listeners...
  */
+app.on( 'before-quit', () => {
+    appExiting = true;
+} );
+
+app.on( 'activate', () => {
+    theWindow.show();
+    theWindow.focus();
+} );
 
 app.on( 'window-all-closed', () => {
     // Respect the MAC_OS convention of having the application in memory even
@@ -112,7 +131,7 @@ app.on( 'window-all-closed', () => {
 
 app.on( 'open-url', ( _, url ) => {
     try {
-        mainWindow.show();
+        theWindow.show();
     } catch ( error ) {
         console.error(
             ' Issue opening a window. It did not exist for this app... Check that the correct app version is opening.'
