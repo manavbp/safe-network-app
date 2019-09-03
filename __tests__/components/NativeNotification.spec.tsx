@@ -12,17 +12,14 @@ const shallowSetup = ( propOverrides? ) => {
     const props = Object.assign(
         {
             latestNotification: {
-                [id]: {
-                    id,
-                    type: 'NO_INTERNET',
-                    icon: 'SignalWifiOffIcon',
-                    priority: 'HIGH',
-                    notificationType: 'standard',
-                    title:
-                        'No Internet connection. Your install has been paused.',
-                    acceptText: 'resume',
-                    denyText: 'dismiss'
-                }
+                id,
+                type: 'NO_INTERNET',
+                icon: 'SignalWifiOffIcon',
+                priority: 'HIGH',
+                notificationType: 'standard',
+                title: 'No Internet connection. Your install has been paused.',
+                acceptText: 'resume',
+                denyText: 'dismiss'
             },
             acceptNotification: jest.fn(),
             denyNotification: jest.fn()

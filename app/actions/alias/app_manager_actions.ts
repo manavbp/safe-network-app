@@ -39,6 +39,8 @@ const userAgentRequest = request.defaults( {
 // these actions all trigger some async functionality and require updates via normal electron-redux
 // actions down the line...
 export const TYPES = {
+    ALIAS_RESUME_DOWNLOAD_OF_ALL_APPS: 'ALIAS_RESUME_DOWNLOAD_OF_ALL_APPS',
+    ALIAS_PAUSE_DOWNLOAD_OF_ALL_APPS: 'ALIAS_PAUSE_DOWNLOAD_OF_ALL_APPS',
     ALIAS_FETCH_APPS: 'ALIAS_FETCH_APPS',
 
     ALIAS_FETCH_UPDATE_INFO: 'ALIAS_FETCH_UPDATE_INFO',
@@ -148,6 +150,24 @@ const resumeDownloadOfApp = ( application ) => {
     ipcRenderer.send( 'resumeDownload', application );
 };
 
+const resumeDownloadOfAllApps = ( appList: App ) => {
+    // eslint-disable-next-line array-callback-return
+    Object.keys( appList ).map( ( appId ) => {
+        const application = appList[appId];
+        if ( application.isDownloadingAndInstalling && application.isPaused )
+            ipcRenderer.send( 'resumeDownload', application );
+    } );
+};
+
+const pauseDownloadOfAllApps = ( appList: App ) => {
+    // eslint-disable-next-line array-callback-return
+    Object.keys( appList ).map( ( appId ) => {
+        const application = appList[appId];
+        if ( application.isDownloadingAndInstalling && !application.isPaused )
+            ipcRenderer.send( 'pauseDownload', application );
+    } );
+};
+
 export const fetchTheApplicationList = createAliasedAction(
     TYPES.ALIAS_FETCH_APPS,
     () => {
@@ -176,11 +196,27 @@ export const pauseDownload = createAliasedAction(
     } )
 );
 
+export const pauseAllDownloads = createAliasedAction(
+    TYPES.ALIAS_PAUSE_DOWNLOAD_OF_ALL_APPS,
+    ( appList: App ) => ( {
+        type: TYPES.ALIAS_PAUSE_DOWNLOAD_OF_APP,
+        payload: pauseDownloadOfAllApps( appList )
+    } )
+);
+
 export const resumeDownload = createAliasedAction(
     TYPES.ALIAS_RESUME_DOWNLOAD_OF_APP,
     ( application: App ) => ( {
         type: TYPES.ALIAS_RESUME_DOWNLOAD_OF_APP,
         payload: resumeDownloadOfApp( application )
+    } )
+);
+
+export const resumeAllDownloads = createAliasedAction(
+    TYPES.ALIAS_RESUME_DOWNLOAD_OF_ALL_APPS,
+    ( appList: App ) => ( {
+        type: TYPES.ALIAS_RESUME_DOWNLOAD_OF_APP,
+        payload: resumeDownloadOfAllApps( appList )
     } )
 );
 

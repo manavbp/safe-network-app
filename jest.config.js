@@ -22,6 +22,9 @@ module.exports = {
             '<rootDir>/node_modules/jest-css-modules'
     },
     globals: {
+        navigator: {
+            onLine: true
+        },
         'ts-jest': {
             diagnostics: {
                 pathRegex: '\\.(spec|test)\\.ts$'

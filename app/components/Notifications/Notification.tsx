@@ -16,6 +16,7 @@ import InfoIcon from '@material-ui/icons/Info';
 import LockIcon from '@material-ui/icons/Lock';
 import DiscFullIcon from '@material-ui/icons/DiscFull';
 import LoopIcon from '@material-ui/icons/Loop';
+import SignalWifi4BarIcon from '@material-ui/icons/SignalWifi4Bar';
 
 interface Props {
     latestNotification: any;
@@ -32,6 +33,7 @@ export class Notification extends React.PureComponent<Props> {
         } = this.props;
 
         const components = {
+            SignalWifi4BarIcon,
             SignalWifiOffIcon,
             WarningIcon,
             InfoIcon,
@@ -45,7 +47,7 @@ export class Notification extends React.PureComponent<Props> {
         };
 
         const handleOnDeny = () => {
-            denyNotification( latestNotification  );
+            denyNotification( latestNotification );
         };
 
         const TagName = components[latestNotification.icon || 'WarningIcon'];
@@ -73,15 +75,17 @@ export class Notification extends React.PureComponent<Props> {
                             </Grid>
                         </Grid>
                         <Grid container justify="flex-end" spacing={1}>
-                            <Grid item>
-                                <Button
-                                    aria-label="AcceptNotification"
-                                    color="primary"
-                                    onClick={handleOnAccept}
-                                >
-                                    {latestNotification.acceptText}
-                                </Button>
-                            </Grid>
+                            {latestNotification.acceptText && (
+                                <Grid item>
+                                    <Button
+                                        aria-label="AcceptNotification"
+                                        color="primary"
+                                        onClick={handleOnAccept}
+                                    >
+                                        {latestNotification.acceptText}
+                                    </Button>
+                                </Grid>
+                            )}
                             <Grid item>
                                 <Button
                                     aria-label="DenyNotification"
