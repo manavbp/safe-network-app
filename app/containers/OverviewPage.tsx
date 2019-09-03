@@ -9,6 +9,7 @@ import {
     openApp,
     unInstallApp
 } from '$Actions/alias/app_manager_actions';
+import { resetAppInstallationState } from '$Actions/app_manager_actions';
 import { updateDownloadProgress } from '$Actions/application_actions';
 import { triggerSetAsTrayWindow } from '$Actions/alias/launchpad_actions';
 import { getUserPreferences } from '$Actions/launchpad_actions';
@@ -30,6 +31,7 @@ function mapDispatchToProperties( dispatch ) {
         pauseDownload,
         cancelDownload,
         resumeDownload,
+        resetAppInstallationState,
 
         openApp,
         unInstallApp,

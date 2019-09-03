@@ -15,6 +15,7 @@ interface Props {
     downloadAndInstallApp: Function;
     pauseDownload: Function;
     cancelDownload: Function;
+    resetAppInstallationState: Function;
     resumeDownload: Function;
     showErrorText?: boolean;
     application: App;
@@ -42,10 +43,10 @@ export class AppStateButton extends React.Component<Props> {
         unInstallApp( application );
     };
 
-    handleCancelDownload = () => {
-        const { application, cancelDownload } = this.props;
+    resetInstallation = () => {
+        const { application, resetAppInstallationState } = this.props;
         logger.verbose( 'ApplicationOverview: clicked cancel', application );
-        cancelDownload( application );
+        resetAppInstallationState( application );
     };
 
     handleResumeDownload = () => {
@@ -98,13 +99,14 @@ export class AppStateButton extends React.Component<Props> {
         );
 
         if ( error ) {
-            buttonText = I18n.t( `buttons.retryInstall` );
+            buttonText = I18n.t( `buttons.cancelInstall` );
             progressButtonIcon = (
                 <CancelIcon
                     className={styles.cancelButton}
                     aria-label="cancelButton"
                 />
             );
+            handleClick = this.resetInstallation;
         }
 
         if ( isDownloadingAndInstalling ) {

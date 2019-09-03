@@ -59,9 +59,11 @@ describe( 'Application Manager actions', () => {
             id: generateRandomString()
         };
         const expectAction = {
-            type: appManager.TYPES.RESET_APP_STATE,
+            type: appManager.TYPES.RESET_APP_INSTALLATION_STATE,
             payload
         };
-        expect( appManager.resetAppState( payload ) ).toEqual( expectAction );
+        expect( appManager.resetAppInstallationState( payload ) ).toEqual(
+            expectAction
+        );
     } );
 } );

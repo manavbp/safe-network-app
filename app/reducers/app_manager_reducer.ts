@@ -63,7 +63,7 @@ export function appManager( state = initialState, action ): AppManagerState {
             return initialState;
         }
 
-        case TYPES.RESET_APP_STATE: {
+        case TYPES.RESET_APP_INSTALLATION_STATE: {
             if ( !targetApp ) return state;
             targetApp.isDownloadingAndInstalling = false;
             targetApp.isUninstalling = false;

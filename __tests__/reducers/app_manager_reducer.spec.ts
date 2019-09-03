@@ -848,7 +848,7 @@ describe( 'app manager reducer', () => {
     //     } );
     // } );
 
-    describe( 'RESET_APP_STATE', () => {
+    describe( 'RESET_APP_INSTALLATION_STATE', () => {
         it( 'Should reset app state', () => {
             const app = getApp();
             const otherApp = getApp();
@@ -867,7 +867,7 @@ describe( 'app manager reducer', () => {
                 }
             };
             const nextStore = appManager( store, {
-                type: TYPES.RESET_APP_STATE,
+                type: TYPES.RESET_APP_INSTALLATION_STATE,
                 payload: {
                     id
                 }
@@ -900,7 +900,7 @@ describe( 'app manager reducer', () => {
             };
             expect(
                 appManager( store, {
-                    type: TYPES.RESET_APP_STATE,
+                    type: TYPES.RESET_APP_INSTALLATION_STATE,
                     payload: {}
                 } )
             ).toEqual( store );
