@@ -24,6 +24,7 @@ interface Props {
     openApp: Function;
     pauseDownload: Function;
     cancelDownload: Function;
+    resetAppInstallationState: Function;
     resumeDownload: Function;
     downloadAndInstallApp: Function;
     application: App;

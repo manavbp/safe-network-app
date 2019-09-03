@@ -23,6 +23,7 @@ describe( 'AppStateButton', () => {
             unInstallApp: jest.fn(),
             resumeDownload: jest.fn(),
             pauseDownload: jest.fn(),
+            resetAppInstallationState: jest.fn(),
             cancelDownload: jest.fn(),
             openApp: jest.fn(),
             downloadAndInstallApp: jest.fn(),
@@ -194,7 +195,7 @@ describe( 'AppStateButton', () => {
             expect( wrapper.html().includes( 'Oh no' ) ).toBeTruthy();
             action.simulate( 'click' );
 
-            expect( props.downloadAndInstallApp ).toHaveBeenCalled();
+            expect( props.resetAppInstallationState ).toHaveBeenCalled();
         } );
     } );
 } );
