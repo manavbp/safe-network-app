@@ -8,6 +8,7 @@ import { logger } from '$Logger';
 import { App } from '$Definitions/application.d';
 
 import styles from './AppStateButton.css';
+import { notificationTypes } from '$Constants/notifications';
 
 interface Props {
     unInstallApp: Function;
@@ -16,6 +17,7 @@ interface Props {
     pauseDownload: Function;
     cancelDownload: Function;
     resetAppInstallationState: Function;
+    pushNotification: Function;
     resumeDownload: Function;
     showErrorText?: boolean;
     application: App;
@@ -23,12 +25,21 @@ interface Props {
 
 export class AppStateButton extends React.Component<Props> {
     handleDownload = () => {
-        const { application, downloadAndInstallApp } = this.props;
-        logger.verbose(
-            'ApplicationOverview: clicked download ',
-            application.name
-        );
-        downloadAndInstallApp( application );
+        const {
+            application,
+            downloadAndInstallApp,
+            pushNotification
+        } = this.props;
+        // eslint-disable-next-line no-undef
+        if ( !navigator.onLine )
+            pushNotification( notificationTypes.NO_INTERNET() );
+        else {
+            logger.verbose(
+                'ApplicationOverview: clicked download ',
+                application.name
+            );
+            downloadAndInstallApp( application );
+        }
     };
 
     handleOpen = () => {
@@ -50,12 +61,18 @@ export class AppStateButton extends React.Component<Props> {
     };
 
     handleResumeDownload = () => {
-        const { application, resumeDownload } = this.props;
-        logger.verbose(
-            'ApplicationOverview: clicked resume download',
-            application
-        );
-        resumeDownload( application );
+        const { application, resumeDownload, pushNotification } = this.props;
+
+        // eslint-disable-next-line no-undef
+        if ( !navigator.onLine )
+            pushNotification( notificationTypes.NO_INTERNET() );
+        else {
+            logger.verbose(
+                'ApplicationOverview: clicked resume download',
+                application
+            );
+            resumeDownload( application );
+        }
     };
 
     handlePauseDownload = () => {

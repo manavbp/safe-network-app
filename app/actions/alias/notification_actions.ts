@@ -5,6 +5,7 @@ import { logger } from '$Logger';
 import { dismissNotification } from '$Actions/launchpad_actions';
 import {
     cancelDownload,
+    resumeAllDownloads,
     // TODO: Enable skip app update.
     // skipAppUpdate,
     // updateApp,
@@ -38,6 +39,7 @@ const acceptNotify = ( props ) => {
     const { application } = props;
     logger.info( 'Accepting notification.', props );
     const store = getCurrentStore();
+    const { applicationList } = store.getState().appManager;
     switch ( props.type ) {
         case 'RETRY_INSTALL':
             store.dispatch( downloadAndInstallApp( application ) );
@@ -101,6 +103,9 @@ const denyNotify = ( props ) => {
     logger.info( 'Denying notification' );
     const store = getCurrentStore();
     switch ( props.type ) {
+        case 'NO_INTERNET_INSTALLING_APP':
+            store.dispatch( dismissNotification( { id: props.id } ) );
+            break;
         case 'NO_INTERNET':
             store.dispatch( dismissNotification( { id: props.id } ) );
             break;

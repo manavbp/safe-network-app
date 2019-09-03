@@ -8,30 +8,36 @@ const Notifications = {
     updateAvailable: {
         name: 'Update Available',
         title:
-            'Update Available! SAFE Browser v1.0 is ready to install. What’s New…'
+            'Update Available! SAFE Browser v1.0 is ready to install. What’s New…',
+        acceptButtonExists: true
     },
     noInternet: {
         name: 'No Internet',
-        title: 'No Internet connection. Your install has been paused.'
+        title: "Oh no! You're Internet connection is down!",
+        acceptButtonExists: false
     },
     discFull: {
         name: 'Disc Full',
         title:
-            'Disk is full. Your install has been paused. Free up some space and resume.'
+            'Disk is full. Your install has been paused. Free up some space and resume.',
+        acceptButtonExists: true
     },
     globalFailure: {
         name: 'Global Failure',
-        title: 'Global Failure'
+        title: 'Global Failure',
+        acceptButtonExists: true
     },
     adminPassRequest: {
         name: 'Admin Pass Req',
         title:
-            'Your Administrator Password is required to finish installing SAFE Browser.'
+            'Your Administrator Password is required to finish installing SAFE Browser.',
+        acceptButtonExists: true
     },
     serverTimedOut: {
         name: 'Server Timed Out',
         title:
-            'Download Server has timed out. Installation of SAFE Browser has been paused.'
+            'Download Server has timed out. Installation of SAFE Browser has been paused.',
+        acceptButtonExists: true
     }
 };
 
@@ -75,14 +81,15 @@ numberOfNotification.map( ( type ) => {
 
         await t.expect( notificationTitle ).eql( Notifications[type].title );
 
-        await t
-            .expect(
-                Selector( 'button' ).withAttribute(
-                    'aria-label',
-                    'AcceptNotification'
-                ).exists
-            )
-            .ok();
+        if ( Notifications[type].acceptButtonExists )
+            await t
+                .expect(
+                    Selector( 'button' ).withAttribute(
+                        'aria-label',
+                        'AcceptNotification'
+                    ).exists
+                )
+                .ok();
 
         await t
             .expect(
@@ -93,20 +100,22 @@ numberOfNotification.map( ( type ) => {
             )
             .ok();
 
-        await t
-            .expect(
-                Selector( 'button' ).withAttribute(
-                    'aria-label',
-                    'AcceptNotification'
-                ).exists
-            )
-            .ok();
+        if ( Notifications[type].acceptButtonExists ) {
+            await t
+                .expect(
+                    Selector( 'button' ).withAttribute(
+                        'aria-label',
+                        'AcceptNotification'
+                    ).exists
+                )
+                .ok();
 
-        // @ts-ignore
-        await clickOnMainMenuItem( [
-            'Tests',
-            `Add a ${Notifications[type].name} Notification`
-        ] );
+            // @ts-ignore
+            await clickOnMainMenuItem( [
+                'Tests',
+                `Add a ${Notifications[type].name} Notification`
+            ] );
+        }
 
         await t
             .expect(
