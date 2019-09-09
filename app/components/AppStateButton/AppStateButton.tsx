@@ -1,6 +1,12 @@
 import React from 'react';
 import { I18n } from 'react-redux-i18n';
-import { Box, Fab, Typography, CircularProgress } from '@material-ui/core';
+import {
+    Box,
+    Fab,
+    Typography,
+    CircularProgress,
+    Tooltip
+} from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import PauseCircleFilledIcon from '@material-ui/icons/PauseCircleFilled';
@@ -138,14 +144,16 @@ export class AppStateButton extends React.Component<Props> {
             <Box className={styles.wrap}>
                 {!isInstalled && progressButtonIcon && (
                     <Box className={styles.progressButton}>
-                        <Fab
-                            color="primary"
-                            className={styles.progressFab}
-                            onClick={handleClick}
-                            aria-label="Application Action Button"
-                        >
-                            {progressButtonIcon}
-                        </Fab>
+                        <Tooltip title={buttonText} placement="top">
+                            <Fab
+                                color="primary"
+                                className={styles.progressFab}
+                                onClick={handleClick}
+                                aria-label="Application Action Button"
+                            >
+                                {progressButtonIcon}
+                            </Fab>
+                        </Tooltip>
                         <CircularProgress
                             value={percentageProgress}
                             variant="static"
