@@ -25,7 +25,8 @@ const defaultTheme = {
         backgroundColor: '#fff'
     },
     dot: {
-        backgroundColor: indigo[100]
+        backgroundColor: indigo[100],
+        margin: '0 4px'
     },
     dotActive: {
         backgroundColor: indigo[800]
@@ -37,7 +38,8 @@ const whiteTheme = {
         backgroundColor: 'transparent'
     },
     dot: {
-        backgroundColor: 'rgba(#fff, 0.3)'
+        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        margin: '0 4px'
     },
     dotActive: {
         backgroundColor: '#fff'

@@ -16,6 +16,7 @@ import { MeatballMenu } from '$Components/MeatballMenu';
 import { AppIcon } from '$Components/AppIcon';
 // import { logger } from '$Logger';
 import { AppStateButton } from '$Components/AppStateButton';
+import { getAppStatusText } from '$Utils/app_utils';
 import styles from './ApplicationOverview.css';
 import { App } from '$Definitions/application.d';
 
@@ -33,6 +34,8 @@ export class ApplicationOverview extends React.PureComponent<Props> {
     render() {
         const { application } = this.props;
 
+        const progressText = getAppStatusText( application );
+
         return (
             <React.Fragment>
                 <ListItem className={styles.list}>
@@ -41,10 +44,17 @@ export class ApplicationOverview extends React.PureComponent<Props> {
                     </ListItemAvatar>
                     <Link to={`/application/${application.id}`}>
                         <ListItemText
+                            className={styles.listText}
                             primary={application.name}
-                            secondary={application.error}
+                            primaryTypographyProps={{
+                                variant: 'body2'
+                            }}
+                            secondary={application.error || progressText}
                             secondaryTypographyProps={{
-                                color: 'error'
+                                color: application.error
+                                    ? 'error'
+                                    : 'textSecondary',
+                                variant: 'body2'
                             }}
                         />
                     </Link>

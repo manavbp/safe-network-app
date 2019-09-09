@@ -3,8 +3,8 @@
     height: 100%;
     background-image: url('../../../assets/images/on_boarding_popup_bg.png');
     background-repeat: no-repeat;
-    background-size: contain;
-    display: 'flex';
+    background-size: 400px;
+    display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
@@ -26,5 +26,6 @@
 
 .Base .Container .Description {
     text-align: center;
-    padding: 0 24px;
+    max-width: 270px;
+    color: rgba(0, 0, 0, 0.6);
 }

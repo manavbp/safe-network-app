@@ -41,7 +41,12 @@ export class ApplicationDetail extends React.PureComponent<Props> {
                         <Typography aria-label="title" variant="h6">
                             {name}
                         </Typography>
-                        <Typography aria-label="author" variant="body2">
+                        <Typography
+                            aria-label="author"
+                            variant="caption"
+                            variantMapping={{ caption: 'h2' }}
+                            className={styles.author}
+                        >
                             {author}
                         </Typography>
                         <Grid container className={styles.appInfoActions}>
@@ -49,12 +54,15 @@ export class ApplicationDetail extends React.PureComponent<Props> {
                                 <AppStateButton
                                     {...this.props}
                                     application={application}
-                                    showErrorText
+                                    showAppStatus
                                 />
                             </Grid>
                             {!application.error && (
                                 <Grid item className={styles.appSize}>
-                                    <Typography variant="body2">
+                                    <Typography
+                                        variant="caption"
+                                        variantMapping={{ caption: 'h2' }}
+                                    >
                                         {application.size}
                                     </Typography>
                                 </Grid>
@@ -75,7 +83,7 @@ export class ApplicationDetail extends React.PureComponent<Props> {
                         </Typography>
                         <Divider />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item xs={12} className={styles.markdownWrap}>
                         {application.updateDescription && (
                             <Markdown
                                 className={styles.markdown}
@@ -85,7 +93,7 @@ export class ApplicationDetail extends React.PureComponent<Props> {
                                         h1: {
                                             component: Typography,
                                             props: {
-                                                variant: 'h3'
+                                                variant: 'subtitle1'
                                             }
                                         },
                                         h2: {
@@ -110,6 +118,12 @@ export class ApplicationDetail extends React.PureComponent<Props> {
                                             component: 'a',
                                             props: {
                                                 target: '_blank'
+                                            }
+                                        },
+                                        span: {
+                                            component: Typography,
+                                            props: {
+                                                variant: 'body2'
                                             }
                                         }
                                     }

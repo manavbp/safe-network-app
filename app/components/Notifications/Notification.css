@@ -1,0 +1,16 @@
+.Notification .ActionButton {
+    font-size: 12px;
+    font-weight: 500;
+    color: #4054b2;
+    line-height: 20px;
+}
+
+.Notification .NotificationWrap {
+    padding-left: 13px;
+    padding-right: 13px;
+}
+
+.Notification .NotificationDesc {
+    color: rgba(0, 0, 0, 0.54);
+    padding-left: 20px;
+}

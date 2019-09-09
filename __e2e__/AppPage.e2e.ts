@@ -39,7 +39,8 @@ test( 'can navigate to the application page and install', async ( t ) => {
 
     await t
         .expect(
-            Selector( 'p.MuiTypography-body2' ).withText( 'Maidsafe Ltd.' ).exists
+            Selector( 'h2.MuiTypography-caption' ).withText( 'Maidsafe Ltd.' )
+                .exists
         )
         .ok();
 

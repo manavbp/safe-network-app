@@ -1,15 +1,23 @@
 .standardWindow {
+    height: 100%;
     box-sizing: border-box;
+}
+
+.containerBase {
+    height: 100%;
+    position: relative;
+    z-index: 0;
 }
 
 .gridContainer {
     display: grid;
     height: 100%;
-    grid-template-rows: 24px 56px auto;
+    grid-template-rows: 24px 48px auto;
 }
 
 .trayWindow {
-    grid-template-rows: 0 56px auto;
+    height: 100%;
+    grid-template-rows: 0 48px auto;
 }
 
 .gridContainer .headerBar {

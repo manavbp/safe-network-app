@@ -32,7 +32,7 @@ test.before( async ( t ) => {
     await t.click(
         Selector( 'button' ).withAttribute( 'aria-label', 'Go to settings' )
     );
-    await t.click( Selector( 'p.MuiTypography-body1' ).withText( 'Settings' ) );
+    await t.click( Selector( 'h6.MuiTypography-subtitle2' ).withText( 'Settings' ) );
     await t.click(
         Selector( 'button' ).withAttribute( 'aria-label', 'Go Backwards' )
     );

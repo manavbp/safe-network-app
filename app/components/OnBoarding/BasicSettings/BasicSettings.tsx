@@ -31,10 +31,10 @@ export const BasicSettings = ( properties ) => {
             aria-label="BasicSettingsPage"
         >
             <Box className={styles.Container}>
-                <Typography className={styles.Title} variant="h5">
+                <Typography className={styles.Title} variant="h6">
                     {I18n.t( `onboarding.title.basic_settings` )}
                 </Typography>
-                <Typography>
+                <Typography variant="body2" className={styles.Description}>
                     {I18n.t( `onboarding.subTitle.basic_settings` )}
                 </Typography>
             </Box>

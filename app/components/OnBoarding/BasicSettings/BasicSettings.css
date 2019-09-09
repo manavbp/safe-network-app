@@ -13,3 +13,7 @@
 .Base .Container .Title {
     margin-bottom: 16px;
 }
+
+.Base .Description {
+    color: rgba(0, 0, 0, 0.65);
+}

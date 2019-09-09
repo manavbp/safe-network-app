@@ -4,6 +4,7 @@ import { Box, Fab, Typography, CircularProgress } from '@material-ui/core';
 import CancelIcon from '@material-ui/icons/Cancel';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import PauseCircleFilledIcon from '@material-ui/icons/PauseCircleFilled';
+import { getAppStatusText } from '$Utils/app_utils';
 import { logger } from '$Logger';
 import { App } from '$Definitions/application.d';
 
@@ -16,7 +17,7 @@ interface Props {
     pauseDownload: Function;
     cancelDownload: Function;
     resumeDownload: Function;
-    showErrorText?: boolean;
+    showAppStatus?: boolean;
     application: App;
 }
 
@@ -67,7 +68,7 @@ export class AppStateButton extends React.Component<Props> {
     };
 
     render() {
-        const { application, showErrorText = false } = this.props;
+        const { application, showAppStatus = false } = this.props;
 
         const {
             isDownloadingAndInstalling,
@@ -87,7 +88,8 @@ export class AppStateButton extends React.Component<Props> {
             : I18n.t( `buttons.install` );
 
         let handleClick = isInstalled ? this.handleOpen : this.handleDownload;
-        const errorMessage = showErrorText ? error : null;
+        const progressText = getAppStatusText( application );
+        const statusMessage = showAppStatus ? error || progressText : null;
         let progressButtonIcon;
 
         const pauseIconButton = (
@@ -155,24 +157,24 @@ export class AppStateButton extends React.Component<Props> {
                 )}
                 {!progressButtonIcon && (
                     <Fab
-                        className={styles.actionButton}
                         variant="extended"
                         color="primary"
                         onClick={handleClick}
                         aria-label="Application Action Button"
                         disabled={!!isUninstalling}
+                        className={styles.actionButton}
                     >
                         {buttonText}
                     </Fab>
                 )}
 
-                {errorMessage && (
+                {statusMessage && (
                     <Typography
-                        className={styles.error}
-                        color="error"
+                        color={error ? 'error' : 'textSecondary'}
                         variant="body2"
+                        className={styles.statusMessage}
                     >
-                        {errorMessage}
+                        {statusMessage}
                     </Typography>
                 )}
             </Box>

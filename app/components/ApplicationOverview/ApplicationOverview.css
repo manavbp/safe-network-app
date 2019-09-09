@@ -4,3 +4,9 @@ li .list {
 li .actions {
     right: 0;
 }
+
+li .listText p {
+    font-size: 10px;
+    line-height: 16px;
+    color: rgba(0, 0, 0, 0.6);
+}

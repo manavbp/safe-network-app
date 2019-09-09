@@ -33,7 +33,9 @@ test( 'can navigate to settings page', async ( t ) => {
     );
 
     await t
-        .expect( Selector( 'p.MuiTypography-body1' ).withText( 'Settings' ).exists )
+        .expect(
+            Selector( 'h6.MuiTypography-subtitle2' ).withText( 'Settings' ).exists
+        )
         .ok();
 } );
 
@@ -43,7 +45,9 @@ test( 'can toggle switch buttons', async ( t ) => {
     );
 
     await t
-        .expect( Selector( 'p.MuiTypography-body1' ).withText( 'Settings' ).exists )
+        .expect(
+            Selector( 'h6.MuiTypography-subtitle2' ).withText( 'Settings' ).exists
+        )
         .ok();
 
     const PreferencesItemArray = getPreferenceItems();
@@ -68,7 +72,9 @@ test( 'Go back from Settings page to Home', async ( t ) => {
     );
 
     await t
-        .expect( Selector( 'p.MuiTypography-body1' ).withText( 'Settings' ).exists )
+        .expect(
+            Selector( 'h6.MuiTypography-subtitle2' ).withText( 'Settings' ).exists
+        )
         .ok();
 
     await t
@@ -85,7 +91,9 @@ test( 'clicking on pinToMenuBar button toggles window between normal window and 
     );
 
     await t
-        .expect( Selector( 'p.MuiTypography-body1' ).withText( 'Settings' ).exists )
+        .expect(
+            Selector( 'h6.MuiTypography-subtitle2' ).withText( 'Settings' ).exists
+        )
         .ok();
 
     const PreferencesItemArray = getPreferenceItems();
@@ -117,7 +125,9 @@ test( 'Changing any preference should persist', async ( t ) => {
     );
 
     await t
-        .expect( Selector( 'p.MuiTypography-body1' ).withText( 'Settings' ).exists )
+        .expect(
+            Selector( 'h6.MuiTypography-subtitle2' ).withText( 'Settings' ).exists
+        )
         .ok();
 
     const PreferencesItemArray = getPreferenceItems();
@@ -143,7 +153,9 @@ test( 'Changing any preference should persist', async ( t ) => {
     );
 
     await t
-        .expect( Selector( 'p.MuiTypography-body1' ).withText( 'Settings' ).exists )
+        .expect(
+            Selector( 'h6.MuiTypography-subtitle2' ).withText( 'Settings' ).exists
+        )
         .ok();
 
     await t

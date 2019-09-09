@@ -1,7 +1,7 @@
 .wrap {
     width: 100%;
     position: relative;
-    padding: 30px 24px 24px;
+    padding: 30px 0 24px;
     background-color: #fafafa;
     box-sizing: border-box;
 }
@@ -9,18 +9,26 @@
     width: 80px;
     height: 80px;
     float: right;
+    margin-right: 24px;
 }
 .wrap .appDesc {
     margin-bottom: 16px;
 }
 .wrap .appDesc p {
     margin-bottom: 30px;
+    padding: 0 24px;
+    color: rgba(0, 0, 0, 0.6);
 }
 .wrap .error {
     margin-bottom: 16px;
 }
 .appInfo {
     padding-bottom: 25px;
+    padding-left: 24px;
+}
+.appInfo .author {
+    display: block;
+    margin-top: 10px;
 }
 .appInfoActions {
     margin-top: 16px;
@@ -28,7 +36,12 @@
 .appInfoActions .appSize {
     margin-left: 16px;
 }
-
+.appInfoActions .appSize h2 {
+    line-height: 24px;
+}
+.markdownWrap {
+    padding: 0 24px;
+}
 .markdown h3 {
     font-size: 16px;
     margin-bottom: 12px;
@@ -56,4 +69,8 @@
     width: 100%;
     overflow: auto;
     max-width: 320px;
+}
+
+p.markdown {
+    color: rgba(0, 0, 0, 0.6);
 }

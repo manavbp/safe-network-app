@@ -16,7 +16,7 @@ interface Props {
 export const GetStarted = ( properties ) => {
     const { onClickGetStarted, history } = properties;
     return (
-        <Paper className={styles.Base} aria-label="GetStarted">
+        <Paper className={styles.Base} aria-label="GetStarted" square>
             <Box className={styles.LogoBase}>
                 <img src={Logo} alt="Launchpad logo" />
             </Box>
@@ -38,7 +38,7 @@ export const GetStarted = ( properties ) => {
                 <Fab
                     className={styles.GetStartedButton}
                     variant="extended"
-                    size="medium"
+                    color="secondary"
                     aria-label="GetStarted"
                     onClick={() => {
                         onClickGetStarted();

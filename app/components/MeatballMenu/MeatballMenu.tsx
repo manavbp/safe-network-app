@@ -51,10 +51,12 @@ MeatballMenuState
                 <IconButton
                     className={styles.vertIcon}
                     onClick={this.handleClick}
+                    style={{ fontSize: 18 }}
                 >
-                    <MoreVert />
+                    <MoreVert fontSize="inherit" />
                 </IconButton>
                 <Menu
+                    className={styles.Menu}
                     getContentAnchorEl={null}
                     anchorOrigin={{
                         vertical: 'bottom',
