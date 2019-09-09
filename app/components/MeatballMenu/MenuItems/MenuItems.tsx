@@ -91,18 +91,24 @@ export class MenuItems extends Component<MenuItemsProps> {
                 >
                     <Link to={`/application/${id}`}>{`About ${name}`}</Link>
                 </MenuItemWrapper>
-                <MenuItemWrapper
-                    dense
-                    className={styles['menu-item']}
-                    aria-label={
-                        isInstalled ? `Uninstall ${name}` : `Install ${name}`
-                    }
-                    onClick={
-                        isInstalled ? this.handleUninstall : this.handleDownload
-                    }
-                >
-                    {isInstalled ? 'Uninstall' : 'Install'}
-                </MenuItemWrapper>
+                {!isDownloadingAndInstalling && (
+                    <MenuItemWrapper
+                        dense
+                        className={styles['menu-item']}
+                        aria-label={
+                            isInstalled
+                                ? `Uninstall ${name}`
+                                : `Install ${name}`
+                        }
+                        onClick={
+                            isInstalled
+                                ? this.handleUninstall
+                                : this.handleDownload
+                        }
+                    >
+                        {isInstalled ? 'Uninstall' : 'Install'}
+                    </MenuItemWrapper>
+                )}
                 {isInstalled && (
                     <React.Fragment>
                         <MenuItemWrapper
@@ -142,7 +148,7 @@ export class MenuItems extends Component<MenuItemsProps> {
                         className={styles['menu-item']}
                         onClick={this.handleResumeDownload}
                     >
-                        Pause Download
+                        Resume Download
                     </MenuItemWrapper>
                 )}
                 {hasUpdate && (

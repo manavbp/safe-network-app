@@ -18,6 +18,7 @@ interface Props {
     appList: {};
     unInstallApp: Function;
     openApp: Function;
+    resetAppInstallationState: Function;
     pauseDownload: Function;
     cancelDownload: Function;
     resumeDownload: Function;

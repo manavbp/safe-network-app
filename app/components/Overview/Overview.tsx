@@ -12,6 +12,7 @@ interface Props {
     unInstallApp: Function;
     openApp: Function;
     pauseDownload: Function;
+    resetAppInstallationState: Function;
     cancelDownload: Function;
     resumeDownload: Function;
     downloadAndInstallApp: Function;
@@ -33,6 +34,7 @@ export class Overview extends Component<Props> {
             unInstallApp,
             downloadAndInstallApp,
             pauseDownload,
+            resetAppInstallationState,
             cancelDownload,
             resumeDownload,
             openApp
@@ -48,6 +50,9 @@ export class Overview extends Component<Props> {
                                 application={theApplication}
                                 downloadAndInstallApp={downloadAndInstallApp}
                                 unInstallApp={unInstallApp}
+                                resetAppInstallationState={
+                                    resetAppInstallationState
+                                }
                                 openApp={openApp}
                                 pauseDownload={pauseDownload}
                                 cancelDownload={cancelDownload}
