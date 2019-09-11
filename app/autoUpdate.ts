@@ -13,6 +13,17 @@ const application = {
     name: 'SAFE Network App'
 };
 
+const checkIfAppIsDownloading = () => {
+    let appIsDownloading = false;
+    const { applicationList } = store.getState().appManager;
+    // @ts-ignore
+    appIsDownloading = Object.keys( applicationList ).find( ( appId ) => {
+        const anApp = applicationList[appId];
+        return anApp.isDownloadingAndInstalling;
+    } );
+    return appIsDownloading;
+};
+
 autoUpdater.on( 'error', ( error ) => {
     dialog.showErrorBox(
         'Error: ',
@@ -23,10 +34,13 @@ autoUpdater.on( 'error', ( error ) => {
 autoUpdater.on( 'update-available', ( info ) => {
     console.log( info );
     const { version } = info;
+    // @ts-ignore
+    const id = Math.random().toString( '36' );
     store.dispatch(
-        pushNotification(
-            notificationTypes.UPDATE_AVAILABLE( application, version )
-        )
+        pushNotification( {
+            id,
+            ...notificationTypes.UPDATE_AVAILABLE( application, version )
+        } )
     );
 } );
 
@@ -35,13 +49,7 @@ ipcMain.on( 'update-safe-network-app', ( event ) => {
 } );
 
 autoUpdater.on( 'update-downloaded', () => {
-    let appIsDownloading = false;
-    const { applicationList } = store.getState().appManager;
-    // @ts-ignore
-    appIsDownloading = Object.keys( applicationList ).find( ( appId ) => {
-        const anApp = applicationList[appId];
-        return anApp.isDownloadingAndInstalling;
-    } );
+    const appIsDownloading = checkIfAppIsDownloading();
     store.dispatch(
         pushNotification(
             notificationTypes.RESTART_APP( application, appIsDownloading )
@@ -50,18 +58,13 @@ autoUpdater.on( 'update-downloaded', () => {
 } );
 
 ipcMain.on( 'install-safe-network-app', ( event ) => {
-    store.subscribe( () => {
-        let appIsDownloading = false;
-        const { applicationList } = store.getState().appManager;
-        // @ts-ignore
-        appIsDownloading = Object.keys( applicationList ).find( ( appId ) => {
-            const app = applicationList[appId];
-            return app.isDownloadingAndInstalling;
+    const appIsDownloading = checkIfAppIsDownloading();
+    if ( appIsDownloading )
+        store.subscribe( () => {
+            const appDownloading = checkIfAppIsDownloading();
+            if ( !appDownloading ) autoUpdater.quitAndInstall();
         } );
-        if ( !appIsDownloading ) {
-            autoUpdater.quitAndInstall();
-        }
-    } );
+    else autoUpdater.quitAndInstall();
 } );
 
 export class AppUpdater {
