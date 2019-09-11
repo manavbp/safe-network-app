@@ -23,10 +23,13 @@ autoUpdater.on( 'error', ( error ) => {
 autoUpdater.on( 'update-available', ( info ) => {
     console.log( info );
     const { version } = info;
+    // @ts-ignore
+    const id = Math.random().toString( '36' );
     store.dispatch(
-        pushNotification(
-            notificationTypes.UPDATE_AVAILABLE( application, version )
-        )
+        pushNotification( {
+            id,
+            ...notificationTypes.UPDATE_AVAILABLE( application, version )
+        } )
     );
 } );
 
