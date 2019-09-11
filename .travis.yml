@@ -1,8 +1,12 @@
+env:
+  global:
+    - secure: "G+hQbK2+8f6XFDopDJNddw3D8pEYx8OcWS4HAPpdXWY3Uo1mOFMObQsK7PjKoVKU7+n/ScL6t1FmRPuqCaxzEZa4jztgtViyVlb04mUI331f0xnuURiSOwHNwkEXpYAOXjmA79UFkSw4BTDVH+A4cJr5wxep+Xr85wGUwRscyDMjNg4DFQHmkNYK+JluquZ2+31yDI/Rl8qgM6vOQAhf4hV72UGKNpjGknPtFqiwnf/j2Q8IT3QiUeOLaEQbgOFAQ/ad7YGt9B0vhRBkh7X3vUMrSU5JXtsZZwETpfOzE6rDUg5d+YJpwhmIlPgqg/o7hL0gyZm+mk5fY/fdWoKAoHSa2/OkMyRN0UXopg5ZDDq1NQb5Pt1a1ndgWH9tlJXRfjXaurtip+ExEamXhr+bMISqbFHyQkLHCnyC1O3LQOLbIHOv6kjNqPYLAHIE/ysagkXg6iZ9k7WOv4Rw436GoMNS1rEL0a2iacC9+X3w770QZ1mlSxYqXsswxtJLvI7kHNN+2vwJb563FJxaaaTYm66T2dYFpZhG0/o0IIM8BPTEGDit8mIBFjzZtbMP1DVRjfZhoX6zc9hXggFr8PdWBHIy6MC3dl23f84X74NnBf6RgDF6EnlQRA5D4YnB8hMHbyzwpl+Zu1ACnKfmdn7Q8QoKOC8bS9Fb/nBr7svqguo="
 matrix:
   allow_failures:
     - os: windows
   include:
     - os: osx
+      osx_image: xcode11
       language: node_js
       node_js:
         - "12"
@@ -53,6 +57,14 @@ cache:
     # - $HOME/.cache/electron-builder
 
 before_install:
+  - if [[ ${TRAVIS_TAG} != "" && "$TRAVIS_OS_NAME" == "linux" ]]; then 
+      pip install --user awscli;
+      export PATH=$PATH:$HOME/.local/bin;
+    fi
+  - if [[ ${TRAVIS_TAG} != "" && "$TRAVIS_OS_NAME" == "osx" ]]; then 
+      pip install --user awscli;
+      export PATH=$PATH:/Users/travis/Library/Python/2.7/bin;
+    fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export CXX="g++-8"; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update; fi
   - yarn config delete proxy
@@ -63,8 +75,8 @@ before_install:
   # - npm config set cache-lock-retries 500
 
 install:
-  - if [ "$TRAVIS_OS_NAME" != "windows" ]; then yarn; fi
-  - if [ "$TRAVIS_OS_NAME" == "windows" ]; then travis_wait 30 yarn --ignore-engines --network-timeout 800000; fi
+  - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then yarn; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then travis_wait 30 yarn --ignore-engines --network-timeout 800000; fi
   # On Linux, initialize "virtual display". See before_script
   - |
     if [ "$TRAVIS_OS_NAME" == "linux" ]; then
@@ -79,7 +91,6 @@ install:
     else
       :
     fi
-
 script:
   - yarn lint
   - yarn check-types
@@ -87,4 +98,30 @@ script:
   - yarn package
   - travis_retry yarn test-e2e-packed
   - rm -rf release
+  - if [[ "$TRAVIS_OS_NAME" == "windows" && ${TRAVIS_TAG} != "" ]]; then aws s3 rm --recursive s3://safe-network-app/safe-network-app-win/; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" && ${TRAVIS_TAG} != "" ]]; then aws s3 rm --recursive s3://safe-network-app/safe-network-app-linux/; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" && ${TRAVIS_TAG} != "" ]]; then aws s3 rm --recursive s3://safe-network-app/safe-network-app-osx/; fi
   - yarn release
+
+before_deploy:
+  - ls release
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export RELEASE_PROD_EXE="$(ls release/*-mac-x64.dmg)";
+    fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export RELEASE_PROD_EXE="$(ls release/*-linux-x64.AppImage)";
+    fi
+  - if [[ "$TRAVIS_OS_NAME" == "win" ]]; then export RELEASE_PROD_EXE="$(ls release/*-win-x64.exe)";
+    fi
+  - echo "deploying ${RELEASE_PROD_EXE} to GitHub releases as tagged with ${TRAVIS_TAG}"
+  - ls release
+
+deploy:
+  provider: releases
+  skip_cleanup: true
+  api_key: $GH_TOKEN
+  file:
+    - "${RELEASE_PROD_EXE}"
+  draft: true
+  tag_name: $TRAVIS_TAG
+  on:
+    tags: true
+    branch: dev

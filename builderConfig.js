@@ -42,23 +42,16 @@ const buildConfig = {
                 type: 'link',
                 path: '/Applications'
             }
-        ],
-        artifactName: `safe-network-app-v\${version}-\${os}-x64.\${ext}`
+        ]
     },
     win: {
         target: ['nsis', 'msi']
     },
-    nsis: {
-        artifactName: `safe-network-app-v\${version}-\${os}-x64.\${ext}`
-    },
     mac: {
         target: ['dmg', 'pkg', 'zip']
     },
-    appImage: {
-        artifactName: `safe-network-app-v\${version}-\${os}-x64.\${ext}`
-    },
     linux: {
-        target: ['deb', 'rpm', 'snap', 'AppImage'],
+        target: ['AppImage', 'zip'],
         category: 'Productivity'
     },
     directories: {
@@ -71,12 +64,6 @@ const buildConfig = {
             bucket: 'safe-network-app',
             path: `${publishedFilePath()}`,
             acl: 'public-read'
-        },
-        {
-            provider: 'github',
-            owner: 'maidsafe',
-            repo: 'safe-network-app',
-            releaseType: 'draft'
         }
     ]
 };
