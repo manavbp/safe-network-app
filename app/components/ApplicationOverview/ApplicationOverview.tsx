@@ -36,6 +36,7 @@ export class ApplicationOverview extends React.PureComponent<Props> {
         const { application } = this.props;
 
         const progressText = getAppStatusText( application );
+        const secondaryText = application.error || progressText;
 
         return (
             <React.Fragment>
@@ -48,9 +49,9 @@ export class ApplicationOverview extends React.PureComponent<Props> {
                             className={styles.listText}
                             primary={application.name}
                             primaryTypographyProps={{
-                                variant: 'body2'
+                                variant: secondaryText ? 'caption' : 'body2'
                             }}
-                            secondary={application.error || progressText}
+                            secondary={secondaryText}
                             secondaryTypographyProps={{
                                 color: application.error
                                     ? 'error'

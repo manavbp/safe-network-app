@@ -103,6 +103,7 @@ export class AppStateButton extends React.Component<Props> {
             <PauseCircleFilledIcon
                 aria-label="Pause Button"
                 className={styles.pauseButton}
+                style={{ fontSize: '30px' }}
             />
         );
 

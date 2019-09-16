@@ -1,16 +1,36 @@
-.Notification .ActionButton {
-    font-size: 12px;
-    font-weight: 500;
-    color: #4054b2;
-    line-height: 20px;
+.Base {
+    width: 100%;
+}
+.Base .Container {
+    padding: 8px 0;
 }
 
-.Notification .NotificationWrap {
-    padding-left: 13px;
-    padding-right: 13px;
-}
-
-.Notification .NotificationDesc {
+.Base .Title {
     color: rgba(0, 0, 0, 0.54);
-    padding-left: 20px;
+    margin-left: 20px;
+    margin-right: 16px;
+}
+
+.Base .Icon {
+    width: 36px;
+    height: 36px;
+    font-size: 36px;
+    background-color: transparent;
+    margin-left: 12px;
+}
+
+.Base .Icon svg {
+    fill: rgba(0, 0, 0, 0.87);
+}
+
+.Base .Actions {
+    padding-right: 6px;
+}
+
+.Base .ActionButton {
+    color: #4054b2;
+    font-size: 12px;
+    line-height: 32px;
+    letter-spacing: 0.15px;
+    font-weight: 500;
 }

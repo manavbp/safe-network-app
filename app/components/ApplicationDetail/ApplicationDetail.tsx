@@ -64,7 +64,11 @@ export class ApplicationDetail extends React.PureComponent<Props> {
                                         variant="caption"
                                         variantMapping={{ caption: 'h2' }}
                                     >
-                                        {application.size}
+                                        {application.size &&
+                                            application.size.replace(
+                                                /(\d+)(\w+)/,
+                                                '$1 $2'
+                                            )}
                                     </Typography>
                                 </Grid>
                             )}

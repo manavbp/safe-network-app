@@ -29,6 +29,7 @@ export const PreferenceItem = ( props: Props ) => {
             <ListItemSecondaryAction>
                 <Switch
                     edge="end"
+                    color="primary"
                     onChange={() => {
                         onChange( name, !status );
                     }}

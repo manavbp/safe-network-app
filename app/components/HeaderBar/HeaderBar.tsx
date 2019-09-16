@@ -76,16 +76,18 @@ export class HeaderBar extends React.PureComponent<Props> {
                         )}
                     </Box>
                     <Box>
-                        <Link to={SETTINGS}>
-                            <IconButton
-                                edge="start"
-                                color="inherit"
-                                aria-label="Go to settings"
-                                style={{ fontSize: 18 }}
-                            >
-                                <Settings fontSize="inherit" />
-                            </IconButton>
-                        </Link>
+                        {!currentPath.startsWith( SETTINGS ) && (
+                            <Link to={SETTINGS}>
+                                <IconButton
+                                    edge="start"
+                                    color="inherit"
+                                    aria-label="Go to settings"
+                                    style={{ fontSize: 18 }}
+                                >
+                                    <Settings fontSize="inherit" />
+                                </IconButton>
+                            </Link>
+                        )}
                     </Box>
                 </Toolbar>
             </Box>

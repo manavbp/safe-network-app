@@ -21,7 +21,7 @@ let theWindow: Application.Window;
 
 const WINDOW_SIZE = {
     WIDTH: 400,
-    HEIGHT: 570
+    HEIGHT: 548
 };
 
 const getTrayWindowPosition = (

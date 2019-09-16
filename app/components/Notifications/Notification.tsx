@@ -3,11 +3,13 @@ import {
     Grid,
     Paper,
     Box,
-    CssBaseline,
+    Avatar,
     Typography,
     Button,
     Divider
 } from '@material-ui/core';
+
+import { Banner } from 'material-ui-banner';
 
 // Material-ui Icons
 import SignalWifiOffIcon from '@material-ui/icons/SignalWifiOff';
@@ -16,6 +18,7 @@ import InfoIcon from '@material-ui/icons/Info';
 import LockIcon from '@material-ui/icons/Lock';
 import DiscFullIcon from '@material-ui/icons/DiscFull';
 import LoopIcon from '@material-ui/icons/Loop';
+
 import styles from './Notification.css';
 
 interface Props {
@@ -49,66 +52,63 @@ export class Notification extends React.PureComponent<Props> {
             denyNotification( latestNotification );
         };
 
-        const TagName = components[latestNotification.icon || 'WarningIcon'];
+        const NotificationIcon =
+            components[latestNotification.icon || 'WarningIcon'];
 
         return (
-            <React.Fragment>
-                <CssBaseline />
-                <Paper elevation={0} className={styles.Notification}>
-                    <Box
-                        pt={1}
-                        pr={1}
-                        pb={1}
-                        pl={1}
-                        className={styles.NotificationWrap}
+            <Box className={styles.Base}>
+                <Paper elevation={0} className={styles.Container}>
+                    <Grid container wrap="nowrap" alignItems="center">
+                        <Grid item>
+                            <Avatar
+                                className={styles.Icon}
+                                aria-label="NotificationIcon"
+                            >
+                                <NotificationIcon
+                                    color="action"
+                                    fontSize="inherit"
+                                />
+                            </Avatar>
+                        </Grid>
+                        <Grid item>
+                            <Typography
+                                aria-label="NotificationTitle"
+                                variant="body2"
+                                className={styles.Title}
+                            >
+                                {latestNotification.title}
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                    <Grid
+                        container
+                        justify="flex-end"
+                        className={styles.Actions}
                     >
-                        <Grid
-                            container
-                            spacing={1}
-                            alignItems="center"
-                            wrap="nowrap"
-                        >
-                            <Grid item>
-                                <Box aria-label="NotificationIcon">
-                                    <TagName style={{ fontSize: 30 }} />
-                                </Box>
-                            </Grid>
-                            <Grid item>
-                                <Typography
-                                    aria-label="NotificationTitle"
-                                    variant="body2"
-                                    className={styles.NotificationDesc}
-                                >
-                                    {latestNotification.title}
-                                </Typography>
-                            </Grid>
+                        <Grid item>
+                            <Button
+                                color="primary"
+                                aria-label="AcceptNotification"
+                                className={styles.ActionButton}
+                                onClick={handleOnAccept}
+                            >
+                                {latestNotification.acceptText}
+                            </Button>
                         </Grid>
-                        <Grid container justify="flex-end" spacing={1}>
-                            <Grid item>
-                                <Button
-                                    className={styles.ActionButton}
-                                    aria-label="AcceptNotification"
-                                    color="primary"
-                                    onClick={handleOnAccept}
-                                >
-                                    {latestNotification.acceptText}
-                                </Button>
-                            </Grid>
-                            <Grid item>
-                                <Button
-                                    className={styles.ActionButton}
-                                    aria-label="DenyNotification"
-                                    color="primary"
-                                    onClick={handleOnDeny}
-                                >
-                                    {latestNotification.denyText}
-                                </Button>
-                            </Grid>
+                        <Grid item>
+                            <Button
+                                color="primary"
+                                aria-label="DenyNotification"
+                                className={styles.ActionButton}
+                                onClick={handleOnDeny}
+                            >
+                                {latestNotification.denyText}
+                            </Button>
                         </Grid>
-                    </Box>
+                    </Grid>
                 </Paper>
                 <Divider />
-            </React.Fragment>
+            </Box>
         );
     }
 }
