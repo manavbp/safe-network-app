@@ -56,6 +56,8 @@ cache:
     # - $HOME/.cache/electron-builder
 
 before_install:
+  - if: tag IS present
+    - pip install --user awscli;
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export CXX="g++-8"; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update; fi
   - yarn config delete proxy
@@ -63,8 +65,6 @@ before_install:
   - npm --version
   - npm config rm proxy
   - npm config rm https-proxy
-  - if: tag IS present
-    - pip install --user awscli;
   # - npm config set cache-lock-retries 500
 
 install:
