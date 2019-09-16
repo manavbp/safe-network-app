@@ -63,7 +63,8 @@ before_install:
   - npm --version
   - npm config rm proxy
   - npm config rm https-proxy
-  - if [[ tag IS present ]]; then pip install --user awscli; fi  
+  - if: tag IS present
+    - pip install --user awscli;
   # - npm config set cache-lock-retries 500
 
 install:
@@ -90,7 +91,8 @@ script:
   - yarn package
   - travis_retry yarn test-e2e-packed
   - rm -rf release
-  - if [[ tag IS present AND "$TRAVIS_OS_NAME" == "windows" ]]; then aws s3 rm --recursive s3://safe-network-app/safe-network-app-win/; fi
-  - if [[ tag IS present AND "$TRAVIS_OS_NAME" == "linux" ]]; then aws s3 rm --recursive s3://safe-network-app/safe-network-app-linux/; fi
-  - if [[ tag IS present AND "$TRAVIS_OS_NAME" == "osx" ]]; then aws s3 rm --recursive s3://safe-network-app/safe-network-app-osx/; fi
+  - if: tag IS present
+    - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then aws s3 rm --recursive s3://safe-network-app/safe-network-app-win/; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then aws s3 rm --recursive s3://safe-network-app/safe-network-app-linux/; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then aws s3 rm --recursive s3://safe-network-app/safe-network-app-osx/; fi
   - yarn release
