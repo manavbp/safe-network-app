@@ -21,6 +21,7 @@ interface Props {
     resetAppInstallationState: Function;
     pauseDownload: Function;
     cancelDownload: Function;
+    pushNotification: Function;
     resumeDownload: Function;
     downloadAndInstallApp: Function;
     application: App;

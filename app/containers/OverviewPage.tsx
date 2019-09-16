@@ -12,7 +12,10 @@ import {
 import { resetAppInstallationState } from '$Actions/app_manager_actions';
 import { updateDownloadProgress } from '$Actions/application_actions';
 import { triggerSetAsTrayWindow } from '$Actions/alias/launchpad_actions';
-import { getUserPreferences } from '$Actions/launchpad_actions';
+import {
+    getUserPreferences,
+    pushNotification
+} from '$Actions/launchpad_actions';
 import { AppState } from '../definitions/application.d';
 
 function mapStateToProperties( state: AppState ) {
@@ -26,6 +29,7 @@ function mapDispatchToProperties( dispatch ) {
     // until we have a reducer to add here.
     const actions = {
         getUserPreferences,
+        pushNotification,
 
         downloadAndInstallApp,
         pauseDownload,

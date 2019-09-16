@@ -38,8 +38,6 @@ export class NotificationsHandler extends React.PureComponent<Props> {
             }
 
             latestNotification.icon = latestNotification.icon || 'InfoIcon';
-            latestNotification.acceptText =
-                latestNotification.acceptText || 'RESUME';
             latestNotification.denyText =
                 latestNotification.denyText || 'DISMISS';
             latestNotification.title =

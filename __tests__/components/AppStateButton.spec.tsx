@@ -24,6 +24,7 @@ describe( 'AppStateButton', () => {
             resumeDownload: jest.fn(),
             pauseDownload: jest.fn(),
             resetAppInstallationState: jest.fn(),
+            pushNotification: jest.fn(),
             cancelDownload: jest.fn(),
             openApp: jest.fn(),
             downloadAndInstallApp: jest.fn(),

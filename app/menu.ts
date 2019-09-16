@@ -230,11 +230,8 @@ export class MenuBuilder {
                 {
                     label: 'Add a No Internet Notification',
                     click: () => {
-                        const application = { id: Math.random().toString( 36 ) };
                         this.store.dispatch(
-                            pushNotification(
-                                notificationTypes.NO_INTERNET( application )
-                            )
+                            pushNotification( notificationTypes.NO_INTERNET() )
                         );
                     }
                 },
@@ -466,11 +463,8 @@ export class MenuBuilder {
                 {
                     label: 'Add a No Internet Notification',
                     click: () => {
-                        const application = { id: Math.random().toString( 36 ) };
                         this.store.dispatch(
-                            pushNotification(
-                                notificationTypes.NO_INTERNET( application )
-                            )
+                            pushNotification( notificationTypes.NO_INTERNET() )
                         );
                     }
                 },

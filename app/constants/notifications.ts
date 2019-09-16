@@ -5,39 +5,40 @@ export const NOTIFICATION_TYPES = {
     ALERT: 'js-alert'
 };
 
-export const prepareNotification = (
-    title,
-    acceptText,
-    denyText,
-    otherProperties
-) => {
+export const prepareNotification = ( title, denyText, otherProperties ) => {
     return {
         title,
-        acceptText,
         denyText,
         ...otherProperties
     };
 };
 
 export const notificationTypes = {
-    NO_INTERNET: ( application ) => {
+    NO_INTERNET: () => {
         const title = I18n.t( 'notifications.title.no_internet' );
-        const acceptText = I18n.t( 'notifications.buttons.acceptText.resume' );
         const denyText = I18n.t( 'notifications.buttons.denyText.dismiss' );
         const otherProperties = {
             type: 'NO_INTERNET',
             icon: 'SignalWifiOffIcon',
             priority: 'HIGH',
-            notificationType: NOTIFICATION_TYPES.STANDARD,
-            application
+            notificationType: NOTIFICATION_TYPES.STANDARD
         };
 
-        return prepareNotification(
-            title,
-            acceptText,
-            denyText,
-            otherProperties
+        return prepareNotification( title, denyText, otherProperties );
+    },
+    NO_INTERNET_APP_IS_INSTALLING: () => {
+        const title = I18n.t(
+            'notifications.title.no_internet_app_is_installing'
         );
+        const denyText = I18n.t( 'notifications.buttons.denyText.dismiss' );
+        const otherProperties = {
+            type: 'NO_INTERNET_INSTALLING_APP',
+            icon: 'SignalWifiOffIcon',
+            priority: 'HIGH',
+            notificationType: NOTIFICATION_TYPES.STANDARD
+        };
+
+        return prepareNotification( title, denyText, otherProperties );
     },
     CLOSE_APP: ( application ) => {
         const title = I18n.t( 'notifications.title.close_app', {
@@ -56,15 +57,11 @@ export const notificationTypes = {
             icon: 'InfoIcon',
             notificationType: NOTIFICATION_TYPES.STANDARD,
             priority: 'LOW',
-            application
+            application,
+            acceptText
         };
 
-        return prepareNotification(
-            title,
-            acceptText,
-            denyText,
-            otherProperties
-        );
+        return prepareNotification( title, denyText, otherProperties );
     },
     CLOSE_APP_ALERT: ( application ) => {
         const title = I18n.t( 'notifications.title.close_app', {
@@ -88,15 +85,11 @@ export const notificationTypes = {
             notificationType: NOTIFICATION_TYPES.ALERT,
             message,
             buttons,
-            application
+            application,
+            acceptText
         };
 
-        return prepareNotification(
-            title,
-            acceptText,
-            denyText,
-            otherProperties
-        );
+        return prepareNotification( title, denyText, otherProperties );
     },
     SERVER_TIMED_OUT: ( application ) => {
         const title = I18n.t( 'notifications.title.server_timeout', {
@@ -112,15 +105,11 @@ export const notificationTypes = {
             type: 'SERVER_TIMED_OUT',
             notificationType: NOTIFICATION_TYPES.STANDARD,
             priority: 'HIGH',
-            application
+            application,
+            acceptText
         };
 
-        return prepareNotification(
-            title,
-            acceptText,
-            denyText,
-            otherProperties
-        );
+        return prepareNotification( title, denyText, otherProperties );
     },
     UPDATE_AVAILABLE: ( application, version ) => {
         const title = I18n.t( 'notifications.title.update_available', {
@@ -137,15 +126,11 @@ export const notificationTypes = {
             icon: 'InfoIcon',
             priority: 'LOW',
             notificationType: NOTIFICATION_TYPES.STANDARD,
-            application
+            application,
+            acceptText
         };
 
-        return prepareNotification(
-            title,
-            acceptText,
-            denyText,
-            otherProperties
-        );
+        return prepareNotification( title, denyText, otherProperties );
     },
     UPDATE_AVAILABLE_ALERT: ( application, version ) => {
         const title = I18n.t( 'notifications.title.update_available', {
@@ -170,15 +155,11 @@ export const notificationTypes = {
             notificationType: NOTIFICATION_TYPES.ALERT,
             message,
             buttons,
-            application
+            application,
+            acceptText
         };
 
-        return prepareNotification(
-            title,
-            acceptText,
-            denyText,
-            otherProperties
-        );
+        return prepareNotification( title, denyText, otherProperties );
     },
     ADMIN_PASS_REQ: ( application ) => {
         const title = I18n.t( 'notifications.title.admin_pass_req', {
@@ -194,15 +175,11 @@ export const notificationTypes = {
             priority: 'HIGH',
             icon: 'LockIcon',
             notificationType: NOTIFICATION_TYPES.STANDARD,
-            application
+            application,
+            acceptText
         };
 
-        return prepareNotification(
-            title,
-            acceptText,
-            denyText,
-            otherProperties
-        );
+        return prepareNotification( title, denyText, otherProperties );
     },
     RESTART_SYSTEM: ( application ) => {
         const title = I18n.t( 'notifications.title.restart_system', {
@@ -215,15 +192,11 @@ export const notificationTypes = {
             type: 'RESTART_SYSTEM',
             notificationType: NOTIFICATION_TYPES.STANDARD,
             icon: 'LoopIcon',
-            priority: 'LOW'
+            priority: 'LOW',
+            acceptText
         };
 
-        return prepareNotification(
-            title,
-            acceptText,
-            denyText,
-            otherProperties
-        );
+        return prepareNotification( title, denyText, otherProperties );
     },
     RESTART_SYSTEM_ALERT: ( application ) => {
         const title = I18n.t( 'notifications.title.restart_system', {
@@ -241,15 +214,11 @@ export const notificationTypes = {
             notificationType: NOTIFICATION_TYPES.ALERT,
             priority: 'LOW',
             message,
-            buttons
+            buttons,
+            acceptText
         };
 
-        return prepareNotification(
-            title,
-            acceptText,
-            denyText,
-            otherProperties
-        );
+        return prepareNotification( title, denyText, otherProperties );
     },
     GLOBAL_FAILURE: ( application ) => {
         const title = I18n.t( 'notifications.title.global_failure' );
@@ -261,15 +230,11 @@ export const notificationTypes = {
             notificationType: NOTIFICATION_TYPES.STANDARD,
             icon: 'WarningIcon',
             priority: 'HIGH',
-            application
+            application,
+            acceptText
         };
 
-        return prepareNotification(
-            title,
-            acceptText,
-            denyText,
-            otherProperties
-        );
+        return prepareNotification( title, denyText, otherProperties );
     },
     DISC_FULL: ( application ) => {
         const title = I18n.t( 'notifications.title.disc_full' );
@@ -281,15 +246,11 @@ export const notificationTypes = {
             notificationType: NOTIFICATION_TYPES.STANDARD,
             icon: 'DiscFullIcon',
             priority: 'HIGH',
-            application
+            application,
+            acceptText
         };
 
-        return prepareNotification(
-            title,
-            acceptText,
-            denyText,
-            otherProperties
-        );
+        return prepareNotification( title, denyText, otherProperties );
     },
     UNINSTALL_APP_ALERT: ( application ) => {
         const title = I18n.t( 'notifications.title.uninstall_app', {
@@ -310,15 +271,11 @@ export const notificationTypes = {
             priority: 'HIGH',
             message,
             application,
-            buttons
+            buttons,
+            acceptText
         };
 
-        return prepareNotification(
-            title,
-            acceptText,
-            denyText,
-            otherProperties
-        );
+        return prepareNotification( title, denyText, otherProperties );
     },
     CLEARNET_WARNING_ALERT: () => {
         const checkboxLabel = I18n.t( 'notifications.warning.not_again' );
@@ -334,14 +291,10 @@ export const notificationTypes = {
             notificationType: NOTIFICATION_TYPES.ALERT,
             checkboxLabel,
             message,
-            buttons
+            buttons,
+            acceptText
         };
 
-        return prepareNotification(
-            title,
-            acceptText,
-            denyText,
-            otherProperties
-        );
+        return prepareNotification( title, denyText, otherProperties );
     }
 };

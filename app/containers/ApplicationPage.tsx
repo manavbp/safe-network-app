@@ -14,6 +14,7 @@ import {
 } from '$Actions/alias/app_manager_actions';
 import { triggerSetAsTrayWindow } from '$Actions/alias/launchpad_actions';
 import { AppState } from '../definitions/application.d';
+import { pushNotification } from '$Actions/launchpad_actions';
 
 function mapStateToProperties( state: AppState ) {
     return {
@@ -26,6 +27,7 @@ function mapDispatchToProperties( dispatch ) {
     // until we have a reducer to add here.
     const actions = {
         downloadAndInstallApp,
+        pushNotification,
         openApp,
         unInstallApp,
 

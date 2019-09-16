@@ -18,6 +18,7 @@ import InfoIcon from '@material-ui/icons/Info';
 import LockIcon from '@material-ui/icons/Lock';
 import DiscFullIcon from '@material-ui/icons/DiscFull';
 import LoopIcon from '@material-ui/icons/Loop';
+import SignalWifi4BarIcon from '@material-ui/icons/SignalWifi4Bar';
 
 import styles from './Notification.css';
 
@@ -36,6 +37,7 @@ export class Notification extends React.PureComponent<Props> {
         } = this.props;
 
         const components = {
+            SignalWifi4BarIcon,
             SignalWifiOffIcon,
             WarningIcon,
             InfoIcon,
@@ -85,21 +87,22 @@ export class Notification extends React.PureComponent<Props> {
                         justify="flex-end"
                         className={styles.Actions}
                     >
+                        {latestNotification.acceptText && (
+                            <Grid item>
+                                <Button
+                                    color="primary"
+                                    aria-label="AcceptNotification"
+                                    className={styles.ActionButton}
+                                    onClick={handleOnAccept}
+                                >
+                                    {latestNotification.acceptText}
+                                </Button>
+                            </Grid>
+                        )}
                         <Grid item>
                             <Button
-                                color="primary"
-                                aria-label="AcceptNotification"
-                                className={styles.ActionButton}
-                                onClick={handleOnAccept}
-                            >
-                                {latestNotification.acceptText}
-                            </Button>
-                        </Grid>
-                        <Grid item>
-                            <Button
-                                color="primary"
                                 aria-label="DenyNotification"
-                                className={styles.ActionButton}
+                                color="primary"
                                 onClick={handleOnDeny}
                             >
                                 {latestNotification.denyText}

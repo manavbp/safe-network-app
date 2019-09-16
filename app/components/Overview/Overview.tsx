@@ -7,6 +7,7 @@ import styles from './Overview.css';
 import { App, AppManagerState } from '$Definitions/application.d';
 import { ApplicationOverview } from '$Components/ApplicationOverview';
 import { ON_BOARDING, HOME } from '$Constants/routes.json';
+import { notificationTypes } from '../../constants/notifications';
 
 interface Props {
     unInstallApp: Function;
@@ -14,6 +15,7 @@ interface Props {
     pauseDownload: Function;
     resetAppInstallationState: Function;
     cancelDownload: Function;
+    pushNotification: Function;
     resumeDownload: Function;
     downloadAndInstallApp: Function;
     installApp: Function;
@@ -36,6 +38,7 @@ export class Overview extends Component<Props> {
             pauseDownload,
             resetAppInstallationState,
             cancelDownload,
+            pushNotification,
             resumeDownload,
             openApp
         } = this.props;
@@ -56,6 +59,7 @@ export class Overview extends Component<Props> {
                                 openApp={openApp}
                                 pauseDownload={pauseDownload}
                                 cancelDownload={cancelDownload}
+                                pushNotification={pushNotification}
                                 resumeDownload={resumeDownload}
                             />
                         ) )}
