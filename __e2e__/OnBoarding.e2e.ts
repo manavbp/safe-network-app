@@ -77,7 +77,7 @@ test( 'check Intro page Title', async ( t ) => {
 
     await t
         .expect(
-            Selector( 'h5' ).withAttribute( 'aria-label', 'IntroPageTitle' )
+            Selector( 'h6' ).withAttribute( 'aria-label', 'IntroPageTitle' )
                 .innerText
         )
         .eql( 'One Place for All SAFE Apps' );

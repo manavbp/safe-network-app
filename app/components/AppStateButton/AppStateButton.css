@@ -5,7 +5,7 @@ button.actionButton {
     height: 24px;
     border-radius: 17px;
     padding: 0 8px;
-    min-width: 34px;
+    min-width: 80px;
     font-size: 0.75rem;
 }
 
@@ -15,16 +15,19 @@ button.actionButton {
     vertical-align: middle;
 }
 
-.wrap .error {
+.wrap .statusMessage {
     position: absolute;
     top: 0;
     left: 100%;
     width: 100%;
+    line-height: 36px;
+    font-size: 10px;
     margin-left: 12px;
-    min-width: 120px;
+    min-width: 150px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    background-color: #fafafa;
 }
 
 .progressButton {

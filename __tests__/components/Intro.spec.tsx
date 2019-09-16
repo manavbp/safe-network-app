@@ -29,6 +29,6 @@ describe( 'Intro', () => {
                 .childAt( 0 )
                 .childAt( 0 )
                 .prop( 'variant' )
-        ).toEqual( 'h5' );
+        ).toEqual( 'h6' );
     } );
 } );

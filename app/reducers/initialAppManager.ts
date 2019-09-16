@@ -6,7 +6,7 @@ export const initialAppManager: AppManagerState = {
         'safe.browser': {
             id: 'safe.browser',
             name: 'SAFE Browser',
-            size: '2MB',
+            size: '2 MB',
             author: 'Maidsafe Ltd.',
             iconPath: fetchDefaultAppIconFromLocal( 'safe.browser' ),
             packageName: 'safe-browser',
@@ -22,7 +22,7 @@ export const initialAppManager: AppManagerState = {
         'electron.boiler': {
             id: 'electron.boiler',
             name: 'Electron Boilerplate',
-            size: '2MB',
+            size: '2 MB',
             author: 'Joshuef Ltd.',
             packageName: 'ElectronTypescriptBoiler',
             iconPath: fetchDefaultAppIconFromLocal( 'electron.boiler' ),

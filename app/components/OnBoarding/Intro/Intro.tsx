@@ -11,12 +11,13 @@ export const Intro = () => {
             <Box className={styles.Container}>
                 <Typography
                     className={styles.Title}
-                    variant="h5"
+                    variant="h6"
                     aria-label="IntroPageTitle"
                 >
                     {I18n.t( `onboarding.title.intro` )}
                 </Typography>
                 <Typography
+                    variant="body2"
                     className={styles.Description}
                     aria-label="IntroPageSubTitle"
                 >

@@ -1,3 +1,6 @@
 .vertIcon {
     position: relative;
 }
+.Menu ul {
+    display: inline-grid;
+}

@@ -59,10 +59,11 @@ export class Preferences extends Component<Props> {
     render() {
         const { userPreferences, requiredItems } = this.props;
         const requiredItemArray = Object.keys( requiredItems );
+        const userPreferencesKeys = Object.keys( userPreferences );
 
         return (
             <List aria-label="Preferences">
-                {Object.keys( userPreferences ).map( ( userPreference ) => {
+                {userPreferencesKeys.map( ( userPreference, i ) => {
                     if ( !requiredItemArray.includes( userPreference ) )
                         return null;
 
@@ -73,6 +74,7 @@ export class Preferences extends Component<Props> {
                             status={userPreferences[userPreference]}
                             onChange={this.handleChange}
                             disabled={!requiredItems[userPreference]}
+                            isLastItem={i === userPreferencesKeys.length - 1}
                         />
                     );
                 } )}

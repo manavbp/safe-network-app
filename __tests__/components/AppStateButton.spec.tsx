@@ -172,7 +172,7 @@ describe( 'AppStateButton', () => {
         it( 'has error msg and one button w/ an errorr', () => {
             props = {
                 ...props,
-                showErrorText: true,
+                showAppStatus: true,
                 application: {
                     ...props.application,
                     isDownloadingAndInstalling: false,

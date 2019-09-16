@@ -11,7 +11,7 @@ import Star from '@material-ui/icons/Star';
 import { I18n } from 'react-redux-i18n';
 import { SETTINGS, ON_BOARDING } from '$Constants/routes.json';
 
-import appLogo from '$Assets/images/app_logo.png';
+import appLogo from '$Assets/images/app_logo.svg';
 
 import styles from './HeaderBar.css';
 
@@ -25,11 +25,12 @@ const BackButton = ( { location } ) => {
             {location.pathname !== '/' && (
                 <Link to="/">
                     <IconButton
+                        className={styles.BackButton}
                         edge="start"
                         color="inherit"
                         aria-label="Go Backwards"
                     >
-                        <ArrowBack fontSize="inherit" />
+                        <ArrowBack style={{ fontSize: 18 }} />
                     </IconButton>
                 </Link>
             )}
@@ -68,22 +69,25 @@ export class HeaderBar extends React.PureComponent<Props> {
                             <Typography
                                 className={styles.title}
                                 aria-label="title"
-                                variant="body1"
+                                variant="subtitle2"
                             >
                                 {title}
                             </Typography>
                         )}
                     </Box>
                     <Box>
-                        <Link to={SETTINGS}>
-                            <IconButton
-                                edge="start"
-                                color="inherit"
-                                aria-label="Go to settings"
-                            >
-                                <Settings fontSize="inherit" />
-                            </IconButton>
-                        </Link>
+                        {!currentPath.startsWith( SETTINGS ) && (
+                            <Link to={SETTINGS}>
+                                <IconButton
+                                    edge="start"
+                                    color="inherit"
+                                    aria-label="Go to settings"
+                                    style={{ fontSize: 18 }}
+                                >
+                                    <Settings fontSize="inherit" />
+                                </IconButton>
+                            </Link>
+                        )}
                     </Box>
                 </Toolbar>
             </Box>

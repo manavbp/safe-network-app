@@ -12,11 +12,9 @@ export const addNotification = ( store: Store ) => {
         };
 
         store.dispatch(
-            pushNotification( {
-                notification: notificationTypes[process.env.NOTIFICATION](
-                    application
-                )
-            } )
+            pushNotification(
+                notificationTypes[process.env.NOTIFICATION]( application )
+            )
         );
     }
 };

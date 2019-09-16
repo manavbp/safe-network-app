@@ -1,8 +1,9 @@
 .base {
     background-color: rgba(255, 255, 255, 0.58);
 }
-.wrap {
+.base .wrap {
     justify-content: space-between;
+    min-height: 48px;
 }
 .appLogo {
     height: 24px;
@@ -15,5 +16,10 @@
 }
 .navigation .title {
     float: right;
-    line-height: 50px;
+    line-height: 42px;
+    color: rgba(0, 0, 0, 0.87);
+}
+
+.BackButton svg {
+    fill: rgba(0, 0, 0, 0.54);
 }

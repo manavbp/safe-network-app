@@ -19,6 +19,11 @@ import {
 let tray;
 let theWindow: Application.Window;
 
+const WINDOW_SIZE = {
+    WIDTH: 400,
+    HEIGHT: 548
+};
+
 const getTrayWindowPosition = (
     window: Application.Window
 ): { x: number; y: number } => {
@@ -132,7 +137,8 @@ export const createSafeLaunchPadTrayWindow = (
     store: Store
 ): Application.Window => {
     theWindow = new BrowserWindow( {
-        width: 400,
+        width: WINDOW_SIZE.WIDTH,
+        height: WINDOW_SIZE.HEIGHT,
         show: false,
         frame: false,
         fullscreenable: false,

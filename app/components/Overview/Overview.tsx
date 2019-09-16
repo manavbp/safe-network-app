@@ -45,7 +45,7 @@ export class Overview extends Component<Props> {
         return (
             <Grid container justify="space-between">
                 <Grid item xs={12}>
-                    <List>
+                    <List className={styles.List}>
                         {Object.values( appList ).map( ( theApplication ) => (
                             <ApplicationOverview
                                 key={theApplication.name}

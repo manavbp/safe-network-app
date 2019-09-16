@@ -27,3 +27,22 @@ export const camelToTitle = ( camelCase ) =>
 
 export const getAppDataPath = () =>
     path.resolve( remote.app.getPath( 'appData' ), pkg.name );
+
+export const getAppStatusText = ( application ) => {
+    let progressText = '';
+    if ( application.isDownloadingAndInstalling ) {
+        progressText = 'Downloading and Installing...';
+    }
+    if ( application.isDownloadingAndUpdating ) {
+        progressText = 'Downloading and Updating...';
+    }
+
+    if ( application.isPaused ) {
+        progressText = 'Downloading Paused';
+    }
+
+    if ( application.isUninstalling ) {
+        progressText = 'Uninstalling...';
+    }
+    return progressText;
+};

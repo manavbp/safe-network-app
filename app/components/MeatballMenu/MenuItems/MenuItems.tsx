@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { MenuItem } from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { App } from '$Definitions/application.d';
+import { MenuItemWrapper } from './MenuItemWrapper';
 import { logger } from '$Logger';
 import styles from './MenuItems.css';
 
@@ -84,15 +84,15 @@ export class MenuItems extends Component<MenuItemsProps> {
 
         return (
             <React.Fragment>
-                <MenuItem
+                <MenuItemWrapper
                     dense
                     className={styles['menu-item']}
                     aria-label="about the application"
                 >
                     <Link to={`/application/${id}`}>{`About ${name}`}</Link>
-                </MenuItem>
+                </MenuItemWrapper>
                 {!isDownloadingAndInstalling && (
-                    <MenuItem
+                    <MenuItemWrapper
                         dense
                         className={styles['menu-item']}
                         aria-label={
@@ -107,54 +107,54 @@ export class MenuItems extends Component<MenuItemsProps> {
                         }
                     >
                         {isInstalled ? 'Uninstall' : 'Install'}
-                    </MenuItem>
+                    </MenuItemWrapper>
                 )}
                 {isInstalled && (
                     <React.Fragment>
-                        <MenuItem
+                        <MenuItemWrapper
                             dense
                             className={styles['menu-item']}
                             onClick={this.handleOpen}
                             aria-label={`Open ${name}`}
                         >
                             Open
-                        </MenuItem>
+                        </MenuItemWrapper>
                     </React.Fragment>
                 )}
                 {isDownloadingAndInstalling && (
-                    <MenuItem
+                    <MenuItemWrapper
                         aria-label="Cancel Download"
                         dense
                         className={styles['menu-item']}
                         onClick={this.handleCancelDownload}
                     >
                         Cancel Install
-                    </MenuItem>
+                    </MenuItemWrapper>
                 )}
                 {!isPaused && isDownloadingAndInstalling && (
-                    <MenuItem
+                    <MenuItemWrapper
                         aria-label="Pause Download"
                         dense
                         className={styles['menu-item']}
                         onClick={this.handlePauseDownload}
                     >
                         Pause Download
-                    </MenuItem>
+                    </MenuItemWrapper>
                 )}
                 {isPaused && isDownloadingAndInstalling && (
-                    <MenuItem
+                    <MenuItemWrapper
                         aria-label="Resume Download"
                         dense
                         className={styles['menu-item']}
                         onClick={this.handleResumeDownload}
                     >
                         Resume Download
-                    </MenuItem>
+                    </MenuItemWrapper>
                 )}
                 {hasUpdate && (
-                    <MenuItem dense className={styles['menu-item']}>
+                    <MenuItemWrapper dense className={styles['menu-item']}>
                         Skip This Update
-                    </MenuItem>
+                    </MenuItemWrapper>
                 )}
             </React.Fragment>
         );
