@@ -63,7 +63,7 @@ before_install:
   - npm --version
   - npm config rm proxy
   - npm config rm https-proxy
-  - if[ tag IS present ];then pip install --user awscli; fi  
+  - if[[ tag IS present ]];then pip install --user awscli; fi  
   # - npm config set cache-lock-retries 500
 
 install:
