@@ -67,8 +67,8 @@ before_install:
   # - npm config set cache-lock-retries 500
 
 install:
-  - if [ "$TRAVIS_OS_NAME" != "windows" ]; then yarn; fi
-  - if [ "$TRAVIS_OS_NAME" == "windows" ]; then travis_wait 30 yarn --ignore-engines --network-timeout 800000; fi
+  - if [[ "$TRAVIS_OS_NAME" != "windows" ]]; then yarn; fi
+  - if [[ "$TRAVIS_OS_NAME" == "windows" ]]; then travis_wait 30 yarn --ignore-engines --network-timeout 800000; fi
   # On Linux, initialize "virtual display". See before_script
   - |
     if [ "$TRAVIS_OS_NAME" == "linux" ]; then
@@ -90,7 +90,7 @@ script:
   - yarn package
   - travis_retry yarn test-e2e-packed
   - rm -rf release
-  - if [ tag IS present AND "$TRAVIS_OS_NAME" == "windows" ];then aws s3 rm --recursive s3://safe-network-app/safe-network-app-win/; fi
-  - if [ tag IS present AND "$TRAVIS_OS_NAME" == "linux" ];then aws s3 rm --recursive s3://safe-network-app/safe-network-app-linux/; fi
-  - if [ tag IS present AND "$TRAVIS_OS_NAME" == "osx" ];then aws s3 rm --recursive s3://safe-network-app/safe-network-app-osx/; fi
+  - if [[ tag IS present AND "$TRAVIS_OS_NAME" == "windows" ]];then aws s3 rm --recursive s3://safe-network-app/safe-network-app-win/; fi
+  - if [[ tag IS present AND "$TRAVIS_OS_NAME" == "linux" ]];then aws s3 rm --recursive s3://safe-network-app/safe-network-app-linux/; fi
+  - if [[ tag IS present AND "$TRAVIS_OS_NAME" == "osx" ]];then aws s3 rm --recursive s3://safe-network-app/safe-network-app-osx/; fi
   - yarn release
