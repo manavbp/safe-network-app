@@ -23,7 +23,6 @@ const managePreferencesLocally = async ( store ) => {
     const previousState = await settingsHandler.getPreferences();
     const currentState = getStatePreferences( store.getState() );
     if ( !_.isEqual( previousState, currentState ) ) {
-        console.log( 'not equal' );
         await settingsHandler.updatePreferences( { ...currentState } );
     }
 };

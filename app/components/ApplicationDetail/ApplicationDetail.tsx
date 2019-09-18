@@ -23,6 +23,7 @@ interface Props {
     cancelDownload: Function;
     pushNotification: Function;
     resumeDownload: Function;
+    updateApp: Function;
     downloadAndInstallApp: Function;
     application: App;
 }

@@ -13,6 +13,7 @@ import { createSafeLaunchPadTrayWindow, createTray } from './setupLaunchPad';
 import { setupBackground } from './setupBackground';
 import { installExtensions, preferencesJsonSetup } from '$Utils/main_utils';
 import { checkForKnownAppsLocally } from '$App/manageInstallations/helpers';
+import { appUpdater } from '$App/manageInstallations/safeAppUpdater';
 
 import {
     isRunningTestCafeProcess,
@@ -69,6 +70,9 @@ if ( !gotTheLock ) {
 
         const initialState = {};
         store = configureStore( initialState );
+
+        appUpdater.store = store;
+
         // start with hardcoded list of apps.
         checkForKnownAppsLocally( store );
 

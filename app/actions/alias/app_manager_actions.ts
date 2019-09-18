@@ -13,7 +13,7 @@ import {
     DEFAULT_APP_ICON_PATH,
     isRunningTestCafeProcess
 } from '$Constants/index';
-import { updateAppInfoIfNewer } from '$Actions/app_manager_actions';
+import { updateAppInfoIfNewer, appUpdated } from '$Actions/app_manager_actions';
 import { getInstalledLocation } from '$App/manageInstallations/helpers';
 import { NOTIFICATION_TYPES } from '$Constants/notifications';
 
@@ -26,9 +26,6 @@ import { logger } from '$Logger';
 import { pushNotification } from '$Actions/launchpad_actions';
 import { App } from '$Definitions/application.d';
 
-//  need to add a check to see if its a launchpad update or a random update question is do we use this or what to use
-export const updateApplication = ( application: App ) => mockPromise();
-export const checkForApplicationUpdate = ( application: App ) => mockPromise();
 export const storeApplicationSkipVersion = ( application: App ) => mockPromise();
 
 const userAgentRequest = request.defaults( {
@@ -59,6 +56,18 @@ export const TYPES = {
     ALIAS_RESTART_APP: 'ALIAS_RESTART_APP',
     ALIAS_SKIP_APP_UPDATE: 'ALIAS_SKIP_APP_UPDATE'
 };
+
+const checkApplicationsForUpdate = ( applications ) => {
+    ipcRenderer.send( 'checkApplicationsForUpdate', applications );
+};
+
+export const checkAppsHasUpdate = createAliasedAction(
+    TYPES.ALIAS_CHECK_APP_HAS_UPDATE,
+    ( applications: App ) => ( {
+        type: TYPES.ALIAS_CHECK_APP_HAS_UPDATE,
+        payload: checkApplicationsForUpdate( applications )
+    } )
+);
 
 export const fetchDefaultAppIconFromLocal = ( applicationId: string ): string => {
     return path.resolve( DEFAULT_APP_ICON_PATH, `${applicationId}.png` );
@@ -113,6 +122,9 @@ const fetchAppListFromServer = async (): Promise<void> => {
                 fetchDefaultAppIconFromLocal( theApp.id );
             store.dispatch( updateAppInfoIfNewer( theApp ) );
         } );
+
+        // check for apps update after fetch
+        store.dispatch( checkAppsHasUpdate( apps.applications ) );
     } catch ( error ) {
         logger.error( error.message );
         const id: string = Math.random().toString( 36 );
@@ -150,6 +162,12 @@ const cancelDownloadOfApp = ( application ) => {
 
 const resumeDownloadOfApp = ( application ) => {
     ipcRenderer.send( 'resumeDownload', application );
+};
+
+export const updateApplication = ( application: App ) => {
+    ipcRenderer.send( 'updateApplication', application );
+    const store = getCurrentStore();
+    store.dispatch( appUpdated( application ) );
 };
 
 const resumeDownloadOfAllApps = ( appList: App ) => {
@@ -247,14 +265,6 @@ export const unInstallApp = createAliasedAction(
     ( application: App ) => ( {
         type: TYPES.ALIAS_UNINSTALL_APP,
         payload: unInstallApplication( application )
-    } )
-);
-
-export const checkAppHasUpdate = createAliasedAction(
-    TYPES.ALIAS_CHECK_APP_HAS_UPDATE,
-    ( application: App ) => ( {
-        type: TYPES.ALIAS_CHECK_APP_HAS_UPDATE,
-        payload: checkForApplicationUpdate( application )
     } )
 );
 

@@ -2,6 +2,7 @@ import path from 'path';
 
 import { Store } from 'redux';
 import fs from 'fs-extra';
+import plist from 'plist';
 import {
     MAC_OS,
     LINUX,
@@ -97,4 +98,23 @@ export const checkForKnownAppsLocally = async ( store: Store ): Promise<void> =>
         }
         // fs grab version somehow...
     } );
+};
+
+export const getLocalAppVersionMacOS = ( application ): string => {
+    try {
+        const plistData = plist.parse(
+            fs
+                .readFileSync(
+                    path.resolve(
+                        getInstalledLocation( application ),
+                        'Contents/Info.plist'
+                    )
+                )
+                .toString()
+        );
+        const localVersion = plistData.CFBundleShortVersionString;
+        return localVersion;
+    } catch ( error ) {
+        return null;
+    }
 };

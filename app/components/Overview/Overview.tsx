@@ -19,6 +19,7 @@ interface Props {
     resumeDownload: Function;
     downloadAndInstallApp: Function;
     installApp: Function;
+    updateApp: Function;
     appPreferences: {
         shouldOnboard: boolean;
     };
@@ -40,6 +41,7 @@ export class Overview extends Component<Props> {
             cancelDownload,
             pushNotification,
             resumeDownload,
+            updateApp,
             openApp
         } = this.props;
         return (
@@ -57,6 +59,7 @@ export class Overview extends Component<Props> {
                                     resetAppInstallationState
                                 }
                                 openApp={openApp}
+                                updateApp={updateApp}
                                 pauseDownload={pauseDownload}
                                 cancelDownload={cancelDownload}
                                 pushNotification={pushNotification}

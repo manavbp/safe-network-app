@@ -9,6 +9,7 @@ import {
     cancelDownload,
     resumeDownload,
     openApp,
+    updateApp,
     unInstallApp,
     fetchTheApplicationList
 } from '$Actions/alias/app_manager_actions';
@@ -36,6 +37,8 @@ function mapDispatchToProperties( dispatch ) {
         pauseDownload,
         cancelDownload,
         resumeDownload,
+
+        updateApp,
 
         updateDownloadProgress,
 

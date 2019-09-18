@@ -6,6 +6,7 @@
     },
     "buttons": {
         "install": "Install",
+        "update": "Update",
         "cancelInstall": "Cancel Install",
         "pause": "Pause Download",
         "resume": "Resume Download",
