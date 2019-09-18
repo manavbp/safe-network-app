@@ -20,6 +20,9 @@ interface Props {
     downloadAndInstallApp: Function;
     installApp: Function;
     updateApp: Function;
+    history: {
+        push: Function;
+    };
     appPreferences: {
         shouldOnboard: boolean;
     };
@@ -42,7 +45,8 @@ export class Overview extends Component<Props> {
             pushNotification,
             resumeDownload,
             updateApp,
-            openApp
+            openApp,
+            history
         } = this.props;
         return (
             <Grid container justify="space-between">
@@ -52,6 +56,7 @@ export class Overview extends Component<Props> {
                             <ApplicationOverview
                                 key={theApplication.name}
                                 {...theApplication}
+                                history={history}
                                 application={theApplication}
                                 downloadAndInstallApp={downloadAndInstallApp}
                                 unInstallApp={unInstallApp}

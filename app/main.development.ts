@@ -5,6 +5,7 @@ import { Store } from 'redux';
 
 import { updateAppInfoIfNewer } from '$Actions/app_manager_actions';
 import { addApplication } from '$Actions/application_actions';
+import { pushNotification } from '$Actions/launchpad_actions';
 import { logger } from '$Logger';
 import { configureStore } from '$Store/configureStore';
 import { MenuBuilder } from './menu';
@@ -14,6 +15,7 @@ import { setupBackground } from './setupBackground';
 import { installExtensions, preferencesJsonSetup } from '$Utils/main_utils';
 import { checkForKnownAppsLocally } from '$App/manageInstallations/helpers';
 import { appUpdater } from '$App/manageInstallations/safeAppUpdater';
+import { notificationTypes } from '$Constants/notifications';
 
 import {
     isRunningTestCafeProcess,
@@ -24,8 +26,6 @@ import {
 } from '$Constants';
 
 import { addNotification } from '$App/env-handling';
-import { pushNotification } from '$Actions/launchpad_actions';
-import { notificationTypes } from './constants/notifications';
 import { AppUpdater } from './autoUpdate';
 
 require( '$Utils/ipcMainListners' );
@@ -131,9 +131,45 @@ app.on( 'window-all-closed', () => {
     }
 } );
 
+const getParamValue = ( argumentArray, key ) => {
+    let value;
+    argumentArray.forEach( ( argument ) => {
+        if ( argument.indexOf( key ) === 0 ) {
+            value = argument;
+        }
+    } );
+    return value;
+};
+
 app.on( 'open-url', ( _, url ) => {
     try {
         theWindow.show();
+        const { argv } = process;
+        const updateError = getParamValue( argv, '--updateError' );
+        const updateSuccess = getParamValue( argv, '--updateSuccess' );
+        const appName = getParamValue( argv, '--appName' );
+        const appNewVersion = getParamValue( argv, '--appNewVersion' );
+
+        if ( !store ) {
+            return;
+        }
+
+        if ( updateError ) {
+            store.dispatch(
+                pushNotification( notificationTypes.GLOBAL_FAILURE( updateError ) )
+            );
+        }
+
+        if ( updateSuccess && appName && appNewVersion ) {
+            store.dispatch(
+                pushNotification(
+                    notificationTypes.GLOBAL_SUCCESS(
+                        `Successfully updated ${appName} to v${appNewVersion}`,
+                        'Okay'
+                    )
+                )
+            );
+        }
     } catch ( error ) {
         console.error(
             ' Issue opening a window. It did not exist for this app... Check that the correct app version is opening.'
