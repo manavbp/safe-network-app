@@ -599,12 +599,134 @@ describe( 'app manager reducer', () => {
             const { id } = app;
             const store = {
                 applicationList: {
-                    [id]: { ...app }
+                    [id]: { ...app, hasUpdate: true }
                 }
             };
             expect(
                 appManager( store, {
                     type: APP_TYPES.UNINSTALL_APP_SUCCESS,
+                    payload: {}
+                } )
+            ).toEqual( store );
+        } );
+    } );
+
+    describe( 'APP_HAS_UPDATE', () => {
+        it( 'Should set update flag for specific application', () => {
+            const app = getApp();
+            const { id } = app;
+            const store = {
+                applicationList: {
+                    [id]: { ...app }
+                }
+            };
+
+            const expectedStoreWithFlagSet = {
+                applicationList: {
+                    [id]: { ...app, hasUpdate: true }
+                }
+            };
+
+            const expectedStoreWithFlagUnset = {
+                applicationList: {
+                    [id]: { ...app, hasUpdate: false }
+                }
+            };
+
+            expect(
+                appManager( store, {
+                    type: TYPES.APP_HAS_UPDATE,
+                    payload: {
+                        id,
+                        hasUpdate: true
+                    }
+                } )
+            ).toEqual( expectedStoreWithFlagSet );
+            expect(
+                appManager( store, {
+                    type: TYPES.APP_HAS_UPDATE,
+                    payload: {
+                        id,
+                        hasUpdate: false
+                    }
+                } )
+            ).toEqual( expectedStoreWithFlagUnset );
+        } );
+
+        it( 'Should do nothing if app not specified', () => {
+            const app = getApp();
+            const { id } = app;
+            const store = {
+                applicationList: {
+                    [id]: { ...app }
+                }
+            };
+            expect(
+                appManager( store, {
+                    type: TYPES.APP_HAS_UPDATE,
+                    payload: {
+                        hasUpdate: true
+                    }
+                } )
+            ).toEqual( store );
+        } );
+    } );
+
+    describe( 'APP_UPDATED', () => {
+        it( 'Should reset app state on updated', () => {
+            const app = getApp();
+            const { id } = app;
+            const store = {
+                applicationList: {
+                    [id]: { ...app, hasUpdate: true }
+                }
+            };
+
+            const expectStore = {
+                applicationList: {
+                    [id]: { ...app, hasUpdate: false }
+                }
+            };
+
+            expect(
+                appManager( store, {
+                    type: TYPES.APP_UPDATED,
+                    payload: {
+                        id
+                    }
+                } )
+            ).toEqual( expectStore );
+        } );
+
+        it( 'Should has no change if app has no update', () => {
+            const app = getApp();
+            const { id } = app;
+            const store = {
+                applicationList: {
+                    [id]: { ...app }
+                }
+            };
+
+            expect(
+                appManager( store, {
+                    type: TYPES.APP_UPDATED,
+                    payload: { id }
+                } )
+            ).toEqual( store );
+        } );
+
+        it( 'Should has no change if app is not specified', () => {
+            const app = getApp();
+            const { id } = app;
+            const store = {
+                applicationList: {
+                    [id]: { ...app }
+                }
+            };
+
+            expect(
+                appManager( store, {
+                    type: TYPES.APP_UPDATED,
                     payload: {}
                 } )
             ).toEqual( store );

@@ -48,6 +48,7 @@ export class ApplicationOverview extends React.PureComponent<Props> {
                 <ListItem
                     className={styles.list}
                     button
+                    aria-label={`List ${application.name}`}
                     onClick={() => {
                         history.push( `/application/${application.id}` );
                     }}

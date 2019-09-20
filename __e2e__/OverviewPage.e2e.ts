@@ -89,3 +89,22 @@ test( 'clicking uninstall will uninstall', async ( t ) => {
         .expect( actionButton.innerText )
         .eql( 'INSTALL' );
 } );
+
+test( 'clicking update will update safe application', async ( t ) => {
+    const actionButton = Selector( 'button' ).withAttribute(
+        'aria-label',
+        'Application Action Button'
+    );
+    await t
+        .expect( actionButton.innerText )
+        .eql( 'INSTALL' )
+        .click( actionButton )
+        .expect( actionButton.innerText )
+        .eql( 'OPEN' )
+        .click( actionButton )
+        .expect( actionButton.innerText )
+        .eql( 'UPDATE' )
+        .click( actionButton )
+        .expect( actionButton.innerText )
+        .eql( 'OPEN' );
+} );

@@ -166,7 +166,7 @@ export class AppStateButton extends React.Component<Props> {
             buttonText = I18n.t( `buttons.uninstalling` );
         }
 
-        if ( isOpen && hasUpdate ) {
+        if ( isInstalled && hasUpdate ) {
             buttonText = I18n.t( `buttons.update` );
             handleClick = this.handleUpdate;
         }

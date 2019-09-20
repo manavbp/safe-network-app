@@ -64,6 +64,5 @@ ipcMain.on( 'checkApplicationsForUpdate', ( _event, applications ) => {
 } );
 
 ipcMain.on( 'updateApplication', ( _event, application ) => {
-    console.log( 'update-app' );
     AppUpdater.updateApplication( application );
 } );

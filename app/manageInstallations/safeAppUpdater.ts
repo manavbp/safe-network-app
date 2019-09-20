@@ -8,6 +8,7 @@ import { logger } from '$Logger';
 import { getLocalAppVersionMacOS, getInstalledLocation } from './helpers';
 import { pushNotification } from '$Actions/launchpad_actions';
 import { appHasUpdate } from '$Actions/app_manager_actions';
+import { initialAppManager } from '$Reducers/initialAppManager';
 import { notificationTypes } from '$Constants/notifications';
 import { isRunningOnMac, isDryRun } from '$Constants';
 
@@ -19,7 +20,7 @@ export class AppUpdater {
     }
 
     checkAppsForUpdate( applications ) {
-        Object.keys( applications ).forEach( ( appId ) => {
+        Object.keys( applications ).forEach( ( appId, i ) => {
             const application = applications[appId];
             const newVersion = application.latestVersion;
             const updateNotification = notificationTypes.UPDATE_AVAILABLE(
@@ -29,6 +30,12 @@ export class AppUpdater {
             const installPath = getInstalledLocation( application );
 
             if ( isDryRun ) {
+                if (
+                    application.id !==
+                    Object.keys( initialAppManager.applicationList )[0]
+                ) {
+                    return;
+                }
                 logger.info(
                     `DRY RUN: Would have then installed to, ${installPath}`
                 );

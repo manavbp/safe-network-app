@@ -163,14 +163,14 @@ export function appManager( state = initialState, action ): AppManagerState {
             return updateAppInApplicationList( state, targetApp );
         }
 
-        case `${ALIAS_TYPES.ALIAS_SKIP_APP_UPDATE}_PENDING`: {
-            if ( !targetApp ) return state;
-            if ( !payload.latestVersion )
-                throw new Error( ERRORS.VERSION_NOT_FOUND );
-            targetApp.hasUpdate = false;
-            targetApp.lastSkippedVersion = payload.latestVersion;
-            return updateAppInApplicationList( state, targetApp );
-        }
+        // case `${ALIAS_TYPES.ALIAS_SKIP_APP_UPDATE}_PENDING`: {
+        //     if ( !targetApp ) return state;
+        //     if ( !payload.latestVersion )
+        //         throw new Error( ERRORS.VERSION_NOT_FOUND );
+        //     targetApp.hasUpdate = false;
+        //     targetApp.lastSkippedVersion = payload.latestVersion;
+        //     return updateAppInApplicationList( state, targetApp );
+        // }
 
         case APP_TYPES.SET_CURRENT_VERSION: {
             if ( !targetApp ) return state;
@@ -191,7 +191,8 @@ export function appManager( state = initialState, action ): AppManagerState {
         }
 
         case TYPES.APP_UPDATED: {
-            if ( !targetApp ) return state;
+            if ( !targetApp || !targetApp.hasUpdate ) return state;
+
             targetApp.hasUpdate = false;
 
             return updateAppInApplicationList( state, targetApp );

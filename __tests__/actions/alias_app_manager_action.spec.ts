@@ -26,37 +26,23 @@ describe( 'Alias application Manager actions', () => {
         );
     } );
 
-    // it( 'should check application has update available', () => {
-    //     expect( appManager.checkAppHasUpdate ).toBeDefined();
-    //     expect( appManager.checkAppHasUpdate().meta.trigger ).toEqual(
-    //         appManager.TYPES.ALIAS_CHECK_APP_HAS_UPDATE
-    //     );
-    // } );
+    it( 'should check application has update available', () => {
+        expect( appManager.checkAppsHasUpdate ).toBeDefined();
+        expect( appManager.checkAppsHasUpdate().meta.trigger ).toEqual(
+            appManager.TYPES.ALIAS_CHECK_APP_HAS_UPDATE
+        );
+    } );
 
-    // it( 'should update application', () => {
-    //     expect( appManager.updateApp ).toBeDefined();
-    //     expect( appManager.updateApp().meta.trigger ).toEqual(
-    //         appManager.TYPES.ALIAS_UPDATE_APP
-    //     );
-    // } );
+    it( 'should update application', () => {
+        expect( appManager.updateApp ).toBeDefined();
+        expect( appManager.updateApp().meta.trigger ).toEqual(
+            appManager.TYPES.ALIAS_UPDATE_APP
+        );
+    } );
 
     // it( 'should skip application update', () => {
     //     expect( appManager.skipAppUpdate ).toBeDefined();
     //     expect( appManager.skipAppUpdate().meta.trigger ).toEqual(
-    //         appManager.TYPES.ALIAS_SKIP_APP_UPDATE
-    //     );
-    // } );
-
-    // it( 'should update launchpad', () => {
-    //     expect( appManager.updateLaunchpadApp ).toBeDefined();
-    //     expect( appManager.updateLaunchpadApp().meta.trigger ).toEqual(
-    //         appManager.TYPES.ALIAS_UPDATE_APP
-    //     );
-    // } );
-
-    // it( 'should skip launchpad update', () => {
-    //     expect( appManager.skipLaunchpadAppUpdate ).toBeDefined();
-    //     expect( appManager.skipLaunchpadAppUpdate().meta.trigger ).toEqual(
     //         appManager.TYPES.ALIAS_SKIP_APP_UPDATE
     //     );
     // } );

@@ -11,7 +11,8 @@ import {
     LAUNCHPAD_APP_ID,
     APPLICATION_LIST_SOURCE,
     DEFAULT_APP_ICON_PATH,
-    isRunningTestCafeProcess
+    isRunningTestCafeProcess,
+    isDryRun
 } from '$Constants/index';
 import { updateAppInfoIfNewer, appUpdated } from '$Actions/app_manager_actions';
 import { getInstalledLocation } from '$App/manageInstallations/helpers';
@@ -54,7 +55,7 @@ export const TYPES = {
 
     ALIAS_UPDATE_APP: 'ALIAS_UPDATE_APP',
     ALIAS_RESTART_APP: 'ALIAS_RESTART_APP',
-    ALIAS_SKIP_APP_UPDATE: 'ALIAS_SKIP_APP_UPDATE'
+    // ALIAS_SKIP_APP_UPDATE: 'ALIAS_SKIP_APP_UPDATE'
 };
 
 const checkApplicationsForUpdate = ( applications ) => {
@@ -150,6 +151,13 @@ const installThatApp = ( application ) => {
 };
 const openTheApplication = ( application ) => {
     ipcRenderer.send( 'openApplication', application );
+
+    // on testcafe also check for safe app update
+    if ( isDryRun ) {
+        const store = getCurrentStore();
+        const applications = store.getState().appManager.applicationList;
+        store.dispatch( checkAppsHasUpdate( applications ) );
+    }
 };
 
 const pauseDownloadOfApp = ( application ) => {
@@ -284,13 +292,13 @@ export const restartApp = createAliasedAction(
     } )
 );
 
-export const skipAppUpdate = createAliasedAction(
-    TYPES.ALIAS_SKIP_APP_UPDATE,
-    ( application: App ) => ( {
-        type: TYPES.ALIAS_SKIP_APP_UPDATE,
-        payload: storeApplicationSkipVersion( application )
-    } )
-);
+// export const skipAppUpdate = createAliasedAction(
+//     TYPES.ALIAS_SKIP_APP_UPDATE,
+//     ( application: App ) => ( {
+//         type: TYPES.ALIAS_SKIP_APP_UPDATE,
+//         payload: storeApplicationSkipVersion( application )
+//     } )
+// );
 
 export const openApp = createAliasedAction(
     TYPES.ALIAS_OPEN_APP,
@@ -299,11 +307,3 @@ export const openApp = createAliasedAction(
         payload: openTheApplication( application )
     } )
 );
-
-export const updateLaunchpadApp = () => {
-    return updateApp( LAUNCHPAD_APP_ID );
-};
-
-export const skipLaunchpadAppUpdate = () => {
-    return skipAppUpdate( LAUNCHPAD_APP_ID );
-};
