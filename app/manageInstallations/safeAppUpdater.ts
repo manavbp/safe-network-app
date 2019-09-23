@@ -5,12 +5,22 @@ import * as cp from 'child_process';
 import compareVersions from 'compare-versions';
 import { logger } from '$Logger';
 
-import { getLocalAppVersionMacOS, getInstalledLocation } from './helpers';
+import {
+    getLocalAppVersionMacOS,
+    getLocalAppVersionWindows,
+    getLocalAppVersionLinux,
+    getInstalledLocation
+} from './helpers';
 import { pushNotification } from '$Actions/launchpad_actions';
 import { appHasUpdate } from '$Actions/app_manager_actions';
 import { initialAppManager } from '$Reducers/initialAppManager';
 import { notificationTypes } from '$Constants/notifications';
-import { isRunningOnMac, isDryRun } from '$Constants';
+import {
+    isRunningOnMac,
+    isRunningOnWindows,
+    isRunningOnLinux,
+    isDryRun
+} from '$Constants';
 
 export class AppUpdater {
     private _store;
@@ -51,8 +61,17 @@ export class AppUpdater {
             }
 
             let localVersion;
+
             if ( isRunningOnMac ) {
                 localVersion = getLocalAppVersionMacOS( application );
+            }
+
+            if ( isRunningOnWindows ) {
+                localVersion = getLocalAppVersionWindows( application );
+            }
+
+            if ( isRunningOnLinux ) {
+                localVersion = getLocalAppVersionLinux( application );
             }
 
             if ( localVersion ) {

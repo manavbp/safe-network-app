@@ -118,3 +118,33 @@ export const getLocalAppVersionMacOS = ( application ): string => {
         return null;
     }
 };
+
+export const getLocalAppVersionWindows = ( application ): string => {
+    try {
+        const localVersion = fs
+            .readFileSync(
+                path.resolve( INSTALL_TARGET_DIR, application.name, 'version' )
+            )
+            .toString();
+        return localVersion;
+    } catch ( error ) {
+        return null;
+    }
+};
+
+export const getLocalAppVersionLinux = ( application ): string => {
+    try {
+        const localVersion = fs
+            .readFileSync(
+                path.resolve(
+                    INSTALL_TARGET_DIR,
+                    application.packageName,
+                    'version'
+                )
+            )
+            .toString();
+        return localVersion;
+    } catch ( error ) {
+        return null;
+    }
+};
