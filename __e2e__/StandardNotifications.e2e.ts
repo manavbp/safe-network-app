@@ -22,11 +22,6 @@ const Notifications = {
             'Disk is full. Your install has been paused. Free up some space and resume.',
         acceptButtonExists: true
     },
-    globalFailure: {
-        name: 'Global Failure',
-        title: 'Global Failure',
-        acceptButtonExists: true
-    },
     adminPassRequest: {
         name: 'Admin Pass Req',
         title:
@@ -50,7 +45,7 @@ fixture`Check App Notification`.page( '../app/app.html' ).beforeEach( async () =
 } );
 
 // eslint-disable-next-line array-callback-return
-numberOfNotification.map( ( type ) => {
+numberOfNotification.forEach( ( type ) => {
     test( `Check ${Notifications[type].name} notification`, async ( t ) => {
         // @ts-ignore
         await clickOnMainMenuItem( [

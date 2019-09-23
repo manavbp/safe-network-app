@@ -36,9 +36,7 @@ export class AppUpdater {
                 ) {
                     return;
                 }
-                logger.info(
-                    `DRY RUN: Would have then installed to, ${installPath}`
-                );
+                logger.info( `DRY RUN: Checking for apps update` );
                 this._store.dispatch(
                     appHasUpdate( {
                         id: application.id,
@@ -87,6 +85,10 @@ export class AppUpdater {
     }
 
     static updateApplication( application ) {
+        if ( isDryRun ) {
+            logger.info( `DRY RUN: Update application ${application}` );
+            return;
+        }
         let finalCmd = '';
 
         const appDirectoryPath = getInstalledLocation( application );

@@ -172,7 +172,7 @@ const resumeDownloadOfApp = ( application ) => {
     ipcRenderer.send( 'resumeDownload', application );
 };
 
-export const updateApplication = ( application: App ) => {
+export const updateTheApplication = ( application: App ) => {
     ipcRenderer.send( 'updateApplication', application );
     const store = getCurrentStore();
     store.dispatch( appUpdated( application ) );
@@ -194,12 +194,6 @@ const pauseDownloadOfAllApps = ( appList: App ) => {
         if ( application.isDownloadingAndInstalling && !application.isPaused )
             ipcRenderer.send( 'pauseDownload', application );
     } );
-};
-
-const updateTheApplication = ( application: App ) => {
-    if ( application.name === 'SAFE Network App' )
-        ipcRenderer.send( 'update-safe-network-app', application );
-    else console.log( 'no app update feature available at the moment' );
 };
 
 const restartTheApplication = ( application: App ) => {
