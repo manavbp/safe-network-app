@@ -6,9 +6,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBack from '@material-ui/icons/ArrowBack';
-import Settings from '@material-ui/icons/Settings';
 import Star from '@material-ui/icons/Star';
-import { I18n } from 'react-redux-i18n';
 import { SETTINGS, ON_BOARDING } from '$Constants/routes.json';
 
 import appLogo from '$Assets/images/app_logo.svg';
@@ -16,7 +14,9 @@ import appLogo from '$Assets/images/app_logo.svg';
 import styles from './HeaderBar.css';
 
 interface Props {
-    currentPath: string;
+    pageTitle: string;
+    shouldOnBoard: boolean;
+    secondaryAction?: any;
 }
 
 const BackButton = ( { location } ) => {
@@ -45,15 +45,11 @@ const AppLogo = () => {
         </Box>
     );
 };
-
 export class HeaderBar extends React.PureComponent<Props> {
     render() {
-        const { currentPath } = this.props;
-        // path always starts with a slash
-        const targetTitle = currentPath.split( '/' )[1];
-        const title = I18n.t( `pages.${targetTitle}` );
+        const { pageTitle, shouldOnBoard, secondaryAction = null } = this.props;
 
-        if ( currentPath.startsWith( ON_BOARDING ) ) return <div />;
+        if ( shouldOnBoard ) return <div />;
 
         return (
             <Box className={styles.base}>
@@ -63,32 +59,19 @@ export class HeaderBar extends React.PureComponent<Props> {
                     }
                     <Box className={styles.navigation}>
                         <Route path="/" component={BackButton} />
-                        {currentPath === '/' ? (
-                            <AppLogo />
-                        ) : (
+                        {pageTitle ? (
                             <Typography
                                 className={styles.title}
                                 aria-label="title"
                                 variant="subtitle2"
                             >
-                                {title}
+                                {pageTitle}
                             </Typography>
+                        ) : (
+                            <AppLogo />
                         )}
                     </Box>
-                    <Box>
-                        {!currentPath.startsWith( SETTINGS ) && (
-                            <Link to={SETTINGS}>
-                                <IconButton
-                                    edge="start"
-                                    color="inherit"
-                                    aria-label="Go to settings"
-                                    style={{ fontSize: 18 }}
-                                >
-                                    <Settings fontSize="inherit" />
-                                </IconButton>
-                            </Link>
-                        )}
-                    </Box>
+                    <Box>{secondaryAction}</Box>
                 </Toolbar>
             </Box>
         );

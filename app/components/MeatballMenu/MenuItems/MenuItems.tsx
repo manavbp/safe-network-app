@@ -8,6 +8,7 @@ import styles from './MenuItems.css';
 interface MenuItemsProps {
     unInstallApp: Function;
     openApp: Function;
+    showAboutAppOption?: boolean;
 
     downloadAndInstallApp: Function;
     pauseDownload: Function;
@@ -20,6 +21,10 @@ interface MenuItemsProps {
 }
 
 export class MenuItems extends Component<MenuItemsProps> {
+    public static defaultProps: Partial<MenuItemsProps> = {
+        showAboutAppOption: true
+    };
+
     handleDownload = () => {
         const { application, downloadAndInstallApp, handleClose } = this.props;
         logger.verbose( 'MeatballMenu: clicked download ', application.name );
@@ -82,15 +87,19 @@ export class MenuItems extends Component<MenuItemsProps> {
             installFailed
         } = this.props.application;
 
+        const { showAboutAppOption } = this.props;
+
         return (
             <React.Fragment>
-                <MenuItemWrapper
-                    dense
-                    className={styles['menu-item']}
-                    aria-label="about the application"
-                >
-                    <Link to={`/application/${id}`}>{`About ${name}`}</Link>
-                </MenuItemWrapper>
+                {showAboutAppOption && (
+                    <MenuItemWrapper
+                        dense
+                        className={styles['menu-item']}
+                        aria-label="about the application"
+                    >
+                        <Link to={`/application/${id}`}>{`About ${name}`}</Link>
+                    </MenuItemWrapper>
+                )}
                 {!isDownloadingAndInstalling && (
                     <MenuItemWrapper
                         dense

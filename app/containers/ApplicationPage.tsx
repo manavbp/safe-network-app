@@ -15,6 +15,7 @@ import {
 import { triggerSetAsTrayWindow } from '$Actions/alias/launchpad_actions';
 import { AppState } from '../definitions/application.d';
 import { pushNotification } from '$Actions/launchpad_actions';
+import { resetAppInstallationState } from '$Actions/app_manager_actions';
 
 function mapStateToProperties( state: AppState ) {
     return {
@@ -41,7 +42,8 @@ function mapDispatchToProperties( dispatch ) {
 
         fetchTheApplicationList,
 
-        triggerSetAsTrayWindow
+        triggerSetAsTrayWindow,
+        resetAppInstallationState
     };
 
     return bindActionCreators( actions, dispatch );
