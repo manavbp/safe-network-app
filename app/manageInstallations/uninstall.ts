@@ -53,22 +53,22 @@ export const unInstallApplication = async (
         );
     }
 
-    if ( isRunningOnWindows && isDryRun ) {
-        logger.info(
-            `DRY RUN: Would have uninstalled via command: "${windowsUninstallLocation} /S"`
-        );
-    }
-
     if ( isRunningOnWindows ) {
-        const uninstalled = spawnSync( windowsUninstallLocation, ['/S'] );
+        if ( isDryRun )
+            logger.info(
+                `DRY RUN: Would have uninstalled via command: "${windowsUninstallLocation} /S"`
+            );
+        else {
+            const uninstalled = spawnSync( windowsUninstallLocation, ['/S'] );
 
-        if ( uninstalled.error ) {
-            logger.error( 'Error during uninstall', uninstalled.error );
+            if ( uninstalled.error ) {
+                logger.error( 'Error during uninstall', uninstalled.error );
+            }
+
+            // ? ALSO: ~/AppData/Local/safe-launchpad-updater
+
+            return;
         }
-
-        // ? ALSO: ~/AppData/Local/safe-launchpad-updater
-
-        return;
     }
 
     try {

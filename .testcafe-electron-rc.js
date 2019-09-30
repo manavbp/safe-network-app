@@ -21,6 +21,7 @@ if (platform === LINUX) {
 
 if (platform === WINDOWS) {
     PLATFORM_NAME = 'win-unpacked';
+    appString = 'SAFE Network App.exe';
 }
 
 let config = {

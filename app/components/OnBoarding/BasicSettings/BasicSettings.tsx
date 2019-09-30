@@ -9,6 +9,7 @@ import styles from './BasicSettings.css';
 
 import { UserPreferences } from '$Definitions/application.d';
 import { Preferences } from '$Components/Preferences';
+import { defaultPreferences } from '$Constants/index';
 
 interface Props {
     userPreferences: UserPreferences;
@@ -41,7 +42,7 @@ export const BasicSettings = ( properties ) => {
             <Grid item xs={12}>
                 <Preferences
                     isTrayWindow={isTrayWindow}
-                    userPreferences={userPreferences}
+                    userPreferences={defaultPreferences.userPreferences}
                     requiredItems={requiredItems}
                     onChange={setUserPreferences}
                 />
