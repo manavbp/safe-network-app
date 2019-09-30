@@ -42,6 +42,11 @@ export class OnBoarding extends React.Component<Props> {
 
     totalSteps = 3;
 
+    componentDidMount() {
+        const { triggerSetAsTrayWindow } = this.props;
+        triggerSetAsTrayWindow( false );
+    }
+
     navigate = ( position ) => {
         const { history } = this.props;
         enum ON_BOARDING_PAGES {
