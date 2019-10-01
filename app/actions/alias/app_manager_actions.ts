@@ -120,8 +120,11 @@ const fetchAppListFromServer = async (): Promise<void> => {
         const errorNotification = {
             id,
             title: I18n.t( 'notifications.title.unable_to_get_app_list' ),
+            icon: 'WarningIcon',
             notificationType: NOTIFICATION_TYPES.STANDARD,
-            type: 'NO_APP_LIST'
+            type: 'NO_APP_LIST',
+            denyText: I18n.t( 'notifications.buttons.denyText.dismiss' ),
+            acceptText: I18n.t( 'notifications.buttons.acceptText.retry' )
         };
         store.dispatch( pushNotification( errorNotification ) );
     }
