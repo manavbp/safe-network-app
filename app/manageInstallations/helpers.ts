@@ -2,12 +2,13 @@ import path from 'path';
 
 import { Store } from 'redux';
 import fs from 'fs-extra';
-import plist from 'plist';
 import {
     MAC_OS,
     LINUX,
     WINDOWS,
     platform,
+    isRunningOnWindows,
+    isRunningOnLinux,
     isRunningTestCafeProcess
 } from '$Constants';
 import { INSTALL_TARGET_DIR } from '$Constants/installConstants';
@@ -30,8 +31,8 @@ export const getApplicationExecutable = ( application: App ): string => {
 
     switch ( platform ) {
         case MAC_OS: {
-            applicationExecutable = `${application.packageName ||
-                application.name}.app`;
+            applicationExecutable = `${application.name ||
+                application.packageName}.app`;
             break;
         }
         case WINDOWS: {
@@ -100,49 +101,31 @@ export const checkForKnownAppsLocally = async ( store: Store ): Promise<void> =>
     } );
 };
 
-export const getLocalAppVersionMacOS = ( application ): string => {
+export const getLocalAppVersion = ( application ): string => {
     try {
-        const plistData = plist.parse(
-            fs
-                .readFileSync(
-                    path.resolve(
-                        getInstalledLocation( application ),
-                        'Contents/Info.plist'
-                    )
-                )
-                .toString()
+        // default to MacOs
+        let versionFilePath = path.resolve(
+            getInstalledLocation( application ),
+            'Contents/Resources/version'
         );
-        const localVersion = plistData.CFBundleShortVersionString;
-        return localVersion;
-    } catch ( error ) {
-        return null;
-    }
-};
 
-export const getLocalAppVersionWindows = ( application ): string => {
-    try {
-        const localVersion = fs
-            .readFileSync(
-                path.resolve( INSTALL_TARGET_DIR, application.name, 'version' )
-            )
-            .toString();
-        return localVersion;
-    } catch ( error ) {
-        return null;
-    }
-};
+        if ( isRunningOnWindows ) {
+            versionFilePath = path.resolve(
+                INSTALL_TARGET_DIR,
+                application.name,
+                'version'
+            );
+        }
 
-export const getLocalAppVersionLinux = ( application ): string => {
-    try {
-        const localVersion = fs
-            .readFileSync(
-                path.resolve(
-                    INSTALL_TARGET_DIR,
-                    application.packageName,
-                    'version'
-                )
-            )
-            .toString();
+        if ( isRunningOnLinux ) {
+            versionFilePath = path.resolve(
+                INSTALL_TARGET_DIR,
+                application.packageName,
+                'version'
+            );
+        }
+
+        const localVersion = fs.readFileSync( versionFilePath ).toString();
         return localVersion;
     } catch ( error ) {
         return null;

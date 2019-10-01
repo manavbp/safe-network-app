@@ -11,10 +11,12 @@ import {
     LAUNCHPAD_APP_ID,
     APPLICATION_LIST_SOURCE,
     DEFAULT_APP_ICON_PATH,
-    isRunningTestCafeProcess,
-    isDryRun
+    isRunningTestCafeProcess
 } from '$Constants/index';
-import { updateAppInfoIfNewer, appUpdated } from '$Actions/app_manager_actions';
+import {
+    updateAppInfoIfNewer,
+    resetAppUpdateState
+} from '$Actions/app_manager_actions';
 import { getInstalledLocation } from '$App/manageInstallations/helpers';
 import { NOTIFICATION_TYPES } from '$Constants/notifications';
 
@@ -54,8 +56,7 @@ export const TYPES = {
     ALIAS_CANCEL_DOWNLOAD_OF_APP: 'ALIAS_CANCEL_DOWNLOAD_OF_APP',
 
     ALIAS_UPDATE_APP: 'ALIAS_UPDATE_APP',
-    ALIAS_RESTART_APP: 'ALIAS_RESTART_APP',
-    // ALIAS_SKIP_APP_UPDATE: 'ALIAS_SKIP_APP_UPDATE'
+    ALIAS_RESTART_APP: 'ALIAS_RESTART_APP'
 };
 
 const checkApplicationsForUpdate = ( applications ) => {
@@ -153,7 +154,7 @@ const openTheApplication = ( application ) => {
     ipcRenderer.send( 'openApplication', application );
 
     // on testcafe also check for safe app update
-    if ( isDryRun ) {
+    if ( isRunningTestCafeProcess ) {
         const store = getCurrentStore();
         const applications = store.getState().appManager.applicationList;
         store.dispatch( checkAppsHasUpdate( applications ) );
@@ -175,7 +176,7 @@ const resumeDownloadOfApp = ( application ) => {
 export const updateTheApplication = ( application: App ) => {
     ipcRenderer.send( 'updateApplication', application );
     const store = getCurrentStore();
-    store.dispatch( appUpdated( application ) );
+    store.dispatch( resetAppUpdateState( application ) );
 };
 
 const resumeDownloadOfAllApps = ( appList: App ) => {
@@ -285,14 +286,6 @@ export const restartApp = createAliasedAction(
         payload: restartTheApplication( application )
     } )
 );
-
-// export const skipAppUpdate = createAliasedAction(
-//     TYPES.ALIAS_SKIP_APP_UPDATE,
-//     ( application: App ) => ( {
-//         type: TYPES.ALIAS_SKIP_APP_UPDATE,
-//         payload: storeApplicationSkipVersion( application )
-//     } )
-// );
 
 export const openApp = createAliasedAction(
     TYPES.ALIAS_OPEN_APP,

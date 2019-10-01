@@ -3,26 +3,16 @@ import fs from 'fs';
 import * as cp from 'child_process';
 
 import compareVersions from 'compare-versions';
-import { logger } from '$Logger';
-
-import {
-    getLocalAppVersionMacOS,
-    getLocalAppVersionWindows,
-    getLocalAppVersionLinux,
-    getInstalledLocation
-} from './helpers';
 import { pushNotification } from '$Actions/launchpad_actions';
+import { getCommandLineParam } from '$Utils/app_utils';
+import { notificationTypes } from '$Constants/notifications';
+import { getLocalAppVersion, getInstalledLocation } from './helpers';
 import { appHasUpdate } from '$Actions/app_manager_actions';
 import { initialAppManager } from '$Reducers/initialAppManager';
-import { notificationTypes } from '$Constants/notifications';
-import {
-    isRunningOnMac,
-    isRunningOnWindows,
-    isRunningOnLinux,
-    isDryRun
-} from '$Constants';
+import { isDryRun } from '$Constants';
+import { logger } from '$Logger';
 
-export class AppUpdater {
+export class SafeAppUpdater {
     private _store;
 
     set store( store ) {
@@ -60,19 +50,7 @@ export class AppUpdater {
                 return;
             }
 
-            let localVersion;
-
-            if ( isRunningOnMac ) {
-                localVersion = getLocalAppVersionMacOS( application );
-            }
-
-            if ( isRunningOnWindows ) {
-                localVersion = getLocalAppVersionWindows( application );
-            }
-
-            if ( isRunningOnLinux ) {
-                localVersion = getLocalAppVersionLinux( application );
-            }
+            const localVersion = getLocalAppVersion( application );
 
             if ( localVersion ) {
                 const comparison = compareVersions.compare(
@@ -86,7 +64,7 @@ export class AppUpdater {
                         hasUpdate: comparison
                     } )
                 );
-                if ( fs.existsSync( installPath ) ) {
+                if ( fs.existsSync( installPath ) && comparison ) {
                     this._store.dispatch( {
                         id: Math.random().toString( 36 ),
                         ...pushNotification( updateNotification )
@@ -125,6 +103,32 @@ export class AppUpdater {
             console.log( 'Update request sent' );
         } );
     }
+
+    handleUpdateError( argv ) {
+        const updateError = getCommandLineParam( argv, '--updateError' );
+        if ( updateError ) {
+            this._store.dispatch(
+                pushNotification( notificationTypes.GLOBAL_FAILURE( updateError ) )
+            );
+        }
+    }
+
+    handleUpdateSuccess( argv ) {
+        const updateSuccess = getCommandLineParam( argv, '--updateSuccess' );
+        const appName = getCommandLineParam( argv, '--appName' );
+        const appNewVersion = getCommandLineParam( argv, '--appNewVersion' );
+
+        if ( updateSuccess && appName && appNewVersion ) {
+            this._store.dispatch(
+                pushNotification(
+                    notificationTypes.GLOBAL_INFO(
+                        `Successfully updated ${appName} to v${appNewVersion}`,
+                        'Okay'
+                    )
+                )
+            );
+        }
+    }
 }
 
-export const appUpdater = new AppUpdater();
+export const safeAppUpdater = new SafeAppUpdater();

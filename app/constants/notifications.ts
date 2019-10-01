@@ -262,7 +262,7 @@ export const notificationTypes = {
         return prepareNotification( title, denyText, otherProperties );
     },
     GLOBAL_FAILURE: ( newTitle, newDenyText = '' ) => {
-        const title = I18n.t( newTitle || 'notifications.title.global_failure' );
+        const title = newTitle || I18n.t( 'notifications.title.global_failure' );
         const denyText = I18n.t(
             newDenyText || 'notifications.buttons.denyText.dismiss'
         );
@@ -276,14 +276,14 @@ export const notificationTypes = {
 
         return prepareNotification( title, denyText, otherProperties );
     },
-    GLOBAL_SUCCESS: ( newTitle, newDenyText = '' ) => {
-        const title = I18n.t( newTitle || 'notifications.title.global_failure' );
+    GLOBAL_INFO: ( newTitle, newDenyText = '' ) => {
+        const title = newTitle || I18n.t( 'notifications.title.global_info' );
         const denyText = I18n.t(
             newDenyText || 'notifications.buttons.denyText.dismiss'
         );
 
         const otherProperties = {
-            type: 'GLOBAL_SUCCESS',
+            type: 'GLOBAL_INFO',
             notificationType: NOTIFICATION_TYPES.STANDARD,
             icon: 'InfoIcon',
             priority: 'HIGH'

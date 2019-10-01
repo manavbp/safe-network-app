@@ -140,7 +140,7 @@ const denyNotify = ( props ) => {
         case 'GLOBAL_FAILURE':
             store.dispatch( dismissNotification( { id: props.id } ) );
             break;
-        case 'GLOBAL_SUCCESS':
+        case 'GLOBAL_INFO':
             store.dispatch( dismissNotification( { id: props.id } ) );
             break;
         default:

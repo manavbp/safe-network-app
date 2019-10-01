@@ -5,7 +5,7 @@ export const TYPES = {
     RESET_APP_INSTALLATION_STATE: 'RESET_APP_INSTALLATION_STATE',
     UPDATE_APP_INFO_IF_NEWER: 'UPDATE_APP_INFO_IF_NEWER',
     APP_HAS_UPDATE: 'APP_HAS_UPDATE',
-    APP_UPDATED: 'APP_UPDATED'
+    RESET_APP_UPDATE_STATE: 'RESET_APP_UPDATE_STATE'
 };
 
 export const {
@@ -13,11 +13,11 @@ export const {
     resetToInitialState,
     updateAppInfoIfNewer,
     appHasUpdate,
-    appUpdated
+    resetAppUpdateState
 } = createActions(
     TYPES.RESET_APP_INSTALLATION_STATE,
     TYPES.RESET_TO_INITIAL_STATE,
     TYPES.UPDATE_APP_INFO_IF_NEWER,
     TYPES.APP_HAS_UPDATE,
-    TYPES.APP_UPDATED
+    TYPES.RESET_APP_UPDATE_STATE
 );

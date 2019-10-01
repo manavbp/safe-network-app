@@ -14,7 +14,7 @@ import { createSafeLaunchPadTrayWindow, createTray } from './setupLaunchPad';
 import { setupBackground } from './setupBackground';
 import { installExtensions, preferencesJsonSetup } from '$Utils/main_utils';
 import { checkForKnownAppsLocally } from '$App/manageInstallations/helpers';
-import { appUpdater } from '$App/manageInstallations/safeAppUpdater';
+import { safeAppUpdater } from '$App/manageInstallations/safeAppUpdater';
 import { notificationTypes } from '$Constants/notifications';
 
 import {
@@ -51,6 +51,8 @@ if ( !gotTheLock ) {
     app.quit();
 } else {
     app.on( 'second-instance', ( event, commandLine, workingDirectory ) => {
+        safeAppUpdater.handleUpdateError( commandLine );
+        safeAppUpdater.handleUpdateSuccess( commandLine );
         // Someone tried to run a second instance, we should focus our window.
         if ( theWindow ) {
             if ( theWindow.isMinimized() ) theWindow.restore();
@@ -71,7 +73,7 @@ if ( !gotTheLock ) {
         const initialState = {};
         store = configureStore( initialState );
 
-        appUpdater.store = store;
+        safeAppUpdater.store = store;
 
         // start with hardcoded list of apps.
         checkForKnownAppsLocally( store );
@@ -131,45 +133,9 @@ app.on( 'window-all-closed', () => {
     }
 } );
 
-const getParamValue = ( argumentArray, key ) => {
-    let value;
-    argumentArray.forEach( ( argument ) => {
-        if ( argument.indexOf( key ) === 0 ) {
-            value = argument;
-        }
-    } );
-    return value;
-};
-
 app.on( 'open-url', ( _, url ) => {
     try {
         theWindow.show();
-        const { argv } = process;
-        const updateError = getParamValue( argv, '--updateError' );
-        const updateSuccess = getParamValue( argv, '--updateSuccess' );
-        const appName = getParamValue( argv, '--appName' );
-        const appNewVersion = getParamValue( argv, '--appNewVersion' );
-
-        if ( !store ) {
-            return;
-        }
-
-        if ( updateError ) {
-            store.dispatch(
-                pushNotification( notificationTypes.GLOBAL_FAILURE( updateError ) )
-            );
-        }
-
-        if ( updateSuccess && appName && appNewVersion ) {
-            store.dispatch(
-                pushNotification(
-                    notificationTypes.GLOBAL_SUCCESS(
-                        `Successfully updated ${appName} to v${appNewVersion}`,
-                        'Okay'
-                    )
-                )
-            );
-        }
     } catch ( error ) {
         console.error(
             ' Issue opening a window. It did not exist for this app... Check that the correct app version is opening.'
