@@ -17,6 +17,7 @@ import {
     storePreferences,
     quitApplication
 } from '$Actions/alias/launchpad_actions';
+import { safeAppUpdater } from './manageInstallations/safeAppUpdater';
 import { Application } from './definitions/application.d';
 import { logger } from '$Logger';
 import pkg from '$Package';
@@ -331,6 +332,14 @@ export class MenuBuilder {
                     }
                 },
                 {
+                    label: 'Check Safe Applications Update',
+                    click: () => {
+                        const applications = store.getState().appManager
+                            .applicationList;
+                        safeAppUpdater.checkAppsForUpdate( applications );
+                    }
+                },
+                {
                     label: 'Skip OnBoard App',
                     click: () => {
                         this.store.dispatch(
@@ -561,6 +570,14 @@ export class MenuBuilder {
                         this.store.dispatch(
                             setAppPreferences( { shouldOnboard: true } )
                         );
+                    }
+                },
+                {
+                    label: 'Check Safe Applications Update',
+                    click: () => {
+                        const applications = store.getState().appManager
+                            .applicationList;
+                        safeAppUpdater.checkAppsForUpdate( applications );
                     }
                 },
                 {

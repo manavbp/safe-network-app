@@ -1,6 +1,9 @@
 import { ClientFunction, Selector } from 'testcafe';
 import { ReactSelector, waitForReact } from 'testcafe-react-selectors';
-import { clickOnMainMenuItem } from 'testcafe-browser-provider-electron';
+import {
+    clickOnMainMenuItem,
+    getContextMenuItems
+} from 'testcafe-browser-provider-electron';
 import { getPageUrl, getPageTitle } from './helpers';
 
 const assertNoConsoleErrors = async ( t ): Promise<void> => {
@@ -95,13 +98,18 @@ test( 'clicking update will update safe application', async ( t ) => {
         'aria-label',
         'Application Action Button'
     );
+
     await t
         .expect( actionButton.innerText )
         .eql( 'INSTALL' )
         .click( actionButton )
         .expect( actionButton.innerText )
-        .eql( 'OPEN' )
-        .click( actionButton )
+        .eql( 'OPEN' );
+
+    // @ts-ignore
+    await clickOnMainMenuItem( ['Tests', 'Check Safe Applications Update'] );
+
+    await t
         .expect( actionButton.innerText )
         .eql( 'UPDATE' )
         .click( actionButton )

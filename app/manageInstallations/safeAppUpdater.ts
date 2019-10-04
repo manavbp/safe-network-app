@@ -95,12 +95,14 @@ export class SafeAppUpdater {
             finalCmd = `${appPath} --triggerUpdate`;
         }
 
+        // TODO for other platforms
+
         cp.exec( finalCmd, ( error, stdout, stderr ) => {
             if ( error ) {
-                console.error( error );
+                logger.error( 'Can trigger Safe application update', error );
                 return;
             }
-            console.log( 'Update request sent' );
+            logger.info( `Update request sent for ${application.name}` );
         } );
     }
 

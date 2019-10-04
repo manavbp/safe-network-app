@@ -26,24 +26,10 @@ describe( 'Alias application Manager actions', () => {
         );
     } );
 
-    it( 'should check application has update available', () => {
-        expect( appManager.checkAppsHasUpdate ).toBeDefined();
-        expect( appManager.checkAppsHasUpdate().meta.trigger ).toEqual(
-            appManager.TYPES.ALIAS_CHECK_APP_HAS_UPDATE
-        );
-    } );
-
     it( 'should update application', () => {
         expect( appManager.updateApp ).toBeDefined();
         expect( appManager.updateApp().meta.trigger ).toEqual(
             appManager.TYPES.ALIAS_UPDATE_APP
         );
     } );
-
-    // it( 'should skip application update', () => {
-    //     expect( appManager.skipAppUpdate ).toBeDefined();
-    //     expect( appManager.skipAppUpdate().meta.trigger ).toEqual(
-    //         appManager.TYPES.ALIAS_SKIP_APP_UPDATE
-    //     );
-    // } );
 } );

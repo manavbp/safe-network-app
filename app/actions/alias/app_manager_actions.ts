@@ -45,7 +45,6 @@ export const TYPES = {
     ALIAS_FETCH_APPS: 'ALIAS_FETCH_APPS',
 
     ALIAS_FETCH_UPDATE_INFO: 'ALIAS_FETCH_UPDATE_INFO',
-    ALIAS_CHECK_APP_HAS_UPDATE: 'ALIAS_CHECK_APP_HAS_UPDATE',
 
     ALIAS_OPEN_APP: 'ALIAS_OPEN_APP',
 
@@ -58,18 +57,6 @@ export const TYPES = {
     ALIAS_UPDATE_APP: 'ALIAS_UPDATE_APP',
     ALIAS_RESTART_APP: 'ALIAS_RESTART_APP'
 };
-
-const checkApplicationsForUpdate = ( applications ) => {
-    ipcRenderer.send( 'checkApplicationsForUpdate', applications );
-};
-
-export const checkAppsHasUpdate = createAliasedAction(
-    TYPES.ALIAS_CHECK_APP_HAS_UPDATE,
-    ( applications: App ) => ( {
-        type: TYPES.ALIAS_CHECK_APP_HAS_UPDATE,
-        payload: checkApplicationsForUpdate( applications )
-    } )
-);
 
 export const fetchDefaultAppIconFromLocal = ( applicationId: string ): string => {
     return path.resolve( DEFAULT_APP_ICON_PATH, `${applicationId}.png` );
@@ -124,9 +111,6 @@ const fetchAppListFromServer = async (): Promise<void> => {
                 fetchDefaultAppIconFromLocal( theApp.id );
             store.dispatch( updateAppInfoIfNewer( theApp ) );
         } );
-
-        // check for apps update after fetch
-        store.dispatch( checkAppsHasUpdate( apps.applications ) );
     } catch ( error ) {
         logger.error( error.message );
         const id: string = Math.random().toString( 36 );
@@ -152,13 +136,6 @@ const installThatApp = ( application ) => {
 };
 const openTheApplication = ( application ) => {
     ipcRenderer.send( 'openApplication', application );
-
-    // on testcafe also check for safe app update
-    if ( isRunningTestCafeProcess ) {
-        const store = getCurrentStore();
-        const applications = store.getState().appManager.applicationList;
-        store.dispatch( checkAppsHasUpdate( applications ) );
-    }
 };
 
 const pauseDownloadOfApp = ( application ) => {
