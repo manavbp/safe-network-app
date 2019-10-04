@@ -89,6 +89,8 @@ if ( !gotTheLock ) {
                     app.hide();
                 else theWindow.hide();
             }
+            if ( process.platform === 'win32' || process.platform === 'linux' )
+                app.quit();
         } );
 
         const menuBuilder = new MenuBuilder( theWindow, store );
