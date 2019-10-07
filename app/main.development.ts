@@ -17,6 +17,8 @@ import { checkForKnownAppsLocally } from '$App/manageInstallations/helpers';
 import {
     isRunningTestCafeProcess,
     isRunningUnpacked,
+    isRunningOnLinux,
+    isRunningOnWindows,
     getAppFolderPath,
     platform,
     settingsHandlerName
@@ -89,7 +91,7 @@ if ( !gotTheLock ) {
                     app.hide();
                 else theWindow.hide();
             }
-            if ( process.platform === 'win32' || process.platform === 'linux' )
+            if ( isRunningOnWindows || isRunningOnLinux )
                 app.quit();
         } );
 
