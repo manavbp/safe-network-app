@@ -103,7 +103,11 @@ script:
   - if [[ "$TRAVIS_OS_NAME" == "osx" && ${TRAVIS_TAG} != "" ]]; then aws s3 rm --recursive s3://safe-network-app/safe-network-app-osx/; fi
 
 before_deploy:
-  - if [[ "$TRAVIS_OS_NAME" != "windows" && ( "$TRAVIS_TAG" != *"RC"* || "$TRAVIS_TAG" != *"rc"* ) ]]; then NODE_ENV=prod yarn deploy; fi
+  - |
+    if [[ $TRAVIS_TAG == *"RC"* || $TRAVIS_TAG == *"rc"* ]]; then
+      export IS_RC=yes
+    fi
+  - if [[ "$TRAVIS_OS_NAME" != "windows" && "$IS_RC" != "yes" ]]; then NODE_ENV=prod yarn deploy; fi
   - ls release
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export RELEASE_PROD_EXE="$(ls release/*-mac-x64.dmg)";
     fi
