@@ -9,6 +9,11 @@ Desktop app for managing the your SAFE Network applications.
 | [MaidSafe website](https://maidsafe.net) | [SAFE Dev Forum](https://forum.safedev.org) | [SAFE Network Forum](https://safenetforum.org) |
 | :--------------------------------------: | :-----------------------------------------: | :--------------------------------------------: |
 
+## Downloading 
+
+Downloading from the GitHub releases page on Linux, using an AppImage will require adding execution permission on some linux dists:
+
+`chmod +x <safe network app>.AppImage`
 
 ## Building
 
