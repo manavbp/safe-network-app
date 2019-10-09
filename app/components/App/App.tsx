@@ -1,11 +1,18 @@
 import * as React from 'react';
 import { Grid } from '@material-ui/core';
 import { createMuiTheme } from '@material-ui/core/styles';
+import { Link, Route } from 'react-router-dom';
 import { ThemeProvider } from '@material-ui/styles';
 import TitleBar from 'frameless-titlebar';
+import IconButton from '@material-ui/core/IconButton';
+import Settings from '@material-ui/icons/Settings';
+import { I18n } from 'react-redux-i18n';
 import { notificationTypes } from '$Constants/notifications';
 import { NotificationsHandler } from '$Components/Notifications/NotificationsHandler';
 import { HeaderBar } from '$Components/HeaderBar';
+import { logger } from '$Logger';
+import { SETTINGS, ON_BOARDING } from '$Constants/routes.json';
+import { MeatballMenu } from '$App/components/MeatballMenu';
 
 import { THEME } from '$Constants/theme';
 
@@ -28,9 +35,50 @@ interface Props {
             pathname: string;
         };
     };
+    appList: {};
+    currentPath: string;
+    unInstallApp: Function;
+    openApp: Function;
+    downloadAndInstallApp: Function;
+    pauseDownload: Function;
+    cancelDownload: Function;
+    resumeDownload: Function;
 }
 
 export class App extends React.PureComponent<Props> {
+    isInAppDetailPage = ( currentPath ) => {
+        const {
+            appList,
+            unInstallApp,
+            openApp,
+            downloadAndInstallApp,
+            pauseDownload,
+            cancelDownload,
+            resumeDownload
+        } = this.props;
+
+        const applicationId = currentPath.split( '/' )[2];
+        const application = appList[applicationId];
+        let secondaryAction;
+
+        if ( application.isDownloadingAndInstalling || application.isInstalled ) {
+            secondaryAction = (
+                <MeatballMenu
+                    showAboutAppOption={false}
+                    unInstallApp={unInstallApp}
+                    openApp={openApp}
+                    downloadAndInstallApp={downloadAndInstallApp}
+                    pauseDownload={pauseDownload}
+                    cancelDownload={cancelDownload}
+                    resumeDownload={resumeDownload}
+                    application={application}
+                />
+            );
+        }
+
+        return secondaryAction;
+    };
+
     render() {
         const {
             isTrayWindow,
@@ -45,10 +93,34 @@ export class App extends React.PureComponent<Props> {
         } = this.props;
 
         const currentPath = router.location.pathname;
+        // path always starts with a slash
+
         const baseClassList = [
             !shouldOnboard ? styles.gridContainer : '',
             !isTrayWindow ? styles.standardWindow : styles.trayWindow
         ];
+        let secondaryAction = null;
+
+        const targetTitle = currentPath.split( '/' )[1];
+        const pageTitle = I18n.t( `pages.${targetTitle}` );
+
+        if ( currentPath === '/' )
+            secondaryAction = (
+                <Link to={SETTINGS}>
+                    <IconButton
+                        edge="start"
+                        color="inherit"
+                        aria-label="Go to settings"
+                        style={{ fontSize: 18 }}
+                    >
+                        <Settings fontSize="inherit" />
+                    </IconButton>
+                </Link>
+            );
+
+        if ( currentPath.startsWith( '/application/' ) )
+            secondaryAction = this.isInAppDetailPage( currentPath );
+
         return (
             <ThemeProvider theme={theme}>
                 <div className={baseClassList.join( ' ' )}>
@@ -66,7 +138,11 @@ export class App extends React.PureComponent<Props> {
                         )}
                     </div>
                     <div className={styles.headerBar}>
-                        <HeaderBar currentPath={currentPath} />
+                        <HeaderBar
+                            pageTitle={pageTitle}
+                            secondaryAction={secondaryAction}
+                            shouldOnBoard={currentPath.startsWith( ON_BOARDING )}
+                        />
                     </div>
                     <div className={styles.containerBase}>
                         <Grid container>

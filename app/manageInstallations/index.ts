@@ -1,8 +1,9 @@
-import { BrowserWindow, DownloadItem, ipcMain } from 'electron';
+import { BrowserWindow, DownloadItem, ipcMain, shell } from 'electron';
 import { Store } from 'redux';
 import { download } from 'electron-dl';
-import open from 'open';
 import { I18n } from 'react-redux-i18n';
+import { spawn, exec, execFile } from 'child_process';
+import path from 'path';
 
 import { getInstalledLocation } from '$App/manageInstallations/helpers';
 
@@ -15,7 +16,16 @@ import {
 } from '$Actions/application_actions';
 
 import { pushNotification } from '$Actions/launchpad_actions';
-import { MAC_OS, LINUX, WINDOWS, isDryRun, platform } from '$Constants';
+import {
+    MAC_OS,
+    LINUX,
+    WINDOWS,
+    isDryRun,
+    platform,
+    isRunningOnMac,
+    isRunningOnLinux,
+    isRunningOnWindows
+} from '$Constants';
 import { NOTIFICATION_TYPES } from '$Constants/notifications';
 
 import { silentInstall } from '$App/manageInstallations/installers';
@@ -97,24 +107,24 @@ const getDowloadUrlForApplication = ( application: App ): string => {
     const version = application.latestVersion;
     const baseUrl = `https://github.com/${application.repositoryOwner}/${
         application.repositorySlug
-    }/releases/download/v${version}/${application.packageName ||
+    }/releases/download/${version}/${application.packageName ||
         application.name}-${version}`;
     let targetUrl: string;
 
     logger.silly( 'Checking platform', platform );
     switch ( platform ) {
         case MAC_OS: {
-            targetUrl = `${baseUrl}.dmg`;
+            targetUrl = `${baseUrl}-mac-x64.dmg`;
             break;
-            // https://github.com/joshuef/electron-typescript-react-boilerplate/releases/download/v0.1.0/ElectronTypescriptBoiler-0.1.0.dmg
+            // https://github.com/maidsafe/safe_browser/releases/download/v0.15.0/safe-browser-v0.15.0-mac-x64.dmg
         }
         case WINDOWS: {
-            targetUrl = `${baseUrl}.exe`;
+            targetUrl = `${baseUrl}-win-x64.exe`;
             break;
         }
         case LINUX: {
-            // https://github.com/joshuef/electron-typescript-react-boilerplate/releases/download/v0.1.0/electron-react-boilerplate-0.1.0-x86_64.AppImage
-            targetUrl = `${baseUrl}-x86_64.AppImage`;
+            // https://github.com/maidsafe/safe_browser/releases/download/v0.15.0/safe-browser-v0.15.0-linux-x64.AppImage
+            targetUrl = `${baseUrl}-linux-x64.AppImage`;
             break;
         }
         default: {
@@ -124,7 +134,7 @@ const getDowloadUrlForApplication = ( application: App ): string => {
             );
         }
     }
-    logger.verbose( 'Download URL: ', targetUrl );
+    logger.info( 'Download URL: ', targetUrl );
     return targetUrl;
 };
 
@@ -259,7 +269,44 @@ export function manageDownloads( store: Store, targetWindow: BrowserWindow ) {
     );
 
     ipcMain.on( 'openApplication', ( event, application: App ) => {
-        logger.info( 'Opening app: ', application.name );
-        open( getInstalledLocation( application ) );
+        const appLocation = getInstalledLocation( application );
+
+        let command = appLocation;
+
+        const newEnvironment = {
+            ...process.env,
+            NODE_ENV: 'prod',
+            HOT: 'false'
+        };
+        // needs to be actually deleted.
+        delete newEnvironment.HOT;
+
+        logger.warn( 'Opening app via path: ', command );
+
+        if ( isRunningOnMac ) {
+            command = `open "${command}"`;
+
+            exec( command, {
+                // eslint-disable-next-line unicorn/prevent-abbreviations
+                env: newEnvironment
+            } );
+        }
+        if ( isRunningOnWindows ) {
+            execFile( command, {
+                // eslint-disable-next-line unicorn/prevent-abbreviations
+                env: newEnvironment
+            } );
+            return;
+        }
+        if ( isRunningOnLinux ) {
+            logger.warn( 'Opening on linux via spawn command: ', command );
+            // exec on linux doesnt give us a new process, so closing SNAPP
+            // will close the spawned app :|
+            spawn( command, {
+                // eslint-disable-next-line unicorn/prevent-abbreviations
+                env: newEnvironment,
+                detached: true
+            } );
+        }
     } );
 }

@@ -40,7 +40,11 @@ export const unInstallApplication = async (
         application.name
     );
 
-    const windowsUninstallLocation = `${INSTALL_TARGET_DIR}/${application.packageName} Uninstall.exe`;
+    const windowsUninstallLocation = path.join(
+        `${INSTALL_TARGET_DIR}`,
+        `${application.name || application.packageName}`,
+        `Uninstall ${application.name || application.packageName}.exe`
+    );
 
     logger.verbose( `Attempting to remove ${installedPath}` );
     logger.verbose( `Attempting to remove ${applicationUserDataPath}` );
@@ -53,22 +57,29 @@ export const unInstallApplication = async (
         );
     }
 
-    if ( isRunningOnWindows && isDryRun ) {
-        logger.info(
-            `DRY RUN: Would have uninstalled via command: "${windowsUninstallLocation} /S"`
-        );
-    }
-
     if ( isRunningOnWindows ) {
-        const uninstalled = spawnSync( windowsUninstallLocation, ['/S'] );
+        if ( isDryRun )
+            logger.info(
+                `DRY RUN: Would have uninstalled via command: "${windowsUninstallLocation} /S"`
+            );
+        else {
+            const uninstalled = spawnSync( windowsUninstallLocation, ['/S'] );
 
-        if ( uninstalled.error ) {
-            logger.error( 'Error during uninstall', uninstalled.error );
+            if ( uninstalled.error ) {
+                logger.error( 'Error during uninstall', uninstalled.error );
+                store.dispatch(
+                    pushNotification( {
+                        title: I18n.t( 'Error during uninstall' ),
+                        message: uninstalled.error,
+                        application,
+                        type: 'UNINSTALL_FAIL',
+                        notificationType: NOTIFICATION_TYPES.STANDARD
+                    } )
+                );
+            } else store.dispatch( uninstallAppSuccess( application ) );
+
+            return;
         }
-
-        // ? ALSO: ~/AppData/Local/safe-launchpad-updater
-
-        return;
     }
 
     try {

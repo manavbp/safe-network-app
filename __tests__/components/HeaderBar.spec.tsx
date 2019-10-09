@@ -19,7 +19,8 @@ describe( 'HeaderBar', () => {
 
     beforeEach( () => {
         props = {
-            currentPath: '/'
+            title: 'Manage Apps',
+            shouldOnBoard: false
         };
 
         store = mockStore( props );
@@ -40,7 +41,8 @@ describe( 'HeaderBar', () => {
 
         it( 'has one go back button anywhere else', () => {
             props = {
-                currentPath: '/boom'
+                title: 'Manage Apps',
+                shouldOnBoard: false
             };
             wrapper = shallow(
                 <MemoryRouter initialEntries={['/boom']}>
@@ -52,7 +54,6 @@ describe( 'HeaderBar', () => {
             html = wrapper.html();
 
             expect( html.includes( 'Go Backwards' ) ).toBeTruthy();
-            expect( html.includes( 'boom' ) ).toBeTruthy();
         } );
     } );
 } );

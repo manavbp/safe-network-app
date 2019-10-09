@@ -184,7 +184,7 @@ export const createSafeLaunchPadTrayWindow = (
             showAsTrayWindow();
         } else {
             // must be first for dock icon changes
-            tray.destroy();
+            if ( tray ) tray.destroy();
             store.dispatch( setAsTrayWindow( false ) );
             showAsRegularWindow();
         }

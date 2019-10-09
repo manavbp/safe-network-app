@@ -27,7 +27,11 @@ const buildConfig = {
         'app/app.html',
         'app/bg.html',
         'app/main.prod.js',
-        'app/main.prod.js.map'
+        'app/main.prod.js.map',
+        {
+            from: 'app/assets',
+            to: 'assets'
+        }
     ],
     artifactName: `safe-network-app-v\${version}-\${os}-x64.\${ext}`,
     dmg: {

@@ -22,6 +22,40 @@ import { Application } from './definitions/application.d';
 import { logger } from '$Logger';
 import pkg from '$Package';
 
+const subMenuHelp = {
+    label: 'Help',
+    submenu: [
+        {
+            label: 'Learn More',
+            click() {
+                shell.openExternal( 'http://safenetwork.tech' );
+            }
+        },
+        {
+            label: 'Documentation',
+            click() {
+                shell.openExternal(
+                    'https://github.com/maidsafe/safe-network-app'
+                );
+            }
+        },
+        {
+            label: 'Community Discussions',
+            click() {
+                shell.openExternal( 'https://safenetforum.org/' );
+            }
+        },
+        {
+            label: 'Search Issues',
+            click() {
+                shell.openExternal(
+                    'https://github.com/maidsafe/safe-network-app/issues'
+                );
+            }
+        }
+    ]
+};
+
 export class MenuBuilder {
     private mainWindow: Application.Window;
 
@@ -187,41 +221,7 @@ export class MenuBuilder {
                 { label: 'Bring All to Front', selector: 'arrangeInFront:' }
             ]
         };
-        const subMenuHelp = {
-            label: 'Help',
-            submenu: [
-                {
-                    label: 'Learn More',
-                    click() {
-                        shell.openExternal( 'http://electron.atom.io' );
-                    }
-                },
-                {
-                    label: 'Documentation',
-                    click() {
-                        shell.openExternal(
-                            'https://github.com/atom/electron/tree/master/docs#readme'
-                        );
-                    }
-                },
-                {
-                    label: 'Community Discussions',
-                    click() {
-                        shell.openExternal(
-                            'https://discuss.atom.io/c/electron'
-                        );
-                    }
-                },
-                {
-                    label: 'Search Issues',
-                    click() {
-                        shell.openExternal(
-                            'https://github.com/atom/electron/issues'
-                        );
-                    }
-                }
-            ]
-        };
+
         const subMenuTests = {
             label: 'Tests',
             submenu: [
@@ -350,15 +350,12 @@ export class MenuBuilder {
             ]
         };
 
-        const subMenuView =
-            process.env.NODE_ENV === 'development'
-                ? subMenuViewDevelopment
-                : subMenuViewProduction;
-
         return [
             subMenuAbout,
-            subMenuEdit,
-            subMenuView,
+            // subMenuEdit,
+            ...( process.env.NODE_ENV === 'development'
+                ? [subMenuViewDevelopment]
+                : [subMenuViewProduction] ),
             subMenuWindow,
             subMenuHelp,
             ...( isRunningTestCafeProcess ? [subMenuTests] : [] )
@@ -425,42 +422,6 @@ export class MenuBuilder {
                             }
                         }
                     ]
-        };
-
-        const subMenuHelp = {
-            label: 'Help',
-            submenu: [
-                {
-                    label: 'Learn More',
-                    click() {
-                        shell.openExternal( 'http://electron.atom.io' );
-                    }
-                },
-                {
-                    label: 'Documentation',
-                    click() {
-                        shell.openExternal(
-                            'https://github.com/atom/electron/tree/master/docs#readme'
-                        );
-                    }
-                },
-                {
-                    label: 'Community Discussions',
-                    click() {
-                        shell.openExternal(
-                            'https://discuss.atom.io/c/electron'
-                        );
-                    }
-                },
-                {
-                    label: 'Search Issues',
-                    click() {
-                        shell.openExternal(
-                            'https://github.com/atom/electron/issues'
-                        );
-                    }
-                }
-            ]
         };
 
         const subMenuTests = {

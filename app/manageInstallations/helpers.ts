@@ -36,8 +36,10 @@ export const getApplicationExecutable = ( application: App ): string => {
             break;
         }
         case WINDOWS: {
-            applicationExecutable = `${application.packageName ||
-                application.name}.exe`;
+            applicationExecutable = path.join(
+                `${application.name || application.packageName}`,
+                `${application.name || application.packageName}.exe`
+            );
             break;
         }
         case LINUX: {
@@ -59,11 +61,7 @@ export const getApplicationExecutable = ( application: App ): string => {
 
 export const getInstalledLocation = ( application: App ): string => {
     const applicationExecutable = getApplicationExecutable( application );
-
-    const installedPath = path.resolve(
-        INSTALL_TARGET_DIR,
-        applicationExecutable
-    );
+    const installedPath = path.join( INSTALL_TARGET_DIR, applicationExecutable );
 
     return installedPath;
 };

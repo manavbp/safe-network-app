@@ -5,6 +5,7 @@ import { createAliasedAction } from 'electron-redux';
 import { logger } from '$Logger';
 import { dismissNotification } from '$Actions/launchpad_actions';
 import {
+    fetchTheApplicationList,
     cancelDownload,
     resumeAllDownloads,
     // TODO: Enable skip app update.
@@ -91,6 +92,9 @@ const acceptNotify = ( props ) => {
                 // @ts-ignore
                 dismissNotification( { id: props.id } )
             );
+            break;
+        case 'NO_APP_LIST':
+            store.dispatch( fetchTheApplicationList() );
             store.dispatch( dismissNotification( { id: props.id } ) );
             break;
         default:
@@ -104,12 +108,6 @@ const denyNotify = ( props ) => {
     logger.info( 'Denying notification' );
     const store = getCurrentStore();
     switch ( props.type ) {
-        case 'NO_INTERNET_INSTALLING_APP':
-            store.dispatch( dismissNotification( { id: props.id } ) );
-            break;
-        case 'NO_INTERNET':
-            store.dispatch( dismissNotification( { id: props.id } ) );
-            break;
         case 'SERVER_TIMED_OUT':
             store.dispatch( cancelDownload( application ) );
             store.dispatch( dismissNotification( { id: props.id } ) );

@@ -47,7 +47,7 @@ const silentInstallMacOS = (
 
         const done = spawnSync( 'cp', ['-r', targetAppPath, INSTALL_TARGET_DIR] );
 
-        if ( done.error ) {
+        if ( done.error || done.stderr.toString() ) {
             logger.error( 'Error during copy', done.error );
             store.dispatch(
                 downloadAndInstallAppFailure( {
@@ -65,6 +65,7 @@ const silentInstallMacOS = (
             }
 
             // TODO Remove Dlded version?
+            spawnSync( 'rm', ['-rf', downloadLocation] );
             logger.info( 'Install complete.' );
             store.dispatch( downloadAndInstallAppSuccess( application ) );
         } );
@@ -116,12 +117,14 @@ const silentInstallLinux = (
 const silentInstallWindows = (
     store: Store,
     application: App,
-    executablePath: string,
     downloadLocation?: string
 ) => {
     // Windows has a separate installer to the application name
     const installAppPath = path.resolve( downloadLocation );
-    const installPath = path.resolve( INSTALL_TARGET_DIR, executablePath );
+    const installPath = path.resolve(
+        INSTALL_TARGET_DIR,
+        `${application.name || application.packageName}`
+    );
 
     if ( isDryRun ) {
         logger.info( `DRY RUN: Would have then installed to, ${installPath}` );
@@ -135,8 +138,7 @@ const silentInstallWindows = (
         'Triggering NSIS install of ',
         installAppPath,
         'to',
-        installPath,
-        executablePath
+        installPath
     );
 
     const installer = spawnSync( installAppPath, ['/S', `/D=${installPath}`] );
@@ -178,12 +180,7 @@ export const silentInstall = async (
             break;
         }
         case WINDOWS: {
-            silentInstallWindows(
-                store,
-                application,
-                applicationExecutable,
-                downloadLocation
-            );
+            silentInstallWindows( store, application, downloadLocation );
             break;
         }
         case LINUX: {
