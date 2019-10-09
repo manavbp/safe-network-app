@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.3-rc.1](https://github.com/maidsafe/safe-network-app/compare/v0.0.3-rc.0...v0.0.3-rc.1) (2019-10-09)
+
+
+### Bug Fixes
+
+* **install:** ensure target dir exists ([89d4fa4](https://github.com/maidsafe/safe-network-app/commit/89d4fa427f81e69620c28c8d4e9a15a376bb146a)), closes [#165](https://github.com/maidsafe/safe-network-app/issues/165)
+
 ### [0.0.3-rc.0](https://github.com/maidsafe/safe-network-app/compare/v0.1.0-RC1...v0.0.3-rc.0) (2019-10-09)
 
 
