@@ -108,7 +108,6 @@ before_deploy:
       export IS_RC=yes
     fi
   - if [[ "$TRAVIS_OS_NAME" != "windows" && "$IS_RC" != "yes" ]]; then NODE_ENV=prod yarn deploy; fi
-  - ls release
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export RELEASE_PROD_EXE="$(ls release/*-mac-x64.dmg)";
     fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export RELEASE_PROD_EXE="$(ls release/*-linux-x64.AppImage)";
@@ -116,7 +115,8 @@ before_deploy:
   - if [[ "$TRAVIS_OS_NAME" == "win" ]]; then export RELEASE_PROD_EXE="$(ls release/*-win-x64.exe)";
     fi
   - echo "deploying ${RELEASE_PROD_EXE} to GitHub releases as tagged with ${TRAVIS_TAG}"
-  - ls release
+  - if [[ "$IS_RC" != "yes" ]]; then ls release; fi
+
 
 deploy:
   provider: releases
