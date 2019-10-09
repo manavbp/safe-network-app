@@ -1,4 +1,5 @@
 import { app } from 'electron';
+import fs from 'fs-extra';
 import { Store } from 'redux';
 import { spawnSync } from 'child_process';
 import dmg from 'dmg';
@@ -45,6 +46,7 @@ const silentInstallMacOS = (
 
         logger.info( 'Copying ', targetAppPath, 'to', INSTALL_TARGET_DIR );
 
+        await fs.ensureDir( INSTALL_TARGET_DIR );
         const done = spawnSync( 'cp', ['-r', targetAppPath, INSTALL_TARGET_DIR] );
 
         if ( done.error || done.stderr.toString() ) {
@@ -72,7 +74,7 @@ const silentInstallMacOS = (
     } );
 };
 
-const silentInstallLinux = (
+const silentInstallLinux = async (
     store: Store,
     application: App,
     executablePath: string,
@@ -89,7 +91,7 @@ const silentInstallLinux = (
     }
 
     logger.info( 'Copying ', sourceAppPath, 'to', installPath );
-
+    await fs.ensureDir( INSTALL_TARGET_DIR );
     const copied = spawnSync( 'cp', [sourceAppPath, installPath] );
 
     if ( copied.error ) {
@@ -114,7 +116,7 @@ const silentInstallLinux = (
 };
 
 // https://nsis.sourceforge.io/Docs/Chapter4.html#silent
-const silentInstallWindows = (
+const silentInstallWindows = async (
     store: Store,
     application: App,
     downloadLocation?: string
@@ -141,6 +143,7 @@ const silentInstallWindows = (
         installPath
     );
 
+    await fs.ensureDir( INSTALL_TARGET_DIR );
     const installer = spawnSync( installAppPath, ['/S', `/D=${installPath}`] );
 
     if ( installer.error ) {
