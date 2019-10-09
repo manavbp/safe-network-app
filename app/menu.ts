@@ -226,14 +226,14 @@ export class MenuBuilder {
             label: 'Safe Network App',
             submenu: [
                 {
-                    label: 'About ElectronReact',
+                    label: 'About Safe Network App',
                     selector: 'orderFrontStandardAboutPanel:'
                 },
                 { type: 'separator' },
                 { label: 'Services', submenu: [] },
                 { type: 'separator' },
                 {
-                    label: 'Hide ElectronReact',
+                    label: 'Hide Safe Network App',
                     accelerator: 'Command+H',
                     selector: 'hide:'
                 },
