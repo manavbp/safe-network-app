@@ -288,33 +288,10 @@ export class MenuBuilder {
                     }
                 },
                 {
-                    label: 'Toggle Full Screen',
-                    accelerator: 'Ctrl+Command+F',
-                    click: () => {
-                        this.mainWindow.setFullScreen(
-                            !this.mainWindow.isFullScreen()
-                        );
-                    }
-                },
-                {
                     label: 'Toggle Developer Tools',
                     accelerator: 'Alt+Command+I',
                     click: () => {
                         this.mainWindow.toggleDevTools();
-                    }
-                }
-            ]
-        };
-        const subMenuViewProduction = {
-            label: 'View',
-            submenu: [
-                {
-                    label: 'Toggle Full Screen',
-                    accelerator: 'Ctrl+Command+F',
-                    click: () => {
-                        this.mainWindow.setFullScreen(
-                            !this.mainWindow.isFullScreen()
-                        );
                     }
                 }
             ]
@@ -344,7 +321,7 @@ export class MenuBuilder {
             // subMenuEdit,
             ...( process.env.NODE_ENV === 'development'
                 ? [subMenuViewDevelopment]
-                : [subMenuViewProduction] ),
+                : [] ),
             subMenuWindow,
             subMenuHelp,
             ...( isRunningTestCafeProcess || isRunningDebug || isHot
