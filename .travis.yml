@@ -57,14 +57,6 @@ cache:
     # - $HOME/.cache/electron-builder
 
 before_install:
-  - if [[ ${TRAVIS_TAG} != "" && "$TRAVIS_OS_NAME" == "linux" ]]; then
-      pip install --user awscli;
-      export PATH=$PATH:$HOME/.local/bin;
-    fi
-  - if [[ ${TRAVIS_TAG} != "" && "$TRAVIS_OS_NAME" == "osx" ]]; then
-      pip install --user awscli;
-      export PATH=$PATH:/Users/travis/Library/Python/2.7/bin;
-    fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then export CXX="g++-8"; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update; fi
   - yarn config delete proxy
@@ -97,10 +89,6 @@ script:
   - yarn test
   - yarn package
   - travis_retry yarn test-e2e-packed
-  - rm -rf release
-  - if [[ "$TRAVIS_OS_NAME" == "windows" && ${TRAVIS_TAG} != "" ]]; then aws s3 rm --recursive s3://safe-network-app/safe-network-app-win/; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" && ${TRAVIS_TAG} != "" ]]; then aws s3 rm --recursive s3://safe-network-app/safe-network-app-linux/; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" && ${TRAVIS_TAG} != "" ]]; then aws s3 rm --recursive s3://safe-network-app/safe-network-app-osx/; fi
 
 before_deploy:
   - |
