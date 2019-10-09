@@ -9,7 +9,7 @@ import { notificationTypes } from '$Constants/notifications';
 import { getLocalAppVersion, getInstalledLocation } from './helpers';
 import { appHasUpdate } from '$Actions/app_manager_actions';
 import { initialAppManager } from '$Reducers/initialAppManager';
-import { isDryRun } from '$Constants';
+import { isDryRun, isRunningOnLinux, isRunningOnWindows } from '$Constants';
 import { logger } from '$Logger';
 
 export class SafeAppUpdater {
@@ -90,12 +90,12 @@ export class SafeAppUpdater {
 
         const appDirectoryPath = getInstalledLocation( application );
 
-        if ( process.platform === 'darwin' ) {
-            const appPath = `"${appDirectoryPath}/Contents/MacOs/${application.name}"`;
-            finalCmd = `${appPath} --triggerUpdate`;
-        }
+        // Default to Mac OS
+        finalCmd = `${appDirectoryPath}/Contents/MacOs/${application.name} --triggerUpdate`;
 
-        // TODO for other platforms
+        if ( isRunningOnWindows || isRunningOnLinux ) {
+            finalCmd = `${appDirectoryPath} --triggerUpdate`;
+        }
 
         cp.exec( finalCmd, ( error, stdout, stderr ) => {
             if ( error ) {

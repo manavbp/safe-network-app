@@ -11,10 +11,10 @@ import { isDryRun } from '$Constants';
 declare let window: Window;
 
 const PID = process.pid;
-let CHECK_FOR_APPS_UPDATE_FLAG = true;
+let CHECKED_SAFE_APPS_UPDATE_ON_LAUNCH = false;
 let updateAppsSubscriber;
 
-logger.info( "Welcome to the BG process it's ID is: ", PID );
+logger.info( `Welcome to the BG process it's ID is: `, PID );
 
 function getStatePreferences( state ) {
     const userPreferences = { ...state.launchpad.userPreferences };
@@ -31,13 +31,13 @@ const managePreferencesLocally = async ( store ) => {
     }
 };
 
-const checkForSafeAppsUpdate = ( store ) => {
+const checkForSafeAppsUpdateOnLaunch = ( store ) => {
     if ( isDryRun ) {
         updateAppsSubscriber();
         return;
     }
 
-    if ( !CHECK_FOR_APPS_UPDATE_FLAG ) return;
+    if ( CHECKED_SAFE_APPS_UPDATE_ON_LAUNCH ) return;
 
     logger.info( 'Checking for Safe applications update' );
     const currentState = store.getState();
@@ -46,7 +46,7 @@ const checkForSafeAppsUpdate = ( store ) => {
     if ( Object.keys( applications ).length === 0 ) return;
 
     ipcRenderer.send( 'checkApplicationsForUpdate', applications );
-    CHECK_FOR_APPS_UPDATE_FLAG = false;
+    CHECKED_SAFE_APPS_UPDATE_ON_LAUNCH = true;
 
     // UnSubscribe the store subscriber
     updateAppsSubscriber();
@@ -61,7 +61,7 @@ const initBgProcess = () => {
     } );
 
     updateAppsSubscriber = store.subscribe( () => {
-        checkForSafeAppsUpdate( store );
+        checkForSafeAppsUpdateOnLaunch( store );
     } );
 };
 
