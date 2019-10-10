@@ -46,3 +46,13 @@ export const getAppStatusText = ( application ) => {
     }
     return progressText;
 };
+
+export const getCommandLineParam = ( argv, key ) => {
+    let value;
+    argv.forEach( ( argument ) => {
+        if ( argument.indexOf( key ) === 0 ) {
+            value = argument.substr( key.length + 1 ).trim();
+        }
+    } );
+    return value;
+};

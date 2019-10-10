@@ -599,7 +599,7 @@ describe( 'app manager reducer', () => {
             const { id } = app;
             const store = {
                 applicationList: {
-                    [id]: { ...app }
+                    [id]: { ...app, hasUpdate: true }
                 }
             };
             expect(
@@ -611,42 +611,50 @@ describe( 'app manager reducer', () => {
         } );
     } );
 
-    describe( 'UPDATE_APP', () => {
-        it( 'Should update app', () => {
-            const progress = 20;
+    describe( 'APP_HAS_UPDATE', () => {
+        it( 'Should set update flag for specific application', () => {
             const app = getApp();
-            const otherApp = getApp();
-            app.progress = progress;
             const { id } = app;
             const store = {
                 applicationList: {
-                    [id]: { ...app },
-                    [otherApp.id]: { ...otherApp }
+                    [id]: { ...app }
                 }
             };
-            const nextStore = appManager( store, {
-                type: `${ALIAS_TYPES.ALIAS_UPDATE_APP}_PENDING`,
-                payload: {
-                    id,
-                    progress
-                }
-            } );
 
-            expect( nextStore.applicationList[id].name ).toEqual(
-                store.applicationList[id].name
-            );
+            const expectedStoreWithFlagSet = {
+                applicationList: {
+                    [id]: { ...app, hasUpdate: true }
+                }
+            };
+
+            const expectedStoreWithFlagUnset = {
+                applicationList: {
+                    [id]: { ...app, hasUpdate: false }
+                }
+            };
+
             expect(
-                nextStore.applicationList[id].isDownloadingAndUpdating
-            ).toBeTruthy();
-            expect( nextStore.applicationList[id].progress ).toEqual( progress );
-            expect( nextStore.applicationList[otherApp.id] ).toEqual(
-                store.applicationList[otherApp.id]
-            );
+                appManager( store, {
+                    type: TYPES.APP_HAS_UPDATE,
+                    payload: {
+                        id,
+                        hasUpdate: true
+                    }
+                } )
+            ).toEqual( expectedStoreWithFlagSet );
+            expect(
+                appManager( store, {
+                    type: TYPES.APP_HAS_UPDATE,
+                    payload: {
+                        id,
+                        hasUpdate: false
+                    }
+                } )
+            ).toEqual( expectedStoreWithFlagUnset );
         } );
-        it( "Should return previous store if couldn't find app on updating", () => {
-            const progress = 20;
+
+        it( 'Should do nothing if app not specified', () => {
             const app = getApp();
-            app.progress = progress;
             const { id } = app;
             const store = {
                 applicationList: {
@@ -655,95 +663,73 @@ describe( 'app manager reducer', () => {
             };
             expect(
                 appManager( store, {
-                    type: `${ALIAS_TYPES.ALIAS_UPDATE_APP}_PENDING`,
-                    payload: {}
+                    type: TYPES.APP_HAS_UPDATE,
+                    payload: {
+                        hasUpdate: true
+                    }
                 } )
             ).toEqual( store );
         } );
-        it( 'Should finish app updating', () => {
-            const progress = 20;
+    } );
+
+    describe( 'RESET_APP_UPDATE_STATE', () => {
+        it( 'Should reset app state on updated', () => {
             const app = getApp();
-            const otherApp = getApp();
-            app.isDownloadingAndUpdating = true;
-            app.progress = progress;
             const { id } = app;
             const store = {
                 applicationList: {
-                    [id]: { ...app },
-                    [otherApp.id]: { ...otherApp }
+                    [id]: { ...app, hasUpdate: true }
                 }
             };
-            const nextStore = appManager( store, {
-                type: `${ALIAS_TYPES.ALIAS_UPDATE_APP}_SUCCESS`,
-                payload: {
-                    id,
-                    progress
-                }
-            } );
 
-            expect( nextStore.applicationList[id].name ).toEqual(
-                store.applicationList[id].name
-            );
+            const expectStore = {
+                applicationList: {
+                    [id]: { ...app, hasUpdate: false }
+                }
+            };
+
             expect(
-                nextStore.applicationList[id].isDownloadingAndUpdating
-            ).toBeFalsy();
-            expect( nextStore.applicationList[id].progress ).toEqual( 100 );
-            expect( nextStore.applicationList[otherApp.id] ).toEqual(
-                store.applicationList[otherApp.id]
-            );
+                appManager( store, {
+                    type: TYPES.RESET_APP_UPDATE_STATE,
+                    payload: {
+                        id
+                    }
+                } )
+            ).toEqual( expectStore );
         } );
 
-        it( "Should return previous store if couldn't find app on finishing update", () => {
-            const progress = 80;
+        it( 'Should has no change if app has no update', () => {
             const app = getApp();
-            app.progress = progress;
-            app.isDownloadingAndUpdating = true;
             const { id } = app;
             const store = {
                 applicationList: {
                     [id]: { ...app }
                 }
             };
+
             expect(
                 appManager( store, {
-                    type: `${ALIAS_TYPES.ALIAS_UPDATE_APP}_SUCCESS`,
-                    payload: {}
+                    type: TYPES.RESET_APP_UPDATE_STATE,
+                    payload: { id }
                 } )
             ).toEqual( store );
         } );
 
-        it( 'Should stop updating on failure', () => {
-            const progress = 80;
+        it( 'Should has no change if app is not specified', () => {
             const app = getApp();
-            const otherApp = getApp();
-            app.isDownloadingAndUpdating = true;
-            app.progress = progress;
             const { id } = app;
             const store = {
                 applicationList: {
-                    [id]: { ...app },
-                    [otherApp.id]: { ...otherApp }
+                    [id]: { ...app }
                 }
             };
-            const nextStore = appManager( store, {
-                type: `${ALIAS_TYPES.ALIAS_UPDATE_APP}_FAILURE`,
-                payload: {
-                    id,
-                    progress,
-                    error: new Error( 'Failed to update' )
-                }
-            } );
-            expect( nextStore.applicationList[id].name ).toEqual(
-                store.applicationList[id].name
-            );
+
             expect(
-                nextStore.applicationList[id].isDownloadingAndUpdating
-            ).toBeFalsy();
-            expect( nextStore.applicationList[id].progress ).toEqual( 0 );
-            expect( nextStore.applicationList[id].error ).not.toBeNull();
-            expect( nextStore.applicationList[otherApp.id] ).toEqual(
-                store.applicationList[otherApp.id]
-            );
+                appManager( store, {
+                    type: TYPES.RESET_APP_UPDATE_STATE,
+                    payload: {}
+                } )
+            ).toEqual( store );
         } );
     } );
 
@@ -777,76 +763,6 @@ describe( 'app manager reducer', () => {
             );
         } );
     } );
-
-    // Not yet implemented. Reopen later
-    // describe( 'SKIP_APP_UPDATE', () => {
-    //     it( 'Should skip app from updating', () => {
-    //         const newVersion = '0.12.0';
-    //         const app = getApp();
-    //         const otherApp = getApp();
-    //         const { id } = app;
-    //         const store = {
-    //             applicationList: {
-    //                 [id]: { ...app },
-    //                 [otherApp.id]: { ...otherApp }
-    //             }
-    //         };
-    //         const nextStore = appManager( store, {
-    //             type: `${ALIAS_TYPES.ALIAS_SKIP_APP_UPDATE}_PENDING`,
-    //             payload: {
-    //                 id,
-    //                 version: newVersion
-    //             }
-    //         } );
-    //
-    //         expect( nextStore.applicationList[id].name ).toEqual(
-    //             store.applicationList[id].name
-    //         );
-    //         expect( nextStore.applicationList[id].lastSkippedVersion ).toEqual(
-    //             newVersion
-    //         );
-    //         expect( nextStore.applicationList[otherApp.id] ).toEqual(
-    //             store.applicationList[otherApp.id]
-    //         );
-    //     } );
-    //
-    //     it( "Should return previous store if couldn't find app on skipping update", () => {
-    //         const newVersion = '0.12.0';
-    //         const app = getApp();
-    //         const { id } = app;
-    //         const store = {
-    //             applicationList: {
-    //                 [id]: { ...app }
-    //             }
-    //         };
-    //         expect(
-    //             appManager( store, {
-    //                 type: `${ALIAS_TYPES.ALIAS_SKIP_APP_UPDATE}_PENDING`,
-    //                 payload: {
-    //                     version: newVersion
-    //                 }
-    //             } )
-    //         ).toEqual( store );
-    //     } );
-    //     it( 'Should throw if version to skip not found', () => {
-    //         const newVersion = '0.12.0';
-    //         const app = getApp();
-    //         const { id } = app;
-    //         const store = {
-    //             applicationList: {
-    //                 [id]: { ...app }
-    //             }
-    //         };
-    //         expect( () =>
-    //             appManager( store, {
-    //                 type: `${ALIAS_TYPES.ALIAS_SKIP_APP_UPDATE}_PENDING`,
-    //                 payload: {
-    //                     id
-    //                 }
-    //             } )
-    //         ).toThrow( ERRORS.VERSION_NOT_FOUND );
-    //     } );
-    // } );
 
     describe( 'RESET_APP_INSTALLATION_STATE', () => {
         it( 'Should reset app state', () => {

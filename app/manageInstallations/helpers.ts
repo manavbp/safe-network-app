@@ -7,6 +7,8 @@ import {
     LINUX,
     WINDOWS,
     platform,
+    isRunningOnWindows,
+    isRunningOnLinux,
     isRunningTestCafeProcess
 } from '$Constants';
 import { INSTALL_TARGET_DIR } from '$Constants/installConstants';
@@ -95,4 +97,35 @@ export const checkForKnownAppsLocally = async ( store: Store ): Promise<void> =>
         }
         // fs grab version somehow...
     } );
+};
+
+export const getLocalAppVersion = ( application ): string => {
+    try {
+        // default to MacOs
+        let versionFilePath = path.resolve(
+            getInstalledLocation( application ),
+            'Contents/Resources/version'
+        );
+
+        if ( isRunningOnWindows ) {
+            versionFilePath = path.resolve(
+                INSTALL_TARGET_DIR,
+                application.name,
+                'version'
+            );
+        }
+
+        if ( isRunningOnLinux ) {
+            versionFilePath = path.resolve(
+                INSTALL_TARGET_DIR,
+                application.packageName,
+                'version'
+            );
+        }
+
+        const localVersion = fs.readFileSync( versionFilePath ).toString();
+        return localVersion;
+    } catch ( error ) {
+        return null;
+    }
 };

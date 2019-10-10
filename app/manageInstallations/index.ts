@@ -307,7 +307,6 @@ export function manageDownloads( store: Store, targetWindow: BrowserWindow ) {
                 env: newEnvironment,
                 detached: true
             } );
-            
         }
     } );
 }

@@ -1,6 +1,7 @@
 li .list {
     height: 56px;
     padding-right: 140px;
+    padding-left: 16px;
 }
 li .actions {
     right: 0;

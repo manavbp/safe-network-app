@@ -6,6 +6,7 @@
     },
     "buttons": {
         "install": "Install",
+        "update": "Update",
         "cancelInstall": "Cancel Install",
         "pause": "Pause Download",
         "resume": "Resume Download",
@@ -42,6 +43,7 @@
             "no_internet": "Oh no! You're Internet connection is down!",
             "no_internet_app_is_installing": "No Internet connection. Your install has been paused.",
             "global_failure": "Global Failure",
+            "global_info": "Default Information",
             "update_available": "Update Available! %{name} %{version} is ready to install. What’s New…",
             "update_check_error": "There was an error checking for Safe Network App updates.",
             "clearnet_warning": "Opening webpage in Clearnet",

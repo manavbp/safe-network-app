@@ -101,9 +101,9 @@ export class Notification extends React.PureComponent<Props> {
                         )}
                         <Grid item>
                             <Button
+                                className={styles.ActionButton}
                                 aria-label="DenyNotification"
                                 color="primary"
-                                className={styles.ActionButton}
                                 onClick={handleOnDeny}
                             >
                                 {latestNotification.denyText}

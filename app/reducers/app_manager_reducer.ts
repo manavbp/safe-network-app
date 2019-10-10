@@ -163,44 +163,6 @@ export function appManager( state = initialState, action ): AppManagerState {
             return updateAppInApplicationList( state, targetApp );
         }
 
-        case `${ALIAS_TYPES.ALIAS_CHECK_APP_HAS_UPDATE}`: {
-            if ( !targetApp ) return state;
-            targetApp.hasUpdate = payload.hasUpdate;
-            return updateAppInApplicationList( state, targetApp );
-        }
-
-        case `${ALIAS_TYPES.ALIAS_UPDATE_APP}_PENDING`: {
-            if ( !targetApp ) return state;
-            targetApp.isDownloadingAndUpdating = true;
-            targetApp.progress = payload.progress || 0;
-            return updateAppInApplicationList( state, targetApp );
-        }
-
-        case `${ALIAS_TYPES.ALIAS_UPDATE_APP}_SUCCESS`: {
-            if ( !targetApp ) return state;
-            targetApp.isDownloadingAndUpdating = false;
-            targetApp.hasUpdate = false;
-            targetApp.progress = 100;
-            return updateAppInApplicationList( state, targetApp );
-        }
-
-        case `${ALIAS_TYPES.ALIAS_UPDATE_APP}_FAILURE`: {
-            if ( !targetApp ) return state;
-            targetApp.isDownloadingAndUpdating = false;
-            targetApp.progress = 0;
-            targetApp.error = payload.error;
-            return updateAppInApplicationList( state, targetApp );
-        }
-
-        case `${ALIAS_TYPES.ALIAS_SKIP_APP_UPDATE}_PENDING`: {
-            if ( !targetApp ) return state;
-            if ( !payload.latestVersion )
-                throw new Error( ERRORS.VERSION_NOT_FOUND );
-            targetApp.hasUpdate = false;
-            targetApp.lastSkippedVersion = payload.latestVersion;
-            return updateAppInApplicationList( state, targetApp );
-        }
-
         case APP_TYPES.SET_CURRENT_VERSION: {
             if ( !targetApp ) return state;
             if ( !payload.currentVersion )
@@ -208,6 +170,21 @@ export function appManager( state = initialState, action ): AppManagerState {
 
             targetApp.isInstalled = true;
             targetApp.currentVersion = payload.currentVersion;
+
+            return updateAppInApplicationList( state, targetApp );
+        }
+
+        case TYPES.APP_HAS_UPDATE: {
+            if ( !targetApp ) return state;
+            targetApp.hasUpdate = payload.hasUpdate;
+
+            return updateAppInApplicationList( state, targetApp );
+        }
+
+        case TYPES.RESET_APP_UPDATE_STATE: {
+            if ( !targetApp || !targetApp.hasUpdate ) return state;
+
+            targetApp.hasUpdate = false;
 
             return updateAppInApplicationList( state, targetApp );
         }
