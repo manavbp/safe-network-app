@@ -91,7 +91,7 @@ export class SafeAppUpdater {
         const appDirectoryPath = getInstalledLocation( application );
 
         // Default to Mac OS
-        finalCmd = `${appDirectoryPath}/Contents/MacOs/${application.name} --triggerUpdate`;
+        finalCmd = `open "${appDirectoryPath}" -- --args --triggerUpdate`;
 
         if ( isRunningOnWindows || isRunningOnLinux ) {
             finalCmd = `${appDirectoryPath} --triggerUpdate`;

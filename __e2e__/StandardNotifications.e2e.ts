@@ -7,8 +7,7 @@ import { getPageUrl, getPageTitle } from './helpers';
 const Notifications = {
     updateAvailable: {
         name: 'Update Available',
-        title:
-            'Update Available! SAFE Browser v1.0 is ready to install. What’s New…',
+        title: 'Update Available!',
         acceptButtonExists: true
     },
     noInternet: {
@@ -74,7 +73,7 @@ numberOfNotification.forEach( ( type ) => {
             'NotificationTitle'
         ).innerText;
 
-        await t.expect( notificationTitle ).eql( Notifications[type].title );
+        await t.expect( notificationTitle ).contains( Notifications[type].title );
 
         if ( Notifications[type].acceptButtonExists )
             await t
