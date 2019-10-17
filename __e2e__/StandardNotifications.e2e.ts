@@ -12,7 +12,7 @@ const Notifications = {
     },
     noInternet: {
         name: 'No Internet',
-        title: "Oh no! You're Internet connection is down!",
+        title: 'Oh no! Your internet connection is down!',
         acceptButtonExists: false
     },
     discFull: {

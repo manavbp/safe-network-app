@@ -40,7 +40,7 @@
             "close_app": "Close %{name} to complete installation",
             "restart_system": "Restart your computer to finish installing %{name}",
             "server_timeout": "Download Server has timed out. Installation of %{name} has been paused.",
-            "no_internet": "Oh no! You're Internet connection is down!",
+            "no_internet": "Oh no! Your internet connection is down!",
             "no_internet_app_is_installing": "No Internet connection. Your install has been paused.",
             "global_failure": "Global Failure",
             "global_info": "Default Information",
@@ -48,7 +48,6 @@
             "update_check_error": "There was an error checking for Safe Network App updates.",
             "clearnet_warning": "Opening webpage in Clearnet",
             "uninstall_error_asar": "Error removing %{asarLocation} *.asar files. Please check file permissions.",
-            "unable_to_get_app_list": "Couldn't retrieve Application list.",
             "uninstall_error": "Error uninstalling %{name}"
         },
         "message": {

@@ -1,5 +1,6 @@
 import * as fs from 'fs-extra';
 import { app, Menu, shell } from 'electron';
+import { Store } from 'redux';
 import path from 'path';
 import {
     pushNotification,
@@ -10,6 +11,7 @@ import { resetToInitialState } from '$Actions/app_manager_actions';
 import { notificationTypes } from '$Constants/notifications';
 import {
     isRunningTestCafeProcess,
+    isHot,
     defaultPreferences,
     isRunningDebug
 } from '$Constants/index';
@@ -54,6 +56,120 @@ const subMenuHelp = {
             }
         }
     ]
+};
+
+const setupTestsMenu = ( store: Store ) => {
+    return {
+        label: 'Tests',
+        submenu: [
+            {
+                label: 'Reset application list',
+                click: () => {
+                    store.dispatch( resetToInitialState() );
+                }
+            },
+            {
+                label: 'Add a No Internet Notification',
+                click: () => {
+                    store.dispatch(
+                        pushNotification( notificationTypes.NO_INTERNET() )
+                    );
+                }
+            },
+            {
+                label: 'Add a Disc Full Notification',
+                click: () => {
+                    const application = { id: Math.random().toString( 36 ) };
+                    store.dispatch(
+                        pushNotification(
+                            notificationTypes.DISC_FULL( application )
+                        )
+                    );
+                }
+            },
+            {
+                label: 'Add a Global Failure Notification',
+                click: () => {
+                    const application = { id: Math.random().toString( 36 ) };
+                    store.dispatch(
+                        pushNotification(
+                            notificationTypes.GLOBAL_FAILURE( application )
+                        )
+                    );
+                }
+            },
+            {
+                label: 'Add a Update Available Notification',
+                click: () => {
+                    const application = {
+                        id: Math.random().toString( 36 ),
+                        name: 'SAFE Browser'
+                    };
+
+                    const version = 'v1.0';
+                    store.dispatch(
+                        pushNotification(
+                            notificationTypes.UPDATE_AVAILABLE(
+                                application,
+                                version
+                            )
+                        )
+                    );
+                }
+            },
+            {
+                label: 'Add a Admin Pass Req Notification',
+                click: () => {
+                    const application = {
+                        id: Math.random().toString( 36 ),
+                        name: 'SAFE Browser'
+                    };
+
+                    store.dispatch(
+                        pushNotification(
+                            notificationTypes.ADMIN_PASS_REQ( application )
+                        )
+                    );
+                }
+            },
+            {
+                label: 'Add a Server Timed Out Notification',
+                click: () => {
+                    const application = {
+                        id: Math.random().toString( 36 ),
+                        name: 'SAFE Browser'
+                    };
+
+                    store.dispatch(
+                        pushNotification(
+                            notificationTypes.SERVER_TIMED_OUT( application )
+                        )
+                    );
+                }
+            },
+            {
+                label: 'Reset Preferences',
+                click: () => {
+                    store.dispatch( storePreferences( defaultPreferences ) );
+                    store.dispatch(
+                        setUserPreferences( defaultPreferences.userPreferences )
+                    );
+                }
+            },
+            {
+                label: 'OnBoard App',
+                click: () => {
+                    store.dispatch( setAppPreferences( { shouldOnboard: true } ) );
+                }
+            },
+            {
+                label: 'Skip OnBoard App',
+                click: () => {
+                    store.dispatch( setAppPreferences( { shouldOnboard: false } ) );
+                }
+            }
+        ]
+    };
 };
 
 export class MenuBuilder {
@@ -111,14 +227,14 @@ export class MenuBuilder {
             label: 'Safe Network App',
             submenu: [
                 {
-                    label: 'About ElectronReact',
+                    label: 'About Safe Network App',
                     selector: 'orderFrontStandardAboutPanel:'
                 },
                 { type: 'separator' },
                 { label: 'Services', submenu: [] },
                 { type: 'separator' },
                 {
-                    label: 'Hide ElectronReact',
+                    label: 'Hide Safe Network App',
                     accelerator: 'Command+H',
                     selector: 'hide:'
                 },
@@ -173,33 +289,10 @@ export class MenuBuilder {
                     }
                 },
                 {
-                    label: 'Toggle Full Screen',
-                    accelerator: 'Ctrl+Command+F',
-                    click: () => {
-                        this.mainWindow.setFullScreen(
-                            !this.mainWindow.isFullScreen()
-                        );
-                    }
-                },
-                {
                     label: 'Toggle Developer Tools',
                     accelerator: 'Alt+Command+I',
                     click: () => {
                         this.mainWindow.toggleDevTools();
-                    }
-                }
-            ]
-        };
-        const subMenuViewProduction = {
-            label: 'View',
-            submenu: [
-                {
-                    label: 'Toggle Full Screen',
-                    accelerator: 'Ctrl+Command+F',
-                    click: () => {
-                        this.mainWindow.setFullScreen(
-                            !this.mainWindow.isFullScreen()
-                        );
                     }
                 }
             ]
@@ -222,143 +315,19 @@ export class MenuBuilder {
             ]
         };
 
-        const subMenuTests = {
-            label: 'Tests',
-            submenu: [
-                {
-                    label: 'Reset application list',
-                    click: () => {
-                        this.store.dispatch( resetToInitialState() );
-                    }
-                },
-                {
-                    label: 'Add a No Internet Notification',
-                    click: () => {
-                        this.store.dispatch(
-                            pushNotification( notificationTypes.NO_INTERNET() )
-                        );
-                    }
-                },
-                {
-                    label: 'Add a Disc Full Notification',
-                    click: () => {
-                        const application = { id: Math.random().toString( 36 ) };
-                        this.store.dispatch(
-                            pushNotification(
-                                notificationTypes.DISC_FULL( application )
-                            )
-                        );
-                    }
-                },
-                {
-                    label: 'Add a Global Failure Notification',
-                    click: () => {
-                        const application = { id: Math.random().toString( 36 ) };
-                        this.store.dispatch(
-                            pushNotification(
-                                notificationTypes.GLOBAL_FAILURE( application )
-                            )
-                        );
-                    }
-                },
-                {
-                    label: 'Add a Update Available Notification',
-                    click: () => {
-                        const application = {
-                            id: Math.random().toString( 36 ),
-                            name: 'SAFE Browser'
-                        };
-
-                        const version = 'v1.0';
-                        this.store.dispatch(
-                            pushNotification(
-                                notificationTypes.UPDATE_AVAILABLE(
-                                    application,
-                                    version
-                                )
-                            )
-                        );
-                    }
-                },
-                {
-                    label: 'Add a Admin Pass Req Notification',
-                    click: () => {
-                        const application = {
-                            id: Math.random().toString( 36 ),
-                            name: 'SAFE Browser'
-                        };
-
-                        this.store.dispatch(
-                            pushNotification(
-                                notificationTypes.ADMIN_PASS_REQ( application )
-                            )
-                        );
-                    }
-                },
-                {
-                    label: 'Add a Server Timed Out Notification',
-                    click: () => {
-                        const application = {
-                            id: Math.random().toString( 36 ),
-                            name: 'SAFE Browser'
-                        };
-
-                        this.store.dispatch(
-                            pushNotification(
-                                notificationTypes.SERVER_TIMED_OUT( application )
-                            )
-                        );
-                    }
-                },
-                {
-                    label: 'Reset Preferences',
-                    click: () => {
-                        this.store.dispatch(
-                            storePreferences( defaultPreferences )
-                        );
-                        this.store.dispatch(
-                            setUserPreferences(
-                                defaultPreferences.userPreferences
-                            )
-                        );
-                    }
-                },
-                {
-                    label: 'OnBoard App',
-                    click: () => {
-                        this.store.dispatch(
-                            setAppPreferences( { shouldOnboard: true } )
-                        );
-                    }
-                },
-                {
-                    label: 'Check Safe Applications Update',
-                    click: () => {
-                        const applications = store.getState().appManager
-                            .applicationList;
-                        safeAppUpdater.checkAppsForUpdate( applications );
-                    }
-                },
-                {
-                    label: 'Skip OnBoard App',
-                    click: () => {
-                        this.store.dispatch(
-                            setAppPreferences( { shouldOnboard: false } )
-                        );
-                    }
-                }
-            ]
-        };
+        const subMenuTests = setupTestsMenu( store );
 
         return [
             subMenuAbout,
             // subMenuEdit,
             ...( process.env.NODE_ENV === 'development'
                 ? [subMenuViewDevelopment]
-                : [subMenuViewProduction] ),
+                : [] ),
             subMenuWindow,
             subMenuHelp,
-            ...( isRunningTestCafeProcess ? [subMenuTests] : [] )
+            ...( isRunningTestCafeProcess || isRunningDebug || isHot
+                ? [subMenuTests]
+                : [] )
         ];
     }
 
@@ -424,139 +393,15 @@ export class MenuBuilder {
                     ]
         };
 
-        const subMenuTests = {
-            label: 'Tests',
-            submenu: [
-                {
-                    label: 'Reset application list',
-                    click: () => {
-                        this.store.dispatch( resetToInitialState() );
-                    }
-                },
-                {
-                    label: 'Add a No Internet Notification',
-                    click: () => {
-                        this.store.dispatch(
-                            pushNotification( notificationTypes.NO_INTERNET() )
-                        );
-                    }
-                },
-                {
-                    label: 'Add a Disc Full Notification',
-                    click: () => {
-                        const application = { id: Math.random().toString( 36 ) };
-                        this.store.dispatch(
-                            pushNotification(
-                                notificationTypes.DISC_FULL( application )
-                            )
-                        );
-                    }
-                },
-                {
-                    label: 'Add a Global Failure Notification',
-                    click: () => {
-                        const application = { id: Math.random().toString( 36 ) };
-                        this.store.dispatch(
-                            pushNotification(
-                                notificationTypes.GLOBAL_FAILURE( application )
-                            )
-                        );
-                    }
-                },
-                {
-                    label: 'Add a Update Available Notification',
-                    click: () => {
-                        const application = {
-                            id: Math.random().toString( 36 ),
-                            name: 'SAFE Browser'
-                        };
-
-                        const version = 'v1.0';
-                        this.store.dispatch(
-                            pushNotification(
-                                notificationTypes.UPDATE_AVAILABLE(
-                                    application,
-                                    version
-                                )
-                            )
-                        );
-                    }
-                },
-                {
-                    label: 'Add a Admin Pass Req Notification',
-                    click: () => {
-                        const application = {
-                            id: Math.random().toString( 36 ),
-                            name: 'SAFE Browser'
-                        };
-
-                        this.store.dispatch(
-                            pushNotification(
-                                notificationTypes.ADMIN_PASS_REQ( application )
-                            )
-                        );
-                    }
-                },
-                {
-                    label: 'Add a Server Timed Out Notification',
-                    click: () => {
-                        const application = {
-                            id: Math.random().toString( 36 ),
-                            name: 'SAFE Browser'
-                        };
-
-                        this.store.dispatch(
-                            pushNotification(
-                                notificationTypes.SERVER_TIMED_OUT( application )
-                            )
-                        );
-                    }
-                },
-                {
-                    label: 'Reset Preferences',
-                    click: () => {
-                        this.store.dispatch(
-                            storePreferences( defaultPreferences )
-                        );
-                        this.store.dispatch(
-                            setUserPreferences(
-                                defaultPreferences.userPreferences
-                            )
-                        );
-                    }
-                },
-                {
-                    label: 'OnBoard App',
-                    click: () => {
-                        this.store.dispatch(
-                            setAppPreferences( { shouldOnboard: true } )
-                        );
-                    }
-                },
-                {
-                    label: 'Check Safe Applications Update',
-                    click: () => {
-                        const applications = store.getState().appManager
-                            .applicationList;
-                        safeAppUpdater.checkAppsForUpdate( applications );
-                    }
-                },
-                {
-                    label: 'Skip OnBoard App',
-                    click: () => {
-                        this.store.dispatch(
-                            setAppPreferences( { shouldOnboard: false } )
-                        );
-                    }
-                }
-            ]
-        };
+        const subMenuTests = setupTestsMenu( store );
 
         const templateDefault = [
             subMenuFile,
             subMenuView,
             subMenuHelp,
-            ...( isRunningTestCafeProcess ? [subMenuTests] : [] )
+            ...( isRunningTestCafeProcess || isRunningDebug || isHot
+                ? [subMenuTests]
+                : [] )
         ];
 
         return templateDefault;

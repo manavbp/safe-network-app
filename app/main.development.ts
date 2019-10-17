@@ -20,6 +20,8 @@ import { notificationTypes } from '$Constants/notifications';
 import {
     isRunningTestCafeProcess,
     isRunningUnpacked,
+    isRunningOnLinux,
+    isRunningOnWindows,
     getAppFolderPath,
     platform,
     settingsHandlerName
@@ -95,6 +97,7 @@ if ( !gotTheLock ) {
                     app.hide();
                 else theWindow.hide();
             }
+            if ( isRunningOnWindows || isRunningOnLinux ) app.quit();
         } );
 
         const menuBuilder = new MenuBuilder( theWindow, store );
