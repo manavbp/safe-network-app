@@ -4,7 +4,8 @@ import {
     LINUX,
     WINDOWS,
     platform,
-    isRunningTestCafeProcess
+    isRunningTestCafeProcess,
+    useTestPackages
 } from '$Constants';
 import { App } from '$Definitions/application.d';
 
@@ -21,17 +22,23 @@ export const getS3Folder = ( application: App ): string => {
     switch ( platform ) {
         case MAC_OS: {
             // https://safe-browser.s3.eu-west-2.amazonaws.com/safe-browser-mac/safe-browser-v0.15.1-mac-x64.dmg
-            targetUrl = `${baseUrl}-mac`;
+            targetUrl = useTestPackages
+                ? `${baseUrl}-osx-test`
+                : `${baseUrl}-osx`;
             break;
         }
         case WINDOWS: {
             // https://safe-browser.s3.eu-west-2.amazonaws.com/safe-browser-win/safe-browser-v0.15.1-win-x64.exe
-            targetUrl = `${baseUrl}-win`;
+            targetUrl = useTestPackages
+                ? `${baseUrl}-win-test`
+                : `${baseUrl}-win`;
             break;
         }
         case LINUX: {
             // https://safe-browser.s3.eu-west-2.amazonaws.com/safe-browser-linux/safe-browser-v0.15.1-linux-x64.AppImage
-            targetUrl = `${baseUrl}-linux`;
+            targetUrl = useTestPackages
+                ? `${baseUrl}-linux-test`
+                : `${baseUrl}-linux`;
             break;
         }
         default: {

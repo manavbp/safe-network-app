@@ -16,7 +16,12 @@ if ( platform === LINUX ) {
 }
 if ( platform === WINDOWS ) {
     //  ~/AppData/Local/Programs/safe-launch-pad/safe Launch Pad.exe
-    installTargetDirectory = path.resolve( homeDirectory, 'Local', 'Programs' );
+    installTargetDirectory = path.resolve(
+        homeDirectory,
+        'AppData',
+        'Local',
+        'Programs'
+    );
 }
 
 export const INSTALL_TARGET_DIR = installTargetDirectory;

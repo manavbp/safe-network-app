@@ -181,10 +181,17 @@ export function appManager( state = initialState, action ): AppManagerState {
             return updateAppInApplicationList( state, targetApp );
         }
 
+        case TYPES.APP_IS_UPDATING: {
+            if ( !targetApp ) return state;
+            targetApp.isUpdating = true;
+            return updateAppInApplicationList( state, targetApp );
+        }
+
         case TYPES.RESET_APP_UPDATE_STATE: {
             if ( !targetApp || !targetApp.hasUpdate ) return state;
 
             targetApp.hasUpdate = false;
+            targetApp.isUpdating = false;
 
             return updateAppInApplicationList( state, targetApp );
         }

@@ -112,7 +112,12 @@ test( 'clicking update will update safe application', async ( t ) => {
     await t
         .expect( actionButton.innerText )
         .eql( 'UPDATE' )
-        .click( actionButton )
-        .expect( actionButton.innerText )
-        .eql( 'OPEN' );
+        .click( actionButton );
+
+    await t.expect( actionButton.innerText ).eql( 'UPDATING...' );
+
+    // @ts-ignore
+    await clickOnMainMenuItem( ['Tests', 'App Update Complete'] );
+
+    await t.expect( actionButton.innerText ).eql( 'OPEN' );
 } );

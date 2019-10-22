@@ -14,7 +14,8 @@
         "retryUpdate": "Retry Update",
         "cancelUpdate": "Cancel Update",
         "uninstalling": "Uninstalling",
-        "open": "Open"
+        "open": "Open",
+        "isUpdating": "Updating..."
     },
     "onboarding": {
         "title": {

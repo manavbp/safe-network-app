@@ -114,7 +114,8 @@ export class AppStateButton extends React.Component<Props> {
             hasUpdate,
             installFailed,
             progress,
-            error
+            error,
+            isUpdating
         } = application;
         let buttonText = isInstalled
             ? I18n.t( `buttons.open` )
@@ -170,6 +171,10 @@ export class AppStateButton extends React.Component<Props> {
             handleClick = this.handleUpdate;
         }
 
+        if ( isInstalled && isUpdating && hasUpdate ) {
+            buttonText = I18n.t( `buttons.isUpdating` );
+        }
+
         const percentageProgress = progress * 100;
 
         return (
@@ -203,7 +208,7 @@ export class AppStateButton extends React.Component<Props> {
                         color="primary"
                         onClick={handleClick}
                         aria-label="Application Action Button"
-                        disabled={!!isUninstalling}
+                        disabled={!!isUninstalling || isUpdating}
                         className={`${styles.actionButton} ${isInstalled &&
                             styles.openButton}`}
                     >

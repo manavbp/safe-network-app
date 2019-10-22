@@ -37,7 +37,7 @@ export const getApplicationExecutable = ( application: App ): string => {
         }
         case WINDOWS: {
             applicationExecutable = path.join(
-                `${application.name || application.packageName}`,
+                `${application.packageName || application.name}`,
                 `${application.name || application.packageName}.exe`
             );
             break;
@@ -99,6 +99,23 @@ export const checkForKnownAppsLocally = async ( store: Store ): Promise<void> =>
     } );
 };
 
+export const checkIfAppIsInstalledLocally = async (
+    application
+): Promise<boolean> => {
+    const applicationExecutable = getApplicationExecutable( application );
+
+    const installedPath = path.resolve(
+        INSTALL_TARGET_DIR,
+        applicationExecutable
+    );
+
+    const exists = await fs.pathExists( installedPath );
+
+    logger.warn( 'Checking if path exists', installedPath, exists );
+
+    return exists;
+};
+
 export const getLocalAppVersion = ( application ): string => {
     try {
         // default to MacOs
@@ -110,7 +127,7 @@ export const getLocalAppVersion = ( application ): string => {
         if ( isRunningOnWindows ) {
             versionFilePath = path.resolve(
                 INSTALL_TARGET_DIR,
-                application.name,
+                application.packageName,
                 'version'
             );
         }

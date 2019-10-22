@@ -62,8 +62,8 @@ ipcMain.on( 'exitSafeNetworkApp', () => {
     app.exit( 0 );
 } );
 
-ipcMain.on( 'checkApplicationsForUpdate', ( _event, applications ) => {
-    safeAppUpdater.checkAppsForUpdate( applications );
+ipcMain.on( 'checkApplicationsForUpdate', ( _event, application ) => {
+    safeAppUpdater.checkAppsForUpdate( application );
 } );
 
 ipcMain.on( 'updateApplication', ( _event, application ) => {

@@ -25,7 +25,8 @@ import {
     platform,
     isRunningOnMac,
     isRunningOnLinux,
-    isRunningOnWindows
+    isRunningOnWindows,
+    openAppsInDebugMode
 } from '$Constants';
 import { NOTIFICATION_TYPES } from '$Constants/notifications';
 
@@ -280,7 +281,9 @@ export function manageDownloads( store: Store, targetWindow: BrowserWindow ) {
         logger.warn( 'Opening app via path: ', command );
 
         if ( isRunningOnMac ) {
-            command = `open "${command}"`;
+            command = openAppsInDebugMode
+                ? `open "${command}" -- --args --debug`
+                : `open "${command}"`;
 
             exec( command, {
                 // eslint-disable-next-line unicorn/prevent-abbreviations
@@ -288,21 +291,38 @@ export function manageDownloads( store: Store, targetWindow: BrowserWindow ) {
             } );
         }
         if ( isRunningOnWindows ) {
+            if ( openAppsInDebugMode ) {
+                execFile( command, ['--debug'], {
+                    // eslint-disable-next-line unicorn/prevent-abbreviations
+                    env: newEnvironment
+                } );
+                return;
+            } 
             execFile( command, {
                 // eslint-disable-next-line unicorn/prevent-abbreviations
                 env: newEnvironment
             } );
             return;
+            
         }
         if ( isRunningOnLinux ) {
             logger.warn( 'Opening on linux via spawn command: ', command );
             // exec on linux doesnt give us a new process, so closing SNAPP
             // will close the spawned app :|
-            spawn( command, {
-                // eslint-disable-next-line unicorn/prevent-abbreviations
-                env: newEnvironment,
-                detached: true
-            } );
+
+            if ( openAppsInDebugMode ) {
+                spawn( command, ['--debug'], {
+                    // eslint-disable-next-line unicorn/prevent-abbreviations
+                    env: newEnvironment,
+                    detached: true
+                } );
+            } else {
+                spawn( command, {
+                    // eslint-disable-next-line unicorn/prevent-abbreviations
+                    env: newEnvironment,
+                    detached: true
+                } );
+            }
         }
     } );
 }

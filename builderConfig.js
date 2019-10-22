@@ -1,3 +1,5 @@
+import useTestPackages from '$Constants';
+
 const { platform } = process;
 const OSX = 'darwin';
 const LINUX = 'linux';
@@ -6,13 +8,19 @@ const WINDOWS = 'win32';
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, consistent-return
 const publishedFilePath = () => {
     if ( platform === OSX ) {
-        return `safe-network-app-mac`;
+        return useTestPackages
+            ? `safe-network-app-mac-test`
+            : `safe-network-app-mac`;
     }
     if ( platform === LINUX ) {
-        return `safe-network-app-linux`;
+        return useTestPackages
+            ? `safe-network-app-linux-test`
+            : `safe-network-app-linux`;
     }
     if ( platform === WINDOWS ) {
-        return `safe-network-app-win`;
+        return useTestPackages
+            ? `safe-network-app-win-test`
+            : `safe-network-app-win`;
     }
 };
 

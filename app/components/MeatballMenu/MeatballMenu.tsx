@@ -16,6 +16,7 @@ interface MeatballMenuProps {
     cancelDownload: Function;
     resumeDownload: Function;
     application: App;
+    updateApp: Function;
 }
 
 interface MeatballMenuState {

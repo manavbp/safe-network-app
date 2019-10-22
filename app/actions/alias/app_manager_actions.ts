@@ -17,9 +17,13 @@ import {
 } from '$Constants/index';
 import {
     updateAppInfoIfNewer,
-    resetAppUpdateState
+    resetAppUpdateState,
+    appIsUpdating
 } from '$Actions/app_manager_actions';
-import { getInstalledLocation } from '$App/manageInstallations/helpers';
+import {
+    getInstalledLocation,
+    checkIfAppIsInstalledLocally
+} from '$App/manageInstallations/helpers';
 import { getS3Folder } from '$App/utils/gets3Folders';
 
 import { NOTIFICATION_TYPES } from '$Constants/notifications';
@@ -30,7 +34,10 @@ import {
 } from '$Actions/application_actions';
 import { mockPromise } from '$Actions/helpers/launchpad';
 import { logger } from '$Logger';
-import { pushNotification } from '$Actions/launchpad_actions';
+import {
+    pushNotification,
+    dismissNotification
+} from '$Actions/launchpad_actions';
 import { App } from '$Definitions/application.d';
 
 export const storeApplicationSkipVersion = ( application: App ) => mockPromise();
@@ -131,6 +138,13 @@ const getLatestAppVersions = async (): Promise<void> => {
                 ( await fetchAppIconFromServer( updatedApp ) ) ||
                 fetchDefaultAppIconFromLocal( updatedApp.id );
 
+            const isAppInstalledLocally = await checkIfAppIsInstalledLocally(
+                application
+            );
+
+            if ( isAppInstalledLocally ) {
+                ipcRenderer.send( 'checkApplicationsForUpdate', updatedApp );
+            }
             store.dispatch( updateAppInfoIfNewer( updatedApp ) );
         } catch ( error ) {
             logger.error( error.message );
@@ -166,7 +180,13 @@ const resumeDownloadOfApp = ( application ) => {
 export const updateTheApplication = ( application: App ) => {
     ipcRenderer.send( 'updateApplication', application );
     const store = getCurrentStore();
-    store.dispatch( resetAppUpdateState( application ) );
+    store.dispatch(
+        dismissNotification( {
+            id: `${application.packageName}-update-notification`
+        } )
+    );
+    store.dispatch( appIsUpdating( application ) );
+    // store.dispatch( resetAppUpdateState( application ) );
 };
 
 const resumeDownloadOfAllApps = ( appList: App ) => {

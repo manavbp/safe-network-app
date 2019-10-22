@@ -7,7 +7,11 @@ import {
     setUserPreferences,
     setAppPreferences
 } from '$Actions/launchpad_actions';
-import { resetToInitialState } from '$Actions/app_manager_actions';
+import {
+    resetToInitialState,
+    resetAppUpdateState,
+    appHasUpdate
+} from '$Actions/app_manager_actions';
 import { notificationTypes } from '$Constants/notifications';
 import {
     isRunningTestCafeProcess,
@@ -166,6 +170,25 @@ const setupTestsMenu = ( store: Store ) => {
                 label: 'Skip OnBoard App',
                 click: () => {
                     store.dispatch( setAppPreferences( { shouldOnboard: false } ) );
+                }
+            },
+            {
+                label: 'Check Safe Applications Update',
+                click: () => {
+                    const application = {
+                        id: 'safe.browser',
+                        hasUpdate: true
+                    };
+                    store.dispatch( appHasUpdate( application ) );
+                }
+            },
+            {
+                label: 'App Update Complete',
+                click: () => {
+                    const application = {
+                        id: 'safe.browser'
+                    };
+                    store.dispatch( resetAppUpdateState( application ) );
                 }
             }
         ]

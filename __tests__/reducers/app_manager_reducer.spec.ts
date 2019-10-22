@@ -29,6 +29,7 @@ const getApp = (): App => ( {
     isDownloadingAndUpdating: false,
     isUninstalling: false,
     isOpen: false,
+    isUpdating: false,
     hasUpdate: false,
     lastSkippedVersion: null,
     error: null,
@@ -684,7 +685,7 @@ describe( 'app manager reducer', () => {
 
             const expectStore = {
                 applicationList: {
-                    [id]: { ...app, hasUpdate: false }
+                    [id]: { ...app, hasUpdate: false, isUpdating: false }
                 }
             };
 
