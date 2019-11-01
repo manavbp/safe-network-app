@@ -25,7 +25,7 @@ let shouldRunMockNetwork: boolean = fs.existsSync(
 let hasDebugFlag = false;
 let hasDryRunFlag = false;
 let shouldOpenDebugApps = false;
-let shouldOpenTestPackages = false;
+let shouldUseTestPackages = false;
 
 export const isRunningTestCafeProcess =
     remote && remote.getGlobal
@@ -73,8 +73,11 @@ if (
     shouldOpenDebugApps = true;
 }
 
-if ( allPassedArguments.includes( `--testPackages` ) ) {
-    shouldOpenTestPackages = true;
+if (
+    allPassedArguments.includes( `--testPackages` ) ||
+    process.env.SNAPP_TEST_PACKAGES
+) {
+    shouldUseTestPackages = true;
 }
 
 let forcedPort: number;
@@ -113,7 +116,7 @@ export const isDryRun = hasDryRunFlag || isRunningTestCafeProcess;
 export const inRendererProcess = typeof window !== 'undefined';
 export const inMainProcess = typeof remote === 'undefined';
 export const openAppsInDebugMode = shouldOpenDebugApps;
-export const useTestPackages = shouldOpenTestPackages;
+export const useTestPackages = shouldUseTestPackages;
 
 export const currentWindowId =
     remote && remote.getCurrentWindow

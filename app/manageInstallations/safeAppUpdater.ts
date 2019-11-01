@@ -18,7 +18,8 @@ import {
     isRunningOnLinux,
     isRunningOnWindows,
     isRunningOnMac,
-    openAppsInDebugMode
+    openAppsInDebugMode,
+    useTestPackages
 } from '$Constants';
 import { logger } from '$Logger';
 
@@ -95,7 +96,6 @@ export class SafeAppUpdater {
     static updateApplication( application ) {
         if ( isDryRun ) {
             logger.info( `DRY RUN: Update application ${application}` );
-            return;
         }
 
         const appLocation = getInstalledLocation( application );
@@ -110,61 +110,85 @@ export class SafeAppUpdater {
         // needs to be actually deleted.
         delete newEnvironment.HOT;
 
-        logger.warn( 'Opening app via path: ', command );
-
         if ( isRunningOnMac ) {
-            command = openAppsInDebugMode
-                ? `open "${command}" -- --args --trigger-update --debug`
-                : `open "${command}" -- --args --trigger-update`;
+            command = `open "${command}" -- --args --trigger-update`;
 
-            exec( command, {
-                // eslint-disable-next-line unicorn/prevent-abbreviations
-                env: newEnvironment
-            } );
-        }
-        if ( isRunningOnWindows ) {
-            const arguments_ = openAppsInDebugMode
-                ? ['--trigger-update', '--debug']
-                : ['--trigger-update'];
+            if ( openAppsInDebugMode ) {
+                command = `${command} --debug`;
+            }
 
-            execFile( command, [...arguments_], {
-                // eslint-disable-next-line unicorn/prevent-abbreviations
-                env: newEnvironment
-            } );
+            logger.info( 'Opening app via path: ', command );
+
+            if ( !isDryRun ) {
+                exec( command, {
+                    // eslint-disable-next-line unicorn/prevent-abbreviations
+                    env: newEnvironment
+                } );
+            }
+
             return;
         }
+
+        const cmdArguments = ['--trigger-update'];
+
+        if ( openAppsInDebugMode ) {
+            cmdArguments.push( '--debug' );
+        }
+
+        if ( isRunningOnWindows ) {
+            logger.info(
+                'Opening on windows via execFile command: ',
+                command,
+                cmdArguments
+            );
+
+            if ( !isDryRun ) {
+                execFile( command, [...cmdArguments], {
+                    // eslint-disable-next-line unicorn/prevent-abbreviations
+                    env: newEnvironment
+                } );
+            }
+        }
+
         if ( isRunningOnLinux ) {
-            logger.warn( 'Opening on linux via spawn command: ', command );
-            const arguments_ = openAppsInDebugMode
-                ? ['--trigger-update', '--debug']
-                : ['--trigger-update'];
-            // exec on linux doesnt give us a new process, so closing SNAPP
-            // will close the spawned app :|
-            spawn( command, [...arguments_], {
-                // eslint-disable-next-line unicorn/prevent-abbreviations
-                env: newEnvironment,
-                detached: true
-            } );
+            logger.info(
+                'Opening on linux via spawn command: ',
+                command,
+                cmdArguments
+            );
+
+            if ( !isDryRun ) {
+                logger.info( `DRY RUN: Update application ${application}` );
+                // exec on linux doesnt give us a new process, so closing SNAPP
+                // will close the spawned app :|
+                spawn( command, [...cmdArguments], {
+                    // eslint-disable-next-line unicorn/prevent-abbreviations
+                    env: newEnvironment,
+                    detached: true
+                } );
+            }
         }
     }
 
-    handleAppUpdateCallback( arguments_ ) {
-        logger.error( 'args', arguments_ );
+    handleAppUpdateCallback( cmdArguments ) {
+        logger.info( 'Received app update info', cmdArguments );
         let appId = null;
         let appVersion = null;
-        arguments_.forEach( ( argument ) => {
+        cmdArguments.forEach( ( argument ) => {
             if ( argument.includes( '--appid' ) ) {
-                appId = argument.substring( argument.indexOf( ':' ) + 1 );
+                appId = argument.slice( argument.indexOf( ':' ) + 1 );
             }
         } );
         if ( appId !== null ) {
             const state = this._store.getState();
             const application = state.appManager.applicationList[appId];
-            const updateError: boolean = arguments_.includes( '--update-failed' );
+            const updateError: boolean = cmdArguments.includes(
+                '--update-failed'
+            );
             if ( !updateError ) {
-                arguments_.forEach( ( argument ) => {
+                cmdArguments.forEach( ( argument ) => {
                     if ( argument.includes( '--version-number' ) ) {
-                        appVersion = `v${argument.substring(
+                        appVersion = `v${argument.slice(
                             argument.indexOf( ':' ) + 1
                         )}`;
                     }
@@ -173,12 +197,13 @@ export class SafeAppUpdater {
                 if ( appVersion !== null ) {
                     const newVersion = application.latestVersion;
                     if ( appVersion === newVersion ) {
-                        logger.error( 'Update succesful' );
+                        logger.info( 'Update successful' );
                         this._store.dispatch( resetAppUpdateState( application ) );
                     }
                 }
             } else {
-                logger.error( 'Error In update' );
+                logger.error( 'Error in update' );
+
                 this._store.dispatch( resetAppUpdateState( application ) );
             }
         }
