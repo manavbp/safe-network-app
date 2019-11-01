@@ -50,13 +50,12 @@ if ( isRunningTestCafeProcess && !isRunningTestCafeProcessingPackagedApp ) {
     shouldRunMockNetwork = true;
 }
 
-if ( allPassedArguments.includes( '--mock' ) ) {
-    shouldRunMockNetwork = true;
-}
+let ignoreAppLocationMacOs = false;
 
-if ( allPassedArguments.includes( '--live' ) ) {
-    shouldRunMockNetwork = false;
+if ( allPassedArguments.includes( '--ignoreAppLocation' ) ) {
+    ignoreAppLocationMacOs = true;
 }
+export const ignoreAppLocation = ignoreAppLocationMacOs;
 
 if ( allPassedArguments.includes( '--debug' ) ) {
     hasDebugFlag = true;

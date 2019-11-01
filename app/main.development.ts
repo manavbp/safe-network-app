@@ -2,6 +2,7 @@ import { ipcMain, app, dialog } from 'electron';
 import path from 'path';
 import log from 'electron-log';
 import { Store } from 'redux';
+import { enforceMacOSAppLocation } from 'electron-util';
 
 import { updateAppInfoIfNewer } from '$Actions/app_manager_actions';
 import { addApplication } from '$Actions/application_actions';
@@ -18,6 +19,7 @@ import { safeAppUpdater } from '$App/manageInstallations/safeAppUpdater';
 import { notificationTypes } from '$Constants/notifications';
 
 import {
+    ignoreAppLocation,
     isRunningTestCafeProcess,
     isRunningUnpacked,
     isRunningOnLinux,
@@ -64,6 +66,10 @@ if ( !gotTheLock ) {
     // Create myWindow, load the rest of the app, etc...
 
     app.on( 'ready', async () => {
+        if ( !ignoreAppLocation && !isRunningTestCafeProcess ) {
+            enforceMacOSAppLocation();
+        }
+
         if (
             process.env.NODE_ENV === 'development' ||
             process.env.DEBUG_PROD === 'true'
