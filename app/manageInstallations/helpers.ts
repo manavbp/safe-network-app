@@ -117,6 +117,7 @@ export const checkIfAppIsInstalledLocally = async (
 };
 
 export const getLocalAppVersion = ( application ): string => {
+    logger.verbose( 'Checking local version of ', application.name );
     try {
         // default to MacOs
         let versionFilePath = path.resolve(
@@ -141,6 +142,8 @@ export const getLocalAppVersion = ( application ): string => {
         }
 
         const localVersion = fs.readFileSync( versionFilePath ).toString();
+
+        logger.info( 'Version found was: ', localVersion );
         return localVersion;
     } catch ( error ) {
         return null;

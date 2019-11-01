@@ -93,7 +93,8 @@ export class SafeAppUpdater {
         }
     }
 
-    static updateApplication( application ) {
+    updateApplication( application ) {
+        logger.info( `Updating application: ${application}` );
         if ( isDryRun ) {
             logger.info( `DRY RUN: Update application ${application}` );
         }
@@ -125,8 +126,6 @@ export class SafeAppUpdater {
                     env: newEnvironment
                 } );
             }
-
-            return;
         }
 
         const cmdArguments = ['--trigger-update'];
@@ -168,45 +167,49 @@ export class SafeAppUpdater {
                 } );
             }
         }
-    }
 
-    handleAppUpdateCallback( cmdArguments ) {
-        logger.info( 'Received app update info', cmdArguments );
-        let appId = null;
-        let appVersion = null;
-        cmdArguments.forEach( ( argument ) => {
-            if ( argument.includes( '--appid' ) ) {
-                appId = argument.slice( argument.indexOf( ':' ) + 1 );
+        // lets check the app
+        const TIME_TILL_UPDATE_ERROR = 900000; // ms  = 15 minutes
+        const CHECK_FOR_UPDATED_VERSION_MS = 5000; // ms  = 5s
+        let appHasUpdated = false;
+        const targetVersion = application.latestVersion;
+
+        const store = this._store;
+
+        let updatedCheckTimeout;
+        let updatedVersion: string;
+
+        const checkLocalVersion = setInterval( () => {
+            updatedVersion = getLocalAppVersion( application );
+
+            if ( compareVersions.compare( targetVersion, updatedVersion, '=' ) ) {
+                appHasUpdated = true;
+                // we're done here!
+                clearInterval( checkLocalVersion );
+
+                if ( updatedCheckTimeout ) clearTimeout( updatedCheckTimeout );
+
+                logger.info( 'Update successfull' );
+                store.dispatch( resetAppUpdateState( application ) );
             }
-        } );
-        if ( appId !== null ) {
-            const state = this._store.getState();
-            const application = state.appManager.applicationList[appId];
-            const updateError: boolean = cmdArguments.includes(
-                '--update-failed'
+        }, CHECK_FOR_UPDATED_VERSION_MS );
+
+        updatedCheckTimeout = setTimeout( () => {
+            // stop setInterval looping
+            logger.verbose(
+                'Clearing interval for version check for',
+                application.name
             );
-            if ( !updateError ) {
-                cmdArguments.forEach( ( argument ) => {
-                    if ( argument.includes( '--version-number' ) ) {
-                        appVersion = `v${argument.slice(
-                            argument.indexOf( ':' ) + 1
-                        )}`;
-                    }
-                } );
 
-                if ( appVersion !== null ) {
-                    const newVersion = application.latestVersion;
-                    if ( appVersion === newVersion ) {
-                        logger.info( 'Update successful' );
-                        this._store.dispatch( resetAppUpdateState( application ) );
-                    }
-                }
-            } else {
-                logger.error( 'Error in update' );
+            clearInterval( checkLocalVersion );
 
-                this._store.dispatch( resetAppUpdateState( application ) );
+            if ( !appHasUpdated ) {
+                // throw error
+                logger.error( 'Error, update timed out' );
+
+                store.dispatch( resetAppUpdateState( application ) );
             }
-        }
+        }, TIME_TILL_UPDATE_ERROR );
     }
 }
 

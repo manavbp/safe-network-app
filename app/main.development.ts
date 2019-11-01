@@ -55,7 +55,7 @@ if ( !gotTheLock ) {
     app.quit();
 } else {
     app.on( 'second-instance', ( event, commandLine, workingDirectory ) => {
-        safeAppUpdater.handleAppUpdateCallback( commandLine );
+        // safeAppUpdater.handleAppUpdateCallback( commandLine );
         // Someone tried to run a second instance, we should focus our window.
         if ( theWindow ) {
             if ( theWindow.isMinimized() ) theWindow.restore();

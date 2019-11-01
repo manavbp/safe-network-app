@@ -1,10 +1,7 @@
 import { ipcMain, app } from 'electron';
 import * as cp from 'child_process';
 
-import {
-    SafeAppUpdater,
-    safeAppUpdater
-} from '$App/manageInstallations/safeAppUpdater';
+import { safeAppUpdater } from '$App/manageInstallations/safeAppUpdater';
 
 // IPC handlers from actions.
 ipcMain.on( 'restart', () => {
@@ -67,5 +64,5 @@ ipcMain.on( 'checkApplicationsForUpdate', ( _event, application ) => {
 } );
 
 ipcMain.on( 'updateApplication', ( _event, application ) => {
-    SafeAppUpdater.updateApplication( application );
+    safeAppUpdater.updateApplication( application );
 } );

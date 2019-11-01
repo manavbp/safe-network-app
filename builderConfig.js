@@ -1,5 +1,3 @@
-const allPassedArguments = process.argv;
-
 const { platform } = process;
 const allPassedArguments = process.argv;
 const OSX = 'darwin';
