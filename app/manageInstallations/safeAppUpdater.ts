@@ -37,29 +37,31 @@ export class SafeAppUpdater {
             newVersion
         );
         const installPath = getInstalledLocation( application );
+        logger.info( `Checking for apps updates` );
 
-        if ( isDryRun ) {
-            if (
-                application.id !==
-                Object.keys( initialAppManager.applicationList )[0]
-            ) {
-                return;
-            }
-            logger.info( `DRY RUN: Checking for apps update` );
-            this._store.dispatch(
-                appHasUpdate( {
-                    id: application.id,
-                    hasUpdate: true
-                } )
-            );
-            this._store.dispatch( {
-                id: Math.random().toString( 36 ),
-                ...pushNotification( updateNotification )
-            } );
-            return;
-        }
+        // if ( isDryRun ) {
+        //     if (
+        //         application.id !==
+        //         Object.keys( initialAppManager.applicationList )[0]
+        //     ) {
+        //         return;
+        //     }
+        //     this._store.dispatch(
+        //         appHasUpdate( {
+        //             id: application.id,
+        //             hasUpdate: true
+        //         } )
+        //     );
+        //     this._store.dispatch( {
+        //         id: Math.random().toString( 36 ),
+        //         ...pushNotification( updateNotification )
+        //     } );
+        //     return;
+        // }
 
-        const localVersion = getLocalAppVersion( application );
+        const store = this._store;
+
+        const localVersion = getLocalAppVersion( application, store );
 
         if ( localVersion ) {
             const comparison = compareVersions.compare(
@@ -99,7 +101,7 @@ export class SafeAppUpdater {
             logger.info( `DRY RUN: Update application ${application}` );
         }
 
-        const appLocation = getInstalledLocation( application );
+       const appLocation = getInstalledLocation( application );
         let command = appLocation;
 
         const newEnvironment = {

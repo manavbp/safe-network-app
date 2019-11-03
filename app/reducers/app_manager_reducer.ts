@@ -45,8 +45,10 @@ export function appManager( state = initialState, action ): AppManagerState {
 
             const theCurrentApp = state.applicationList[payload.id];
 
-            const currentVersion = theCurrentApp.latestVersion;
+            const currentVersion =
+                theCurrentApp.currentVersion || theCurrentApp.latestVersion;
             const newVersion = payload.latestVersion;
+            theCurrentApp.currentVersion = currentVersion;
 
             if ( compareVersions( newVersion, currentVersion ) < 1 ) {
                 // do nothing
@@ -54,7 +56,11 @@ export function appManager( state = initialState, action ): AppManagerState {
             }
 
             // otherwise we overwrite.
-            targetApp = { ...payload, isInstalled: theCurrentApp.isInstalled };
+            targetApp = {
+                ...theCurrentApp,
+                ...payload,
+                isInstalled: theCurrentApp.isInstalled || false
+            };
 
             return updateAppInApplicationList( state, targetApp );
         }
@@ -165,11 +171,17 @@ export function appManager( state = initialState, action ): AppManagerState {
 
         case APP_TYPES.SET_CURRENT_VERSION: {
             if ( !targetApp ) return state;
-            if ( !payload.currentVersion )
-                throw new Error( ERRORS.VERSION_NOT_FOUND );
+
+            const { currentVersion } = payload;
+            const { latestVersion } = targetApp;
+            if ( !currentVersion ) throw new Error( ERRORS.VERSION_NOT_FOUND );
 
             targetApp.isInstalled = true;
-            targetApp.currentVersion = payload.currentVersion;
+            targetApp.currentVersion = currentVersion;
+
+            if ( compareVersions( latestVersion, currentVersion ) < 1 ) {
+                targetApp.latestVersion = currentVersion;
+            }
 
             return updateAppInApplicationList( state, targetApp );
         }

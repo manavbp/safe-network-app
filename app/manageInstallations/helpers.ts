@@ -88,12 +88,12 @@ export const checkForKnownAppsLocally = async ( store: Store ): Promise<void> =>
         logger.warn( 'Checking if path exists', installedPath, exists );
 
         if ( exists ) {
-            store.dispatch(
-                setCurrentVersion( {
-                    ...application,
-                    currentVersion: '1.0.0'
-                } )
-            );
+            // store.dispatch(
+            //     setCurrentVersion( {
+            //         ...application,
+            //         currentVersion: '1.0.0'
+            //     } )
+            // );
         }
         // fs grab version somehow...
     } );
@@ -116,7 +116,7 @@ export const checkIfAppIsInstalledLocally = async (
     return exists;
 };
 
-export const getLocalAppVersion = ( application ): string => {
+export const getLocalAppVersion = ( application, store: Store ): string => {
     logger.verbose( 'Checking local version of ', application.name );
     try {
         // default to MacOs
@@ -144,6 +144,13 @@ export const getLocalAppVersion = ( application ): string => {
         const localVersion = fs.readFileSync( versionFilePath ).toString();
 
         logger.info( 'Version found was: ', localVersion );
+
+        store.dispatch(
+            setCurrentVersion( {
+                ...application,
+                currentVersion: localVersion
+            } )
+        );
         return localVersion;
     } catch ( error ) {
         return null;

@@ -11,7 +11,7 @@ export const initialAppManager: AppManagerState = {
             packageName: 'safe-browser',
             repositoryOwner: 'maidsafe',
             repositorySlug: 'safe_browser',
-            latestVersion: 'v0.15.0',
+            latestVersion: 'v0.15.2',
             description: 'Browse the Safe Network',
             updateDescription: '',
             type: 'userApplications',

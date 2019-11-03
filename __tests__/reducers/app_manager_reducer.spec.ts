@@ -40,8 +40,8 @@ let app1 = getApp();
 let app2 = getApp();
 
 let applicationList = {
-    app1,
-    app2
+    [app1.id]: app1,
+    [app2.id]: app2
 };
 
 describe( 'app manager reducer', () => {
@@ -51,8 +51,8 @@ describe( 'app manager reducer', () => {
         app2.name = 'Safe Wallet';
 
         applicationList = {
-            app1,
-            app2
+            [app1.id]: app1,
+            [app2.id]: app2
         };
     } );
 
@@ -62,89 +62,110 @@ describe( 'app manager reducer', () => {
 
     describe( 'UPDATE_APP_INFO_IF_NEWER', () => {
         it( 'Should add apps to store when not existing', () => {
-            app1.id = 'safe.browser2';
-            const nextStore = appManager( undefined, {
-                type: `${TYPES.UPDATE_APP_INFO_IF_NEWER}`,
-                payload: app1
-            } );
+            const newApp = { ...app1, id: 'safe.browser2' };
+            const nextStore = appManager(
+                { applicationList },
+                {
+                    type: `${TYPES.UPDATE_APP_INFO_IF_NEWER}`,
+                    payload: newApp
+                }
+            );
 
-            // 2 as theres the initital app state of one.....
-            expect( Object.keys( nextStore.applicationList ).length ).toEqual( 2 );
+            // 3 as theres the initital app state of app1, app2.....
+            expect( Object.keys( nextStore.applicationList ).length ).toEqual( 3 );
+
             expect( nextStore.applicationList[app1.id] ).toEqual( app1 );
         } );
 
         it( 'Should throw if application has no ID', () => {
-            applicationList.app1.name = 'Safe Browser';
-            delete applicationList.app1.id;
+            const newApp = { ...app1 };
+
+            delete newApp.id;
 
             expect( () =>
                 appManager( undefined, {
                     type: `${TYPES.UPDATE_APP_INFO_IF_NEWER}`,
-                    payload: app1
+                    payload: newApp
                 } )
             ).toThrow( ERRORS.APP_ID_NOT_FOUND );
         } );
 
         it( 'Should throw if application has no version', () => {
-            applicationList.app1.name = 'Safe Browser';
-            delete applicationList.app1.latestVersion;
+            const newApp = { ...app1 };
+
+            delete newApp.latestVersion;
 
             expect( () =>
                 appManager( undefined, {
                     type: `${TYPES.UPDATE_APP_INFO_IF_NEWER}`,
-                    payload: app1
+                    payload: newApp
                 } )
             ).toThrow( ERRORS.VERSION_NOT_FOUND );
         } );
 
-        it( 'Should update application info to newer version', () => {
-            applicationList.app1.name = 'SUPER Browser';
-            applicationList.app1.id = 'safe.browser';
-            applicationList.app1.latestVersion = '1.1.0';
+        it( 'Should update application info to newer version, and set current if needs', () => {
+            const updatedApp1 = { ...app1 };
+            updatedApp1.latestVersion = '1.1.0';
 
-            const nextStore = appManager( undefined, {
-                type: `${TYPES.UPDATE_APP_INFO_IF_NEWER}`,
-                payload: app1
-            } );
+            const nextStore = appManager(
+                { applicationList },
+                {
+                    type: `${TYPES.UPDATE_APP_INFO_IF_NEWER}`,
+                    payload: updatedApp1
+                }
+            );
 
-            expect( Object.keys( nextStore.applicationList ).length ).toEqual( 1 );
+            expect( Object.keys( nextStore.applicationList ).length ).toEqual( 2 );
 
-            app1.isInstalled = undefined;
-            expect( nextStore.applicationList[app1.id] ).toEqual( app1 );
+            // app1.isInstalled = undefined;
+            expect( nextStore.applicationList[app1.id].id ).toEqual( app1.id );
+            expect( nextStore.applicationList[app1.id].latestVersion ).toEqual(
+                '1.1.0'
+            );
+            expect( nextStore.applicationList[app1.id].currentVersion ).toEqual(
+                '0.1.0'
+            );
+            expect( nextStore.applicationList[app1.id].currentVersion ).toEqual(
+                applicationList[app1.id].latestVersion
+            );
         } );
 
         it( 'Should not overwrite the install state from newer version info', () => {
-            applicationList.app1.name = 'SUPER Browser';
-            applicationList.app1.id = 'safe.browser';
-            applicationList.app1.latestVersion = '1.1.0';
-            applicationList.app1.isInstalled = true;
+            const newAppInfo = { ...app1, isInstalled: false };
 
-            const nextStore = appManager( undefined, {
-                type: `${TYPES.UPDATE_APP_INFO_IF_NEWER}`,
-                payload: app1
-            } );
+            const nextStore = appManager(
+                { applicationList },
+                {
+                    type: `${TYPES.UPDATE_APP_INFO_IF_NEWER}`,
+                    payload: newAppInfo
+                }
+            );
 
-            expect( Object.keys( nextStore.applicationList ).length ).toEqual( 1 );
+            expect( Object.keys( nextStore.applicationList ).length ).toEqual( 2 );
             expect( nextStore.applicationList[app1.id].isInstalled ).toBeFalsy();
         } );
 
-        it( 'Should NOT update application newer version', () => {
-            applicationList.app1.name = 'LAME Browser';
-            applicationList.app1.id = 'safe.browser';
-            applicationList.app1.latestVersion = '0.0.1';
+        it( 'Should NOT update application newer version when lower', () => {
+            const newAppInfo = { ...app1 };
 
-            const nextStore = appManager( undefined, {
-                type: `${TYPES.UPDATE_APP_INFO_IF_NEWER}`,
-                payload: app1
-            } );
+            newAppInfo.name = 'LAME Browser';
+            newAppInfo.latestVersion = '0.0.1';
 
-            expect( Object.keys( nextStore.applicationList ).length ).toEqual( 1 );
+            const nextStore = appManager(
+                { applicationList },
+                {
+                    type: `${TYPES.UPDATE_APP_INFO_IF_NEWER}`,
+                    payload: newAppInfo
+                }
+            );
+
+            expect( Object.keys( nextStore.applicationList ).length ).toEqual( 2 );
             expect( nextStore.applicationList[app1.id].name ).not.toEqual(
-                app1.name
+                'LAME Browser'
             );
             expect(
                 nextStore.applicationList[app1.id].latestVersion
-            ).not.toEqual( app1.latestVersion );
+            ).not.toEqual( '0.0.1' );
         } );
     } );
 
@@ -154,11 +175,11 @@ describe( 'app manager reducer', () => {
         beforeEach( () => {
             store = appManager( undefined, {
                 type: `${TYPES.UPDATE_APP_INFO_IF_NEWER}`,
-                payload: applicationList.app1
+                payload: applicationList[app1.id]
             } );
             store = appManager( store, {
                 type: `${TYPES.UPDATE_APP_INFO_IF_NEWER}`,
-                payload: applicationList.app2
+                payload: applicationList[app2.id]
             } );
         } );
 
@@ -761,6 +782,69 @@ describe( 'app manager reducer', () => {
             expect( nextStore.applicationList[id].isInstalled ).toBeTruthy();
             expect( nextStore.applicationList[id].currentVersion ).toEqual(
                 '42.1.3'
+            );
+        } );
+
+        it( 'Should update latest version if current is higher version', () => {
+            const app = getApp();
+
+            app.latestVersion = '14.0.0';
+
+            const { id } = app;
+            const store = {
+                applicationList: {
+                    [id]: { ...app }
+                }
+            };
+
+            const nextStore = appManager( store, {
+                type: APP_TYPES.SET_CURRENT_VERSION,
+                payload: {
+                    ...app,
+                    currentVersion: '42.1.3'
+                }
+            } );
+
+            expect( nextStore.applicationList[id].name ).toEqual(
+                store.applicationList[id].name
+            );
+            expect( nextStore.applicationList[id].isInstalled ).toBeTruthy();
+            expect( nextStore.applicationList[id].currentVersion ).toEqual(
+                '42.1.3'
+            );
+            expect( nextStore.applicationList[id].latestVersion ).toEqual(
+                '42.1.3'
+            );
+        } );
+        it( 'Should not update latest version if current is not higher version', () => {
+            const app = getApp();
+
+            app.latestVersion = '50.200.6';
+
+            const { id } = app;
+            const store = {
+                applicationList: {
+                    [id]: { ...app }
+                }
+            };
+
+            const nextStore = appManager( store, {
+                type: APP_TYPES.SET_CURRENT_VERSION,
+                payload: {
+                    ...app,
+                    currentVersion: '42.1.3'
+                }
+            } );
+
+            expect( nextStore.applicationList[id].name ).toEqual(
+                store.applicationList[id].name
+            );
+            expect( nextStore.applicationList[id].isInstalled ).toBeTruthy();
+            expect( nextStore.applicationList[id].currentVersion ).toEqual(
+                '42.1.3'
+            );
+            expect( nextStore.applicationList[id].latestVersion ).toEqual(
+                '50.200.6'
             );
         } );
     } );
