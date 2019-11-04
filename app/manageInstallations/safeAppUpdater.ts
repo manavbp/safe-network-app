@@ -101,7 +101,7 @@ export class SafeAppUpdater {
             logger.info( `DRY RUN: Update application ${application}` );
         }
 
-       const appLocation = getInstalledLocation( application );
+        const appLocation = getInstalledLocation( application );
         let command = appLocation;
 
         const newEnvironment = {
