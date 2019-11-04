@@ -182,10 +182,19 @@ export class SafeAppUpdater {
         let updatedVersion: string;
 
         const checkLocalVersion = setInterval( () => {
-            updatedVersion = getLocalAppVersion( application );
+            updatedVersion = getLocalAppVersion( application, store );
+            logger.info(
+                'Checking for updated version of',
+                application.name,
+                'from',
+                targetVersion,
+                'to',
+                updatedVersion
+            );
 
             if ( compareVersions.compare( targetVersion, updatedVersion, '=' ) ) {
                 appHasUpdated = true;
+
                 // we're done here!
                 clearInterval( checkLocalVersion );
 
