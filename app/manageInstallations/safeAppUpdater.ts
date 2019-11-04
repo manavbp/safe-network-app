@@ -39,26 +39,6 @@ export class SafeAppUpdater {
         const installPath = getInstalledLocation( application );
         logger.info( `Checking for apps updates` );
 
-        // if ( isDryRun ) {
-        //     if (
-        //         application.id !==
-        //         Object.keys( initialAppManager.applicationList )[0]
-        //     ) {
-        //         return;
-        //     }
-        //     this._store.dispatch(
-        //         appHasUpdate( {
-        //             id: application.id,
-        //             hasUpdate: true
-        //         } )
-        //     );
-        //     this._store.dispatch( {
-        //         id: Math.random().toString( 36 ),
-        //         ...pushNotification( updateNotification )
-        //     } );
-        //     return;
-        // }
-
         const store = this._store;
 
         const localVersion = getLocalAppVersion( application, store );

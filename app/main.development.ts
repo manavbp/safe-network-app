@@ -14,7 +14,6 @@ import { Application, App } from './definitions/application.d';
 import { createSafeLaunchPadTrayWindow, createTray } from './setupLaunchPad';
 import { setupBackground } from './setupBackground';
 import { installExtensions, preferencesJsonSetup } from '$Utils/main_utils';
-// import { checkForKnownAppsLocally } from '$App/manageInstallations/helpers';
 import { safeAppUpdater } from '$App/manageInstallations/safeAppUpdater';
 import { notificationTypes } from '$Constants/notifications';
 
@@ -81,11 +80,6 @@ if ( !gotTheLock ) {
         store = configureStore( initialState );
 
         safeAppUpdater.store = store;
-
-        // start with hardcoded list of apps.
-        // checkForKnownAppsLocally( store );
-
-        // store.dispatch( updateAppInfoIfNewer( hardCodedApps.applications ) );
 
         await preferencesJsonSetup( store );
 
