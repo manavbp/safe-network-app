@@ -27,6 +27,7 @@ describe( 'AppStateButton', () => {
             pushNotification: jest.fn(),
             cancelDownload: jest.fn(),
             openApp: jest.fn(),
+            updateApp: jest.fn(),
             downloadAndInstallApp: jest.fn(),
             application: {
                 id: 'safe.browser',
@@ -197,6 +198,57 @@ describe( 'AppStateButton', () => {
             action.simulate( 'click' );
 
             expect( props.resetAppInstallationState ).toHaveBeenCalled();
+        } );
+    } );
+
+    describe( 'hasUpdate', () => {
+        it( 'has one button on update available', () => {
+            props = {
+                ...props,
+                application: {
+                    ...props.application,
+                    isInstalled: true,
+                    hasUpdate: true
+                }
+            };
+            wrapper = shallow( <AppStateButton {...props} /> );
+
+            expect( wrapper.find( Fab ) ).toHaveLength( 1 );
+            expect( wrapper.find( Fab ).text() ).toEqual( 'update' );
+
+            const action = wrapper.find(
+                '[aria-label="Application Action Button"]'
+            );
+
+            expect( action ).toHaveLength( 1 );
+
+            action.simulate( 'click' );
+
+            expect( props.updateApp ).toHaveBeenCalled();
+        } );
+
+        it( 'has install button even if update available when not installed', () => {
+            props = {
+                ...props,
+                application: {
+                    ...props.application,
+                    hasUpdate: true
+                }
+            };
+            wrapper = shallow( <AppStateButton {...props} /> );
+
+            expect( wrapper.find( Fab ) ).toHaveLength( 1 );
+            expect( wrapper.find( Fab ).text() ).toEqual( 'install' );
+
+            const action = wrapper.find(
+                '[aria-label="Application Action Button"]'
+            );
+
+            expect( action ).toHaveLength( 1 );
+
+            action.simulate( 'click' );
+
+            expect( props.downloadAndInstallApp ).toHaveBeenCalled();
         } );
     } );
 } );

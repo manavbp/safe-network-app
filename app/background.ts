@@ -1,16 +1,18 @@
 /* eslint global-require: 1 */
 import _ from 'lodash';
+import { ipcRenderer } from 'electron';
 import { logger } from '$Logger';
 import { setCurrentStoreForNotificationActions } from '$Actions/alias/notification_actions';
 import { configureStore } from '$Store/configureStore';
 import { setCurrentStore } from '$Actions/application_actions';
 import { settingsHandler } from '$Actions/helpers/settings_handler';
+import { isDryRun } from '$Constants';
 
 declare let window: Window;
 
 const PID = process.pid;
 
-logger.info( "Welcome to the BG process it's ID is: ", PID );
+logger.info( `Welcome to the BG process it's ID is: `, PID );
 
 function getStatePreferences( state ) {
     const userPreferences = { ...state.launchpad.userPreferences };
@@ -23,7 +25,6 @@ const managePreferencesLocally = async ( store ) => {
     const previousState = await settingsHandler.getPreferences();
     const currentState = getStatePreferences( store.getState() );
     if ( !_.isEqual( previousState, currentState ) ) {
-        console.log( 'not equal' );
         await settingsHandler.updatePreferences( { ...currentState } );
     }
 };

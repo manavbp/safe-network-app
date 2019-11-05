@@ -28,39 +28,48 @@ interface Props {
     resetAppInstallationState: Function;
     pushNotification: Function;
     resumeDownload: Function;
+    updateApp: Function;
     downloadAndInstallApp: Function;
     application: App;
+    history: {
+        push: Function;
+    };
 }
 
 export class ApplicationOverview extends React.PureComponent<Props> {
     render() {
-        const { application } = this.props;
+        const { application, history } = this.props;
 
         const progressText = getAppStatusText( application );
         const secondaryText = application.error || progressText;
 
         return (
             <React.Fragment>
-                <ListItem className={styles.list}>
+                <ListItem
+                    className={styles.list}
+                    button
+                    aria-label={`List ${application.name}`}
+                    onClick={() => {
+                        history.push( `/application/${application.id}` );
+                    }}
+                >
                     <ListItemAvatar>
                         <AppIcon url={application.iconPath} />
                     </ListItemAvatar>
-                    <Link to={`/application/${application.id}`}>
-                        <ListItemText
-                            className={styles.listText}
-                            primary={application.name}
-                            primaryTypographyProps={{
-                                variant: secondaryText ? 'caption' : 'body2'
-                            }}
-                            secondary={secondaryText}
-                            secondaryTypographyProps={{
-                                color: application.error
-                                    ? 'error'
-                                    : 'textSecondary',
-                                variant: 'body2'
-                            }}
-                        />
-                    </Link>
+                    <ListItemText
+                        className={styles.listText}
+                        primary={application.name}
+                        primaryTypographyProps={{
+                            variant: secondaryText ? 'caption' : 'body2'
+                        }}
+                        secondary={secondaryText}
+                        secondaryTypographyProps={{
+                            color: application.error
+                                ? 'error'
+                                : 'textSecondary',
+                            variant: 'body2'
+                        }}
+                    />
                     <ListItemSecondaryAction className={styles.actions}>
                         <AppStateButton
                             {...this.props}

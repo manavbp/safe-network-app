@@ -1,23 +1,42 @@
 const { platform } = process;
+const allPassedArguments = process.argv;
 const OSX = 'darwin';
 const LINUX = 'linux';
 const WINDOWS = 'win32';
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, consistent-return
+// eslint-disable-next-line consistent-return, @typescript-eslint/explicit-function-return-type
 const publishedFilePath = () => {
+    let buildTestPackages = false;
+    if (
+        allPassedArguments.includes( `--testPackages` ) ||
+        process.env.TEST_PACKAGES
+    ) {
+        console.log( 'Building test package' );
+        buildTestPackages = true;
+    }
+
     if ( platform === OSX ) {
-        return `safe-network-app-mac`;
+        return buildTestPackages
+            ? `safe-network-app-mac-test`
+            : `safe-network-app-mac`;
+        // return `safe-network-app-osx-${env}`;
     }
     if ( platform === LINUX ) {
-        return `safe-network-app-linux`;
+        return buildTestPackages
+            ? `safe-network-app-linux-test`
+            : `safe-network-app-linux`;
+        // return `safe-network-app-linux-${env}`;
     }
     if ( platform === WINDOWS ) {
-        return `safe-network-app-win`;
+        return buildTestPackages
+            ? `safe-network-app-win-test`
+            : `safe-network-app-win`;
+        // return `safe-network-app-win-${env}`;
     }
 };
-
 const buildConfig = {
     afterPack: './internals/scripts/afterPack.js',
+    afterSign: './internals/scripts/afterSign.js',
     productName: 'SAFE Network App',
     appId: 'org.develar.SAFENetworkApp',
     files: [
@@ -52,7 +71,10 @@ const buildConfig = {
         target: ['nsis', 'msi']
     },
     mac: {
-        target: ['dmg', 'pkg', 'zip']
+        target: ['dmg', 'pkg', 'zip'],
+        hardenedRuntime: true,
+        entitlements: 'resources/entitlements.mac.plist',
+        entitlementsInherit: 'resources/entitlements.mac.plist'
     },
     linux: {
         target: ['AppImage', 'zip'],

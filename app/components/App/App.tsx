@@ -42,6 +42,7 @@ interface Props {
     downloadAndInstallApp: Function;
     pauseDownload: Function;
     cancelDownload: Function;
+    updateApp: Function;
     resumeDownload: Function;
 }
 
@@ -49,6 +50,7 @@ export class App extends React.PureComponent<Props> {
     isInAppDetailPage = ( currentPath ) => {
         const {
             appList,
+            updateApp,
             unInstallApp,
             openApp,
             downloadAndInstallApp,
@@ -67,6 +69,7 @@ export class App extends React.PureComponent<Props> {
                     showAboutAppOption={false}
                     unInstallApp={unInstallApp}
                     openApp={openApp}
+                    updateApp={updateApp}
                     downloadAndInstallApp={downloadAndInstallApp}
                     pauseDownload={pauseDownload}
                     cancelDownload={cancelDownload}

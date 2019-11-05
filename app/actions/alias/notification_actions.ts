@@ -83,10 +83,6 @@ const acceptNotify = ( props ) => {
             store.dispatch( unInstallApp( application ) );
             store.dispatch( dismissNotification( { id: props.id } ) );
             break;
-        case 'GLOBAL_FAILURE':
-            store.dispatch( downloadAndInstallApp( application ) );
-            store.dispatch( dismissNotification( { id: props.id } ) );
-            break;
         case 'CLEARNET_WARNING_ALERT':
             store.dispatch( dismissNotification( { id: props.id } ) );
             break;
@@ -129,6 +125,15 @@ const denyNotify = ( props ) => {
             break;
         case 'ADMIN_PASS_REQ':
             store.dispatch( cancelDownload( application ) );
+            store.dispatch( dismissNotification( { id: props.id } ) );
+            break;
+        case 'RESTART_APP':
+            store.dispatch( dismissNotification( { id: props.id } ) );
+            break;
+        case 'GLOBAL_FAILURE':
+            store.dispatch( dismissNotification( { id: props.id } ) );
+            break;
+        case 'GLOBAL_INFO':
             store.dispatch( dismissNotification( { id: props.id } ) );
             break;
         default:

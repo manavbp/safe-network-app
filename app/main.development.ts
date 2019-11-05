@@ -2,9 +2,11 @@ import { ipcMain, app, dialog } from 'electron';
 import path from 'path';
 import log from 'electron-log';
 import { Store } from 'redux';
+import { enforceMacOSAppLocation } from 'electron-util';
 
 import { updateAppInfoIfNewer } from '$Actions/app_manager_actions';
 import { addApplication } from '$Actions/application_actions';
+import { pushNotification } from '$Actions/launchpad_actions';
 import { logger } from '$Logger';
 import { configureStore } from '$Store/configureStore';
 import { MenuBuilder } from './menu';
@@ -12,9 +14,11 @@ import { Application, App } from './definitions/application.d';
 import { createSafeLaunchPadTrayWindow, createTray } from './setupLaunchPad';
 import { setupBackground } from './setupBackground';
 import { installExtensions, preferencesJsonSetup } from '$Utils/main_utils';
-import { checkForKnownAppsLocally } from '$App/manageInstallations/helpers';
+import { safeAppUpdater } from '$App/manageInstallations/safeAppUpdater';
+import { notificationTypes } from '$Constants/notifications';
 
 import {
+    ignoreAppLocation,
     isRunningTestCafeProcess,
     isRunningUnpacked,
     isRunningOnLinux,
@@ -25,8 +29,6 @@ import {
 } from '$Constants';
 
 import { addNotification } from '$App/env-handling';
-import { pushNotification } from '$Actions/launchpad_actions';
-import { notificationTypes } from './constants/notifications';
 import { AppUpdater } from './autoUpdate';
 
 require( '$Utils/ipcMainListners' );
@@ -52,6 +54,7 @@ if ( !gotTheLock ) {
     app.quit();
 } else {
     app.on( 'second-instance', ( event, commandLine, workingDirectory ) => {
+        // safeAppUpdater.handleAppUpdateCallback( commandLine );
         // Someone tried to run a second instance, we should focus our window.
         if ( theWindow ) {
             if ( theWindow.isMinimized() ) theWindow.restore();
@@ -62,6 +65,10 @@ if ( !gotTheLock ) {
     // Create myWindow, load the rest of the app, etc...
 
     app.on( 'ready', async () => {
+        if ( !ignoreAppLocation && !isRunningTestCafeProcess ) {
+            enforceMacOSAppLocation();
+        }
+
         if (
             process.env.NODE_ENV === 'development' ||
             process.env.DEBUG_PROD === 'true'
@@ -71,10 +78,8 @@ if ( !gotTheLock ) {
 
         const initialState = {};
         store = configureStore( initialState );
-        // start with hardcoded list of apps.
-        checkForKnownAppsLocally( store );
 
-        // store.dispatch( updateAppInfoIfNewer( hardCodedApps.applications ) );
+        safeAppUpdater.store = store;
 
         await preferencesJsonSetup( store );
 
@@ -91,8 +96,7 @@ if ( !gotTheLock ) {
                     app.hide();
                 else theWindow.hide();
             }
-            if ( isRunningOnWindows || isRunningOnLinux )
-                app.quit();
+            if ( isRunningOnWindows || isRunningOnLinux ) app.quit();
         } );
 
         const menuBuilder = new MenuBuilder( theWindow, store );

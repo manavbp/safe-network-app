@@ -7,6 +7,8 @@ import {
     LINUX,
     WINDOWS,
     platform,
+    isRunningOnWindows,
+    isRunningOnLinux,
     isRunningTestCafeProcess
 } from '$Constants';
 import { INSTALL_TARGET_DIR } from '$Constants/installConstants';
@@ -35,7 +37,7 @@ export const getApplicationExecutable = ( application: App ): string => {
         }
         case WINDOWS: {
             applicationExecutable = path.join(
-                `${application.name || application.packageName}`,
+                `${application.packageName || application.name}`,
                 `${application.name || application.packageName}.exe`
             );
             break;
@@ -86,13 +88,71 @@ export const checkForKnownAppsLocally = async ( store: Store ): Promise<void> =>
         logger.warn( 'Checking if path exists', installedPath, exists );
 
         if ( exists ) {
-            store.dispatch(
-                setCurrentVersion( {
-                    ...application,
-                    currentVersion: '1.0.0'
-                } )
-            );
+            // store.dispatch(
+            //     setCurrentVersion( {
+            //         ...application,
+            //         currentVersion: '1.0.0'
+            //     } )
+            // );
         }
         // fs grab version somehow...
     } );
+};
+
+export const checkIfAppIsInstalledLocally = async (
+    application
+): Promise<boolean> => {
+    const applicationExecutable = getApplicationExecutable( application );
+
+    const installedPath = path.resolve(
+        INSTALL_TARGET_DIR,
+        applicationExecutable
+    );
+
+    const exists = await fs.pathExists( installedPath );
+
+    logger.warn( 'Checking if path exists', installedPath, exists );
+
+    return exists;
+};
+
+export const getLocalAppVersion = ( application, store: Store ): string => {
+    logger.verbose( 'Checking local version of ', application.name );
+    try {
+        // default to MacOs
+        let versionFilePath = path.resolve(
+            getInstalledLocation( application ),
+            'Contents/Resources/version'
+        );
+
+        if ( isRunningOnWindows ) {
+            versionFilePath = path.resolve(
+                INSTALL_TARGET_DIR,
+                application.packageName,
+                'version'
+            );
+        }
+
+        if ( isRunningOnLinux ) {
+            versionFilePath = path.resolve(
+                INSTALL_TARGET_DIR,
+                application.packageName,
+                'version'
+            );
+        }
+
+        const localVersion = fs.readFileSync( versionFilePath ).toString();
+
+        logger.info( 'Version found was: ', localVersion );
+
+        store.dispatch(
+            setCurrentVersion( {
+                ...application,
+                currentVersion: localVersion
+            } )
+        );
+        return localVersion;
+    } catch ( error ) {
+        return null;
+    }
 };

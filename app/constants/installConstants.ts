@@ -3,7 +3,7 @@ import { app, remote } from 'electron';
 import { LINUX, WINDOWS, platform } from '$Constants';
 
 export const DOWNLOAD_TARGET_DIR = path.resolve(
-    app.getPath( 'userData' ),
+    app ? app.getPath( 'userData' ) : remote.app.getPath( 'userData' ),
     'downloads'
 );
 
@@ -16,7 +16,12 @@ if ( platform === LINUX ) {
 }
 if ( platform === WINDOWS ) {
     //  ~/AppData/Local/Programs/safe-launch-pad/safe Launch Pad.exe
-    installTargetDirectory = path.resolve( homeDirectory, 'Local', 'Programs' );
+    installTargetDirectory = path.resolve(
+        homeDirectory,
+        'AppData',
+        'Local',
+        'Programs'
+    );
 }
 
 export const INSTALL_TARGET_DIR = installTargetDirectory;

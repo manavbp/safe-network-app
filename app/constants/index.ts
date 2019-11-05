@@ -24,6 +24,8 @@ let shouldRunMockNetwork: boolean = fs.existsSync(
 
 let hasDebugFlag = false;
 let hasDryRunFlag = false;
+let shouldOpenDebugApps = false;
+let shouldUseTestPackages = false;
 
 export const isRunningTestCafeProcess =
     remote && remote.getGlobal
@@ -48,13 +50,12 @@ if ( isRunningTestCafeProcess && !isRunningTestCafeProcessingPackagedApp ) {
     shouldRunMockNetwork = true;
 }
 
-if ( allPassedArguments.includes( '--mock' ) ) {
-    shouldRunMockNetwork = true;
-}
+let ignoreAppLocationMacOs = false;
 
-if ( allPassedArguments.includes( '--live' ) ) {
-    shouldRunMockNetwork = false;
+if ( allPassedArguments.includes( '--ignoreAppLocation' ) ) {
+    ignoreAppLocationMacOs = true;
 }
+export const ignoreAppLocation = ignoreAppLocationMacOs;
 
 if ( allPassedArguments.includes( '--debug' ) ) {
     hasDebugFlag = true;
@@ -62,6 +63,20 @@ if ( allPassedArguments.includes( '--debug' ) ) {
 
 if ( allPassedArguments.includes( '--dryRun' ) || process.env.LAUNCHER_DRY_RUN ) {
     hasDryRunFlag = true;
+}
+
+if (
+    allPassedArguments.includes( `--openAppsAsDebug` ) ||
+    process.env.SNAPP_OPEN_DEBUG_APPS
+) {
+    shouldOpenDebugApps = true;
+}
+
+if (
+    allPassedArguments.includes( `--testPackages` ) ||
+    process.env.SNAPP_TEST_PACKAGES
+) {
+    shouldUseTestPackages = true;
 }
 
 let forcedPort: number;
@@ -99,6 +114,8 @@ export const isRunningDebug = hasDebugFlag;
 export const isDryRun = hasDryRunFlag || isRunningTestCafeProcess;
 export const inRendererProcess = typeof window !== 'undefined';
 export const inMainProcess = typeof remote === 'undefined';
+export const openAppsInDebugMode = shouldOpenDebugApps;
+export const useTestPackages = shouldUseTestPackages;
 
 export const currentWindowId =
     remote && remote.getCurrentWindow

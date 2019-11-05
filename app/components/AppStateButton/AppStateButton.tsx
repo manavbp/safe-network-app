@@ -26,6 +26,7 @@ interface Props {
     resetAppInstallationState: Function;
     pushNotification: Function;
     resumeDownload: Function;
+    updateApp: Function;
     showAppStatus?: boolean;
     application: App;
 }
@@ -91,6 +92,15 @@ export class AppStateButton extends React.Component<Props> {
         pauseDownload( application );
     };
 
+    handleUpdate = () => {
+        const { application, updateApp } = this.props;
+        logger.verbose(
+            'ApplicationOverview: clicked update application',
+            application
+        );
+        updateApp( application );
+    };
+
     render() {
         const { application, showAppStatus = false } = this.props;
 
@@ -104,7 +114,8 @@ export class AppStateButton extends React.Component<Props> {
             hasUpdate,
             installFailed,
             progress,
-            error
+            error,
+            isUpdating
         } = application;
         let buttonText = isInstalled
             ? I18n.t( `buttons.open` )
@@ -155,6 +166,15 @@ export class AppStateButton extends React.Component<Props> {
             buttonText = I18n.t( `buttons.uninstalling` );
         }
 
+        if ( isInstalled && hasUpdate ) {
+            buttonText = I18n.t( `buttons.update` );
+            handleClick = this.handleUpdate;
+        }
+
+        if ( isInstalled && isUpdating && hasUpdate ) {
+            buttonText = I18n.t( `buttons.isUpdating` );
+        }
+
         const percentageProgress = progress * 100;
 
         return (
@@ -188,7 +208,7 @@ export class AppStateButton extends React.Component<Props> {
                         color="primary"
                         onClick={handleClick}
                         aria-label="Application Action Button"
-                        disabled={!!isUninstalling}
+                        disabled={!!isUninstalling || isUpdating}
                         className={`${styles.actionButton} ${isInstalled &&
                             styles.openButton}`}
                     >

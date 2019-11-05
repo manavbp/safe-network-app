@@ -78,7 +78,6 @@ if (
     log.info( 'isRunningPackaged?', isRunningPackaged );
     log.info( 'inMainProcess?', inMainProcess );
     log.info( 'startedRunningProduction?', startedRunningProduction );
-    log.info( 'startedRunningMock?', startedRunningMock );
     log.info( 'isRunningTestCafeProcess?', isRunningTestCafeProcess );
     log.info(
         'isRunningTestCafeProcessingPackagedApp?',

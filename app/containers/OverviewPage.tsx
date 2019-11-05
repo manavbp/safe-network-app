@@ -7,7 +7,8 @@ import {
     cancelDownload,
     resumeDownload,
     openApp,
-    unInstallApp
+    unInstallApp,
+    updateApp
 } from '$Actions/alias/app_manager_actions';
 import { resetAppInstallationState } from '$Actions/app_manager_actions';
 import { updateDownloadProgress } from '$Actions/application_actions';
@@ -39,6 +40,8 @@ function mapDispatchToProperties( dispatch ) {
 
         openApp,
         unInstallApp,
+
+        updateApp,
 
         updateDownloadProgress,
 

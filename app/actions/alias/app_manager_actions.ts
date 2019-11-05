@@ -15,8 +15,15 @@ import {
     isRunningOnMac,
     isRunningOnLinux
 } from '$Constants/index';
-import { updateAppInfoIfNewer } from '$Actions/app_manager_actions';
-import { getInstalledLocation } from '$App/manageInstallations/helpers';
+import {
+    updateAppInfoIfNewer,
+    resetAppUpdateState,
+    appIsUpdating
+} from '$Actions/app_manager_actions';
+import {
+    getInstalledLocation,
+    checkIfAppIsInstalledLocally
+} from '$App/manageInstallations/helpers';
 import { getS3Folder } from '$App/utils/gets3Folders';
 
 import { NOTIFICATION_TYPES } from '$Constants/notifications';
@@ -27,12 +34,12 @@ import {
 } from '$Actions/application_actions';
 import { mockPromise } from '$Actions/helpers/launchpad';
 import { logger } from '$Logger';
-import { pushNotification } from '$Actions/launchpad_actions';
+import {
+    pushNotification,
+    dismissNotification
+} from '$Actions/launchpad_actions';
 import { App } from '$Definitions/application.d';
 
-//  need to add a check to see if its a launchpad update or a random update question is do we use this or what to use
-export const updateApplication = ( application: App ) => mockPromise();
-export const checkForApplicationUpdate = ( application: App ) => mockPromise();
 export const storeApplicationSkipVersion = ( application: App ) => mockPromise();
 
 const userAgentRequest = request.defaults( {
@@ -49,7 +56,6 @@ export const TYPES = {
     ALIAS_FETCH_APPS: 'ALIAS_FETCH_APPS',
 
     ALIAS_FETCH_UPDATE_INFO: 'ALIAS_FETCH_UPDATE_INFO',
-    ALIAS_CHECK_APP_HAS_UPDATE: 'ALIAS_CHECK_APP_HAS_UPDATE',
 
     ALIAS_OPEN_APP: 'ALIAS_OPEN_APP',
 
@@ -60,8 +66,7 @@ export const TYPES = {
     ALIAS_CANCEL_DOWNLOAD_OF_APP: 'ALIAS_CANCEL_DOWNLOAD_OF_APP',
 
     ALIAS_UPDATE_APP: 'ALIAS_UPDATE_APP',
-    ALIAS_RESTART_APP: 'ALIAS_RESTART_APP',
-    ALIAS_SKIP_APP_UPDATE: 'ALIAS_SKIP_APP_UPDATE'
+    ALIAS_RESTART_APP: 'ALIAS_RESTART_APP'
 };
 
 export const fetchDefaultAppIconFromLocal = ( applicationId: string ): string => {
@@ -133,6 +138,13 @@ const getLatestAppVersions = async (): Promise<void> => {
                 ( await fetchAppIconFromServer( updatedApp ) ) ||
                 fetchDefaultAppIconFromLocal( updatedApp.id );
 
+            const isAppInstalledLocally = await checkIfAppIsInstalledLocally(
+                application
+            );
+
+            if ( isAppInstalledLocally ) {
+                ipcRenderer.send( 'checkApplicationsForUpdate', updatedApp );
+            }
             store.dispatch( updateAppInfoIfNewer( updatedApp ) );
         } catch ( error ) {
             logger.error( error.message );
@@ -165,6 +177,18 @@ const resumeDownloadOfApp = ( application ) => {
     ipcRenderer.send( 'resumeDownload', application );
 };
 
+export const updateTheApplication = ( application: App ) => {
+    ipcRenderer.send( 'updateApplication', application );
+    const store = getCurrentStore();
+    store.dispatch(
+        dismissNotification( {
+            id: `${application.packageName}-update-notification`
+        } )
+    );
+    store.dispatch( appIsUpdating( application ) );
+    // store.dispatch( resetAppUpdateState( application ) );
+};
+
 const resumeDownloadOfAllApps = ( appList: App ) => {
     // eslint-disable-next-line array-callback-return
     Object.keys( appList ).map( ( appId ) => {
@@ -181,12 +205,6 @@ const pauseDownloadOfAllApps = ( appList: App ) => {
         if ( application.isDownloadingAndInstalling && !application.isPaused )
             ipcRenderer.send( 'pauseDownload', application );
     } );
-};
-
-const updateTheApplication = ( application: App ) => {
-    if ( application.name === 'SAFE Network App' )
-        ipcRenderer.send( 'update-safe-network-app', application );
-    else console.log( 'no app update feature available at the moment' );
 };
 
 const restartTheApplication = ( application: App ) => {
@@ -263,14 +281,6 @@ export const unInstallApp = createAliasedAction(
     } )
 );
 
-export const checkAppHasUpdate = createAliasedAction(
-    TYPES.ALIAS_CHECK_APP_HAS_UPDATE,
-    ( application: App ) => ( {
-        type: TYPES.ALIAS_CHECK_APP_HAS_UPDATE,
-        payload: checkForApplicationUpdate( application )
-    } )
-);
-
 export const updateApp = createAliasedAction(
     TYPES.ALIAS_UPDATE_APP,
     ( application: App ) => ( {
@@ -287,14 +297,6 @@ export const restartApp = createAliasedAction(
     } )
 );
 
-export const skipAppUpdate = createAliasedAction(
-    TYPES.ALIAS_SKIP_APP_UPDATE,
-    ( application: App ) => ( {
-        type: TYPES.ALIAS_SKIP_APP_UPDATE,
-        payload: storeApplicationSkipVersion( application )
-    } )
-);
-
 export const openApp = createAliasedAction(
     TYPES.ALIAS_OPEN_APP,
     ( application: App ) => ( {
@@ -302,11 +304,3 @@ export const openApp = createAliasedAction(
         payload: openTheApplication( application )
     } )
 );
-
-export const updateLaunchpadApp = () => {
-    return updateApp( LAUNCHPAD_APP_ID );
-};
-
-export const skipLaunchpadAppUpdate = () => {
-    return skipAppUpdate( LAUNCHPAD_APP_ID );
-};

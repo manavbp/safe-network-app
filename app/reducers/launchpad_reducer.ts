@@ -54,17 +54,19 @@ export function launchpadReducer( state = initialState, action ): LaunchpadState
 
         case TYPES.PUSH_NOTIFICATION: {
             const newNotifications = { ...state.notifications };
+
             // allow payload to set it for testing...
             const randomNotificationId: string =
                 payload.id || Math.random().toString( 36 );
+
             if ( !payload.notificationType )
                 throw new Error( ERRORS.NOTIFICATION_TYPE_NOT_FOUND );
 
             const notification = { ...payload, id: randomNotificationId };
 
             newNotifications[randomNotificationId] = notification;
-
-            return { ...state, notifications: newNotifications };
+            const updatedState = { ...state, notifications: newNotifications };
+            return updatedState;
         }
 
         case TYPES.DISMISS_NOTIFICATION: {

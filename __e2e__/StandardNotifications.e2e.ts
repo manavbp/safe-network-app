@@ -7,24 +7,18 @@ import { getPageUrl, getPageTitle } from './helpers';
 const Notifications = {
     updateAvailable: {
         name: 'Update Available',
-        title:
-            'Update Available! SAFE Browser v1.0 is ready to install. What’s New…',
+        title: 'Update Available!',
         acceptButtonExists: true
     },
     noInternet: {
         name: 'No Internet',
-        title: "Oh no! Your internet connection is down!",
+        title: 'Oh no! Your internet connection is down!',
         acceptButtonExists: false
     },
     discFull: {
         name: 'Disc Full',
         title:
             'Disk is full. Your install has been paused. Free up some space and resume.',
-        acceptButtonExists: true
-    },
-    globalFailure: {
-        name: 'Global Failure',
-        title: 'Global Failure',
         acceptButtonExists: true
     },
     adminPassRequest: {
@@ -50,7 +44,7 @@ fixture`Check App Notification`.page( '../app/app.html' ).beforeEach( async () =
 } );
 
 // eslint-disable-next-line array-callback-return
-numberOfNotification.map( ( type ) => {
+numberOfNotification.forEach( ( type ) => {
     test( `Check ${Notifications[type].name} notification`, async ( t ) => {
         // @ts-ignore
         await clickOnMainMenuItem( [
@@ -79,7 +73,7 @@ numberOfNotification.map( ( type ) => {
             'NotificationTitle'
         ).innerText;
 
-        await t.expect( notificationTitle ).eql( Notifications[type].title );
+        await t.expect( notificationTitle ).contains( Notifications[type].title );
 
         if ( Notifications[type].acceptButtonExists )
             await t

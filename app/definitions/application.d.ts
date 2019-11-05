@@ -75,6 +75,7 @@ export interface App {
     isUninstalling?: boolean;
 
     hasUpdate?: boolean;
+    isUpdating?: boolean;
     lastSkippedVersion?: string;
     error?: Error | null;
 

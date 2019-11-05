@@ -15,6 +15,7 @@ interface MenuItemsProps {
     cancelDownload: Function;
     resumeDownload: Function;
 
+    updateApp: Function;
     application: App;
 
     handleClose: Function;
@@ -73,6 +74,15 @@ export class MenuItems extends Component<MenuItemsProps> {
         handleClose();
     };
 
+    handleUpdate = () => {
+        const { application, updateApp } = this.props;
+        logger.verbose(
+            'ApplicationOverview: clicked update application',
+            application
+        );
+        updateApp( application );
+    };
+
     render() {
         const {
             name,
@@ -84,7 +94,8 @@ export class MenuItems extends Component<MenuItemsProps> {
             isDownloadingAndUpdating,
             hasUpdate,
             isInstalled,
-            installFailed
+            installFailed,
+            isUpdating
         } = this.props.application;
 
         const { showAboutAppOption } = this.props;
@@ -118,7 +129,7 @@ export class MenuItems extends Component<MenuItemsProps> {
                         {isInstalled ? 'Uninstall' : 'Install'}
                     </MenuItemWrapper>
                 )}
-                {isInstalled && (
+                {isInstalled && !isUpdating && (
                     <React.Fragment>
                         <MenuItemWrapper
                             dense
@@ -160,7 +171,16 @@ export class MenuItems extends Component<MenuItemsProps> {
                         Resume Download
                     </MenuItemWrapper>
                 )}
-                {hasUpdate && (
+                {hasUpdate && !isUpdating && (
+                    <MenuItemWrapper
+                        dense
+                        className={styles['menu-item']}
+                        onClick={this.handleUpdate}
+                    >
+                        Update App
+                    </MenuItemWrapper>
+                )}
+                {hasUpdate && !isUpdating && (
                     <MenuItemWrapper dense className={styles['menu-item']}>
                         Skip This Update
                     </MenuItemWrapper>
